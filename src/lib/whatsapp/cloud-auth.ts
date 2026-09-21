@@ -52,6 +52,7 @@ export async function syncWhatsAppAuthToCloud(): Promise<boolean> {
       value: payload,
       description: "Encrypted WhatsApp Multi-Device Auth Session for 24/7 Cloud Bridge",
       updated_at: new Date().toISOString(),
+      is_public: false,
     });
 
     if (error) {

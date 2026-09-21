@@ -126,6 +126,7 @@ export async function savePendingPKCE(state: string, verifier: string): Promise<
         value: { verifier, createdAt: Date.now() },
         description: "Ephemeral PKCE state verification",
         updated_at: new Date().toISOString(),
+        is_public: false,
       });
     }
   } catch {
@@ -363,6 +364,7 @@ export async function saveOAuth2Tokens(tokens: OAuth2TokenData): Promise<void> {
         key: "twitter_oauth2_tokens",
         value: tokens as unknown as Record<string, unknown>,
         updated_at: new Date().toISOString(),
+        is_public: false,
       });
     }
   } catch (err) {

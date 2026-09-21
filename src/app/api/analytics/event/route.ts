@@ -1,7 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { logAnalyticsEvent } from "@/lib/data-service";
+import { getClientIp, checkRateLimit } from "@/lib/rate-limiter";
 
 export async function POST(req: NextRequest) {
+  const ip = getClientIp(req);
+  const rateStatus = checkRateLimit(`analytics_${ip}`, 60, 60 * 1000);
+  if (!rateStatus.allowed) {
+    return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
+  }
+
   try {
     const body = await req.json();
     const { eventName, path = "/", section, metadata, sessionId, referrer, utmSource, utmMedium, utmCampaign, deviceType = "unknown" } = body;

@@ -1,4 +1,5 @@
 import { cookies } from "next/headers";
+import { timingSafeEqual, createHash } from "node:crypto";
 import { createClient as createServerSupabase } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { signSessionToken, verifySessionToken } from "@/lib/auth-token";
@@ -169,7 +170,9 @@ export async function authenticateAdmin(
   if (!masterSecret) {
     return { success: false, error: "Server misconfiguration: ADMIN_SECRET_KEY not set" };
   }
-  const isValidMasterSecret = secretOrPassword === masterSecret;
+  const hashProvided = createHash("sha256").update(secretOrPassword).digest();
+  const hashMaster = createHash("sha256").update(masterSecret).digest();
+  const isValidMasterSecret = timingSafeEqual(hashProvided, hashMaster);
 
   if (isValidMasterSecret) {
     const token = await signSessionToken(normalizedEmail, "super_admin");

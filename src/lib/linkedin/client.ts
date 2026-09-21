@@ -104,6 +104,7 @@ export async function saveLinkedInAppCredentials(
       value: { clientId, clientSecret },
       description: "LinkedIn Developer App Credentials for OAuth 2.0",
       updated_at: new Date().toISOString(),
+      is_public: false,
     });
     return true;
   } catch {
@@ -168,6 +169,7 @@ export async function saveLinkedInTokens(tokens: LinkedInTokenData): Promise<voi
         value: tokens as unknown as Record<string, unknown>,
         description: "LinkedIn OAuth 2.0 User Tokens for Samarth Nimangre",
         updated_at: new Date().toISOString(),
+        is_public: false,
       });
     }
   } catch (err) {

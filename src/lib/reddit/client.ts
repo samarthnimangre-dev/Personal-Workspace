@@ -148,6 +148,7 @@ export async function saveRedditTokens(tokens: RedditTokenData): Promise<void> {
         value: tokens as unknown as Record<string, unknown>,
         description: "Reddit OAuth 2.0 User Context Tokens for u/SamarthBuilds_",
         updated_at: new Date().toISOString(),
+        is_public: false,
       });
     }
   } catch (err) {
