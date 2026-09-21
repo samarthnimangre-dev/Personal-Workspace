@@ -86,8 +86,8 @@ export default function LabSection({
     >
       {/* Section Header */}
       <MotionReveal className="flex flex-col items-center text-center mb-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-sky-400 mb-4 uppercase tracking-wider">
-          <FlaskConical size={13} className="text-sky-400 animate-pulse" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-4 uppercase tracking-wider">
+          <FlaskConical size={13} className="text-cyan-400 animate-pulse" />
           The Digital Laboratory
         </div>
 
@@ -118,7 +118,7 @@ export default function LabSection({
               {isSelected && (
                 <motion.div
                   layoutId="activeLabPill"
-                  className="absolute inset-0 rounded-full bg-sky-500 shadow-md shadow-sky-500/25 border border-sky-400"
+                  className="absolute inset-0 rounded-full bg-gradient-to-r from-cyan-400 to-sky-400 shadow-md shadow-cyan-500/25 border border-cyan-300"
                   transition={{ type: "spring", stiffness: 380, damping: 30 }}
                 />
               )}

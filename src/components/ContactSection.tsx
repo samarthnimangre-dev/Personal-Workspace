@@ -216,9 +216,9 @@ export default function ContactSection({ socials = socialsData }: { socials?: So
       className="relative py-24 sm:py-32 px-4 sm:px-6 max-w-6xl mx-auto border-t border-white/[0.06]"
     >
       <MotionReveal className="flex flex-col items-center text-center mb-16">
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/[0.03] border border-white/[0.08] text-xs font-mono text-sky-400 mb-4 uppercase tracking-wider">
-          <MessageSquare size={13} className="text-sky-400" />
-          Start a Conversation
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-xs font-mono text-cyan-300 mb-4 uppercase tracking-wider">
+          <MessageSquare size={13} className="text-cyan-400" />
+          Direct Access &amp; Inquiries
         </div>
 
         <h2 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-white mb-4">

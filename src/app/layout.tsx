@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import NeuralField from "@/components/NeuralField";
+import ContextualCursor from "@/components/ContextualCursor";
 import AnalyticsTracker from "@/components/AnalyticsTracker";
 
 export const metadata: Metadata = {
@@ -60,7 +61,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#06080f",
+  themeColor: "#04060c",
   width: "device-width",
   initialScale: 1,
   maximumScale: 5,
@@ -139,21 +140,24 @@ export default function RootLayout({
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="relative bg-[#06080f] text-slate-100 antialiased selection:bg-sky-500/20 selection:text-white min-h-screen">
-        {/* Background Neural Canvas */}
+      <body className="relative bg-[#04060c] text-slate-100 antialiased selection:bg-cyan-500/25 selection:text-white min-h-screen">
+        {/* Contextual Cursor for Desktop */}
+        <ContextualCursor />
+
+        {/* Background Subtle Neural & Grid Canvas */}
         <NeuralField />
 
         {/* Global Privacy Telemetry */}
         <AnalyticsTracker />
 
-        {/* Ambient Top Glow Orbs */}
+        {/* Ambient Top Glow Orbs (Electric Cyan + Subtle Violet) */}
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed top-[-15vw] left-[15vw] w-[50vw] h-[40vw] rounded-full glow-orb-cyan blur-[120px] opacity-40 z-0"
+          className="pointer-events-none fixed top-[-15vw] left-[15vw] w-[50vw] h-[40vw] rounded-full glow-orb-cyan blur-[120px] opacity-30 z-0"
         />
         <div
           aria-hidden="true"
-          className="pointer-events-none fixed top-[30vh] right-[-10vw] w-[45vw] h-[45vw] rounded-full glow-orb-purple blur-[140px] opacity-35 z-0"
+          className="pointer-events-none fixed top-[30vh] right-[-10vw] w-[45vw] h-[45vw] rounded-full glow-orb-violet blur-[140px] opacity-25 z-0"
         />
 
         {/* Main Content Hierarchy */}

@@ -77,26 +77,60 @@ export default function NeuralField() {
       frame++;
       ctx.clearRect(0, 0, width, height);
 
-      // Scroll narrative evolution: calculate progression ratio (0 to 1)
+      // Scroll narrative progression ratio (0 to 1)
       const docHeight = document.documentElement.scrollHeight - window.innerHeight || 1;
       const scrollRatio = Math.min(1, Math.max(0, scrollY / docHeight));
 
-      // Atmospheric gradient background shift
+      // Atmospheric gradient background shift (near-black obsidian + cyan/violet breath)
       const gradient = ctx.createRadialGradient(
-        width * 0.5 + Math.sin(scrollRatio * Math.PI) * 100,
-        height * 0.2 + scrollRatio * 200,
-        20,
+        width * 0.5 + Math.sin(scrollRatio * Math.PI) * 80,
+        height * 0.25 + scrollRatio * 160,
+        30,
         width * 0.5,
         height * 0.5,
-        width * 0.8
+        width * 0.75
       );
-      gradient.addColorStop(0, "rgba(56, 189, 248, 0.04)");
-      gradient.addColorStop(0.5, "rgba(139, 92, 246, 0.02)");
-      gradient.addColorStop(1, "rgba(7, 10, 18, 0)");
+      gradient.addColorStop(0, "rgba(0, 240, 255, 0.035)");
+      gradient.addColorStop(0.5, "rgba(139, 92, 246, 0.025)");
+      gradient.addColorStop(1, "rgba(4, 6, 12, 0)");
       ctx.fillStyle = gradient;
       ctx.fillRect(0, 0, width, height);
 
-      // Update and draw connections
+      // === Subtle Architectural Engineering Grid Layer ===
+      const gridSize = isMobile ? 48 : 64;
+      const gridCols = Math.ceil(width / gridSize);
+      const gridRows = Math.ceil(height / gridSize);
+      const gridBreath = (Math.sin(frame * 0.015) + 1) * 0.5;
+
+      ctx.lineWidth = 0.5;
+      ctx.strokeStyle = `rgba(255, 255, 255, ${0.012 + gridBreath * 0.006})`;
+      ctx.beginPath();
+      for (let c = 0; c <= gridCols; c++) {
+        const x = c * gridSize;
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+      }
+      for (let r = 0; r <= gridRows; r++) {
+        const y = r * gridSize;
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+      }
+      ctx.stroke();
+
+      // Delicate micro-crosses at primary grid intersections (every 2 grid units)
+      const step = 2;
+      ctx.fillStyle = `rgba(0, 240, 255, ${0.08 + gridBreath * 0.04})`;
+      for (let c = 0; c <= gridCols; c += step) {
+        for (let r = 0; r <= gridRows; r += step) {
+          const x = c * gridSize;
+          const y = r * gridSize;
+          // Tiny crosshair '+'
+          ctx.fillRect(x - 2, y, 5, 0.75);
+          ctx.fillRect(x, y - 2, 0.75, 5);
+        }
+      }
+
+      // === Neural Constellation Nodes & Connections ===
       for (let i = 0; i < nodes.length; i++) {
         const nodeA = nodes[i];
 
@@ -131,25 +165,25 @@ export default function NeuralField() {
           const dist = Math.sqrt(dx * dx + dy * dy);
 
           if (dist < maxDistance) {
-            const alpha = (1 - dist / maxDistance) * (0.16 + scrollRatio * 0.12);
+            const alpha = (1 - dist / maxDistance) * (0.15 + scrollRatio * 0.12);
             ctx.beginPath();
             ctx.moveTo(nodeA.x, nodeA.y);
             ctx.lineTo(nodeB.x, nodeB.y);
 
-            // Subtle luminous pulse along lines
+            // Electric cyan pulse along lines
             const pulse = (Math.sin(frame * 0.03 + i + j) + 1) * 0.5;
-            ctx.strokeStyle = `rgba(147, 197, 253, ${alpha * (0.7 + pulse * 0.3)})`;
-            ctx.lineWidth = 0.8;
+            ctx.strokeStyle = `rgba(0, 240, 255, ${alpha * (0.65 + pulse * 0.35)})`;
+            ctx.lineWidth = 0.75;
             ctx.stroke();
 
-            // Occasional light traveling packet
+            // Occasional traveling packet in subtle violet
             if (i % 4 === 0 && !prefersReducedMotion) {
-              const packetPos = (frame * 0.015 + (i * 0.1)) % 1;
+              const packetPos = (frame * 0.015 + i * 0.1) % 1;
               const px = nodeA.x + dx * packetPos;
               const py = nodeA.y + dy * packetPos;
               ctx.beginPath();
               ctx.arc(px, py, 1.2, 0, Math.PI * 2);
-              ctx.fillStyle = `rgba(167, 139, 250, ${alpha * 1.4})`;
+              ctx.fillStyle = `rgba(167, 139, 250, ${alpha * 1.5})`;
               ctx.fill();
             }
           }
@@ -159,7 +193,7 @@ export default function NeuralField() {
         const pulseRadius = nodeA.baseRadius + Math.sin(frame * 0.04 + nodeA.pulsePhase) * 0.4;
         ctx.beginPath();
         ctx.arc(nodeA.x, nodeA.y, Math.max(0.6, pulseRadius), 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(224, 231, 255, ${0.4 + Math.sin(frame * 0.03 + i) * 0.2})`;
+        ctx.fillStyle = `rgba(216, 235, 255, ${0.45 + Math.sin(frame * 0.03 + i) * 0.25})`;
         ctx.fill();
       }
 

@@ -47,21 +47,21 @@ export default function Navbar() {
         aria-label="Main Navigation"
         className={`w-full max-w-6xl flex items-center justify-between px-4 sm:px-6 py-2.5 rounded-full transition-all duration-300 ${
           scrolled
-            ? "bg-[#0a0e1c]/80 backdrop-blur-xl border border-white/[0.1] shadow-2xl shadow-black/40"
-            : "bg-white/[0.02] backdrop-blur-md border border-white/[0.06]"
+            ? "bg-[#060914]/85 backdrop-blur-xl border border-white/[0.08] shadow-2xl shadow-black/60"
+            : "bg-[#060914]/40 backdrop-blur-md border border-white/[0.06]"
         }`}
       >
         {/* Brand Name */}
         <a
           href="#"
           onClick={() => soundFx.playChime(440, 0.05)}
-          className="flex items-center gap-2 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 rounded-md"
+          className="flex items-center gap-2 group cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-400 rounded-md"
         >
-          <span className="w-2 h-2 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8] group-hover:scale-125 transition-transform" />
-          <span className="font-mono font-bold tracking-wider text-sm sm:text-base text-white group-hover:text-sky-300 transition-colors">
+          <span className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_10px_#00f0ff] group-hover:scale-125 transition-transform" />
+          <span className="font-mono font-bold tracking-wider text-sm sm:text-base text-white group-hover:text-cyan-300 transition-colors">
             SAM CODES
           </span>
-          <span className="hidden md:inline text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-sky-500/10 border border-sky-500/20 text-sky-400">
+          <span className="hidden md:inline text-[10px] uppercase font-mono px-1.5 py-0.5 rounded bg-cyan-500/10 border border-cyan-500/20 text-cyan-300">
             AI Native
           </span>
         </a>
@@ -73,7 +73,7 @@ export default function Navbar() {
               key={link.href}
               href={link.href}
               onMouseEnter={() => soundFx.playHover()}
-              className="text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-colors relative py-1 focus:outline-none focus-visible:text-sky-400"
+              className="text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-cyan-300 transition-colors relative py-1 focus:outline-none focus-visible:text-cyan-400"
             >
               {link.label}
             </a>
@@ -90,8 +90,8 @@ export default function Navbar() {
             title={soundEnabled ? "Audio FX Active (Click to mute)" : "Enable subtle Audio FX"}
             className={`p-2 rounded-full border transition-all text-xs flex items-center justify-center cursor-pointer min-h-[40px] min-w-[40px] sm:min-h-[44px] sm:min-w-[44px] ${
               soundEnabled
-                ? "bg-sky-500/10 border-sky-500/30 text-sky-400 shadow-[0_0_12px_rgba(56,189,248,0.2)]"
-                : "bg-white/[0.03] border-white/[0.08] text-slate-400 hover:text-slate-200"
+                ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300 shadow-[0_0_12px_rgba(0,240,255,0.2)]"
+                : "bg-[#060914]/60 border-white/[0.08] text-slate-400 hover:text-slate-200"
             }`}
           >
             {soundEnabled ? <Volume2 size={15} /> : <VolumeX size={15} />}
@@ -102,9 +102,9 @@ export default function Navbar() {
             type="button"
             onClick={openAskSam}
             aria-label="Open Ask Sam interactive assistant"
-            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-gradient-to-r from-sky-500/15 to-indigo-500/15 border border-sky-400/25 text-sky-300 hover:text-white hover:border-sky-400/50 hover:from-sky-500/25 hover:to-indigo-500/25 transition-all text-xs font-mono cursor-pointer shadow-sm min-h-[40px] sm:min-h-[44px]"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-full bg-gradient-to-r from-cyan-500/15 to-violet-500/15 border border-cyan-400/30 text-cyan-300 hover:text-white hover:border-cyan-400/60 hover:from-cyan-500/25 hover:to-violet-500/25 transition-all text-xs font-mono cursor-pointer shadow-sm min-h-[40px] sm:min-h-[44px]"
           >
-            <Sparkles size={13} className="text-sky-400 animate-pulse" />
+            <Sparkles size={13} className="text-cyan-400 animate-pulse" />
             <span>Ask Sam</span>
           </button>
 
@@ -112,7 +112,7 @@ export default function Navbar() {
           <a
             href="#contact"
             onClick={() => soundFx.playChime(520, 0.08)}
-            className="hidden sm:inline-flex items-center justify-center px-5 py-2 rounded-full bg-white text-slate-950 hover:bg-sky-300 transition-all text-xs font-medium tracking-wide shadow-md hover:shadow-sky-500/25 cursor-pointer min-h-[44px]"
+            className="hidden sm:inline-flex items-center justify-center px-5 py-2 rounded-full bg-white text-slate-950 hover:bg-cyan-300 font-mono text-xs uppercase tracking-wider transition-all shadow-md hover:shadow-cyan-500/25 cursor-pointer min-h-[44px]"
           >
             Work with me
           </a>
@@ -125,7 +125,7 @@ export default function Navbar() {
               setMobileMenuOpen(!mobileMenuOpen);
             }}
             aria-label="Toggle mobile menu"
-            className="p-2.5 lg:hidden rounded-full bg-white/[0.03] border border-white/[0.08] text-slate-300 hover:text-white cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
+            className="p-2.5 lg:hidden rounded-full bg-[#060914]/60 border border-white/[0.08] text-slate-300 hover:text-white cursor-pointer min-h-[40px] min-w-[40px] flex items-center justify-center"
           >
             {mobileMenuOpen ? <X size={16} /> : <Menu size={16} />}
           </button>

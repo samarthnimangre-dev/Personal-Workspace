@@ -35,16 +35,24 @@ export default function Statement({ profile = profileData }: { profile?: Profile
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
         {profile.whyWorkWithMe.map((item, idx) => {
           const Icon = PILLAR_ICONS[idx] || Sparkles;
+          const isViolet = idx % 2 === 1;
           return (
             <MotionReveal key={idx} delay={idx * 0.08}>
               <SpotlightCard
                 onMouseEnter={() => soundFx.playHover()}
-                spotlightColor="rgba(56, 189, 248, 0.12)"
+                spotlightColor={isViolet ? "rgba(139, 92, 246, 0.12)" : "rgba(0, 240, 255, 0.12)"}
+                borderColor={isViolet ? "rgba(139, 92, 246, 0.3)" : "rgba(0, 240, 255, 0.3)"}
                 className="p-6 h-full flex flex-col justify-between group cursor-default"
               >
                 <div>
                   <div className="flex items-center justify-between mb-5">
-                    <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                    <div
+                      className={`w-10 h-10 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform ${
+                        isViolet
+                          ? "bg-violet-500/10 border border-violet-500/20 text-violet-400"
+                          : "bg-cyan-500/10 border border-cyan-500/20 text-cyan-400"
+                      }`}
+                    >
                       <Icon size={20} />
                     </div>
                     <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-white/[0.04] text-slate-400 border border-white/[0.06]">
@@ -52,7 +60,7 @@ export default function Statement({ profile = profileData }: { profile?: Profile
                     </span>
                   </div>
 
-                  <h3 className="text-base font-bold text-white mb-2 group-hover:text-sky-300 transition-colors">
+                  <h3 className="text-base font-bold text-white mb-2 group-hover:text-cyan-300 transition-colors">
                     {item.title}
                   </h3>
 
@@ -61,9 +69,9 @@ export default function Statement({ profile = profileData }: { profile?: Profile
                   </p>
                 </div>
 
-                <div className="mt-6 pt-3 border-t border-white/[0.04] flex items-center justify-between text-[10px] font-mono text-slate-500">
+                <div className="mt-6 pt-3 border-t border-white/[0.05] flex items-center justify-between text-[10px] font-mono text-slate-500">
                   <span>PRINCIPLE // 0{idx + 1}</span>
-                  <span className="text-emerald-400">CORE STANDARD</span>
+                  <span className={isViolet ? "text-violet-400" : "text-cyan-400"}>CORE STANDARD</span>
                 </div>
               </SpotlightCard>
             </MotionReveal>
@@ -72,7 +80,7 @@ export default function Statement({ profile = profileData }: { profile?: Profile
       </div>
 
       {/* Compact Builder Note */}
-      <MotionReveal delay={0.2} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs text-slate-400">
+      <MotionReveal delay={0.2} className="rounded-2xl bg-[#060914]/60 border border-white/[0.07] backdrop-blur-xl p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 font-mono text-xs text-slate-400">
         <div className="space-y-1 text-center md:text-left">
           <div className="text-white font-bold text-sm">
             Have an idea you want to test or automate?
@@ -85,7 +93,7 @@ export default function Statement({ profile = profileData }: { profile?: Profile
         <a
           href="#contact"
           onClick={() => soundFx.playChime(520, 0.08)}
-          className="px-6 py-3 rounded-full bg-white hover:bg-sky-300 text-slate-950 font-medium text-xs transition-colors shrink-0 cursor-pointer shadow-md min-h-[44px] flex items-center justify-center"
+          className="px-6 py-3 rounded-full bg-white hover:bg-cyan-300 text-slate-950 font-mono text-xs uppercase tracking-wider transition-colors shrink-0 cursor-pointer shadow-md min-h-[44px] flex items-center justify-center"
         >
           Start a conversation
         </a>
