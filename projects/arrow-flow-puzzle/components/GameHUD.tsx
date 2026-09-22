@@ -12,9 +12,8 @@ import {
   Volume2,
   VolumeX,
   Palette,
-  Tv,
-  ShoppingBag,
-  Code2,
+  RotateCw,
+  Trophy,
 } from 'lucide-react';
 import { sound } from '@/lib/audio';
 
@@ -23,15 +22,16 @@ interface GameHUDProps {
   level: LevelConfig;
   movesCount: number;
   combo: number;
+  remainingCount: number;
+  totalCount: number;
   isHammerMode: boolean;
   onToggleHammer: () => void;
   onUseHint: () => void;
   onUseUndo: () => void;
   onUseMagnet: () => void;
+  onRestartLevel: () => void;
   onOpenShop: () => void;
   onOpenThemeSelector: () => void;
-  onOpenAdModal: () => void;
-  onOpenDevLicenseModal: () => void;
   onToggleSound: () => void;
   soundEnabled: boolean;
 }
@@ -41,124 +41,151 @@ export const GameHUD: React.FC<GameHUDProps> = ({
   level,
   movesCount,
   combo,
+  remainingCount,
+  totalCount,
   isHammerMode,
   onToggleHammer,
   onUseHint,
   onUseUndo,
   onUseMagnet,
+  onRestartLevel,
   onOpenShop,
   onOpenThemeSelector,
-  onOpenAdModal,
-  onOpenDevLicenseModal,
   onToggleSound,
   soundEnabled,
 }) => {
+  const starsEarned =
+    movesCount <= level.parMoves
+      ? 3
+      : movesCount <= level.parMoves + 2
+      ? 2
+      : movesCount <= level.parMoves + 4
+      ? 1
+      : 0;
+
+  const progressPercent = Math.round(((totalCount - remainingCount) / Math.max(1, totalCount)) * 100);
+
   return (
-    <div className="w-full max-w-xl flex flex-col gap-3 select-none px-3">
-      {/* Top Header Bar */}
-      <div className="flex items-center justify-between bg-slate-900/80 backdrop-blur-md border border-slate-800/80 rounded-2xl p-2.5 px-4 shadow-lg">
-        {/* Level & Difficulty info */}
-        <div className="flex flex-col">
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-semibold uppercase tracking-wider text-cyan-400">
-              {level.difficulty}
+    <div className="w-full max-w-lg flex flex-col gap-2.5 select-none px-3 pt-2">
+      {/* Top Floating App Bar */}
+      <div className="flex items-center justify-between bg-slate-900/80 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-2.5 px-3.5 shadow-xl">
+        {/* Left: Quick Actions (Theme & Sound & Restart) */}
+        <div className="flex items-center gap-1.5">
+          <button
+            onClick={() => {
+              sound.playTap();
+              onOpenThemeSelector();
+            }}
+            className="w-8 h-8 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/50 flex items-center justify-center text-slate-300 hover:text-cyan-400 transition-all active:scale-90"
+            title="Themes"
+          >
+            <Palette className="w-4 h-4" />
+          </button>
+
+          <button
+            onClick={onToggleSound}
+            className="w-8 h-8 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/50 flex items-center justify-center text-slate-300 hover:text-amber-400 transition-all active:scale-90"
+            title={soundEnabled ? 'Mute Audio' : 'Unmute Audio'}
+          >
+            {soundEnabled ? (
+              <Volume2 className="w-4 h-4 text-cyan-400" />
+            ) : (
+              <VolumeX className="w-4 h-4 text-slate-500" />
+            )}
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playTap();
+              onRestartLevel();
+            }}
+            className="w-8 h-8 rounded-xl bg-slate-800/70 hover:bg-slate-700/80 border border-slate-700/50 flex items-center justify-center text-slate-300 hover:text-rose-400 transition-all active:scale-90"
+            title="Restart Puzzle"
+          >
+            <RotateCw className="w-3.5 h-3.5" />
+          </button>
+        </div>
+
+        {/* Center: Level Badge & Progress */}
+        <div className="flex flex-col items-center">
+          <div className="flex items-center gap-1.5">
+            <span className="text-[11px] font-black uppercase tracking-wider text-cyan-400">
+              LEVEL {level.id}
             </span>
             {combo > 1 && (
-              <span className="bg-gradient-to-r from-amber-500 to-rose-500 text-white text-[10px] font-black px-2 py-0.5 rounded-full animate-bounce flex items-center gap-1 shadow-[0_0_8px_rgba(245,158,11,0.6)]">
-                🔥 {combo}x COMBO
+              <span className="bg-gradient-to-r from-amber-500 to-rose-500 text-slate-950 text-[9px] font-black px-1.5 py-0.2 rounded-full animate-bounce">
+                {combo}x COMBO
               </span>
             )}
           </div>
-          <h2 className="text-base font-bold text-white tracking-tight">{level.title}</h2>
-        </div>
-
-        {/* Currency Pill Box */}
-        <div className="flex items-center gap-2">
-          {/* Coins button */}
-          <button
-            onClick={() => {
-              sound.playTap();
-              onOpenShop();
-            }}
-            className="flex items-center gap-1.5 bg-amber-950/40 border border-amber-500/30 hover:border-amber-400/60 rounded-full px-2.5 py-1 text-xs font-bold text-amber-300 transition-all hover:scale-105 active:scale-95"
-            title="Open In-Game Store"
-          >
-            <Coins className="w-3.5 h-3.5 text-amber-400" />
-            <span>{economy.coins}</span>
-            <span className="text-[10px] text-amber-500 bg-amber-400/20 rounded-full w-3.5 h-3.5 flex items-center justify-center font-black">
-              +
-            </span>
-          </button>
-
-          {/* Gems button */}
-          <button
-            onClick={() => {
-              sound.playTap();
-              onOpenShop();
-            }}
-            className="flex items-center gap-1.5 bg-fuchsia-950/40 border border-fuchsia-500/30 hover:border-fuchsia-400/60 rounded-full px-2.5 py-1 text-xs font-bold text-fuchsia-300 transition-all hover:scale-105 active:scale-95"
-            title="Open In-Game Store"
-          >
-            <Gem className="w-3.5 h-3.5 text-fuchsia-400" />
-            <span>{economy.gems}</span>
-            <span className="text-[10px] text-fuchsia-500 bg-fuchsia-400/20 rounded-full w-3.5 h-3.5 flex items-center justify-center font-black">
-              +
-            </span>
-          </button>
-
-          {/* Settings / Controls */}
-          <div className="flex items-center gap-1 pl-1 border-l border-slate-800">
-            <button
-              onClick={() => {
-                sound.playTap();
-                onOpenThemeSelector();
-              }}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-cyan-300 hover:bg-slate-800 transition-all"
-              title="Themes & Skins"
-            >
-              <Palette className="w-4 h-4" />
-            </button>
-            <button
-              onClick={onToggleSound}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-amber-300 hover:bg-slate-800 transition-all"
-              title={soundEnabled ? 'Mute Sound' : 'Enable Sound'}
-            >
-              {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4 text-rose-400" />}
-            </button>
-          </div>
-        </div>
-      </div>
-
-      {/* Sub-bar: Moves & Quick Action Badges */}
-      <div className="flex items-center justify-between px-2 text-xs">
-        <div className="flex items-center gap-2 text-slate-400">
-          <span>
-            Moves: <strong className="text-white">{movesCount}</strong> / {level.parMoves} par
+          <span className="text-xs font-semibold text-slate-300 truncate max-w-[140px]">
+            {level.title}
           </span>
         </div>
 
-        {/* Developer Commercial Sale Badge */}
+        {/* Right: Currency Pill */}
         <button
           onClick={() => {
             sound.playTap();
-            onOpenDevLicenseModal();
+            onOpenShop();
           }}
-          className="flex items-center gap-1.5 text-[11px] font-semibold text-emerald-400 hover:text-emerald-300 bg-emerald-950/40 hover:bg-emerald-900/50 border border-emerald-500/30 px-2.5 py-0.5 rounded-full transition-all"
+          className="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 hover:border-amber-400/60 rounded-xl px-2.5 py-1 text-xs font-bold text-amber-300 transition-all active:scale-95"
         >
-          <Code2 className="w-3 h-3 text-emerald-400" />
-          <span>Turnkey Game License ($49)</span>
+          <Coins className="w-3.5 h-3.5 text-amber-400" />
+          <span>{economy.coins}</span>
+          <span className="text-[10px] bg-amber-400/20 text-amber-300 rounded-full w-3.5 h-3.5 flex items-center justify-center font-black">
+            +
+          </span>
         </button>
       </div>
 
-      {/* Bottom Booster Dock */}
-      <div className="grid grid-cols-5 gap-2 bg-slate-900/90 backdrop-blur-md border border-slate-800/80 rounded-2xl p-2 shadow-2xl">
-        {/* Hint Booster */}
+      {/* Progress & Move Counter Sub-bar */}
+      <div className="flex items-center justify-between px-1 text-xs">
+        {/* Moves & Star Goal */}
+        <div className="flex items-center gap-2 text-slate-400">
+          <span>
+            Moves: <strong className="text-white font-bold">{movesCount}</strong>
+            <span className="text-slate-500"> / {level.parMoves} par</span>
+          </span>
+          <div className="flex items-center gap-0.5">
+            {[1, 2, 3].map((star) => (
+              <span
+                key={star}
+                className={`text-xs ${
+                  star <= starsEarned ? 'text-amber-400 drop-shadow-[0_0_4px_rgba(245,158,11,0.6)]' : 'text-slate-700'
+                }`}
+              >
+                ★
+              </span>
+            ))}
+          </div>
+        </div>
+
+        {/* Escape Counter */}
+        <div className="flex items-center gap-1.5 text-slate-400">
+          <span>
+            Remaining: <strong className="text-cyan-400 font-bold">{remainingCount}</strong>
+          </span>
+        </div>
+      </div>
+
+      {/* Progress Fill Bar */}
+      <div className="w-full bg-slate-900/90 h-1.5 rounded-full overflow-hidden border border-slate-800/80">
+        <div
+          className="h-full bg-gradient-to-r from-cyan-500 to-indigo-500 transition-all duration-300"
+          style={{ width: `${progressPercent}%` }}
+        />
+      </div>
+
+      {/* Bottom Floating Booster Dock */}
+      <div className="grid grid-cols-4 gap-2 bg-slate-900/90 backdrop-blur-xl border border-slate-800/80 rounded-2xl p-2 shadow-2xl mt-1">
+        {/* 1. Hint Booster */}
         <button
           onClick={() => {
             sound.playTap();
             onUseHint();
           }}
-          className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-amber-500/20 hover:border-amber-400/50 transition-all active:scale-95 group relative"
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800/90 border border-amber-500/20 hover:border-amber-400/60 transition-all active:scale-95 group relative"
         >
           <Lightbulb className="w-5 h-5 text-amber-400 group-hover:scale-110 transition-transform" />
           <span className="text-[10px] font-medium text-slate-300 mt-1">Hint</span>
@@ -167,34 +194,13 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </span>
         </button>
 
-        {/* Hammer Booster */}
-        <button
-          onClick={() => {
-            sound.playTap();
-            onToggleHammer();
-          }}
-          className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all active:scale-95 group relative ${
-            isHammerMode
-              ? 'bg-rose-500/20 border-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.5)]'
-              : 'bg-slate-800/60 hover:bg-slate-800 border-rose-500/20 hover:border-rose-400/50'
-          }`}
-        >
-          <Hammer className={`w-5 h-5 ${isHammerMode ? 'text-rose-400 animate-bounce' : 'text-rose-400 group-hover:scale-110 transition-transform'}`} />
-          <span className="text-[10px] font-medium text-slate-300 mt-1">
-            {isHammerMode ? 'Cancel' : 'Hammer'}
-          </span>
-          <span className="absolute -top-1.5 -right-1 bg-rose-500 text-white text-[10px] font-black rounded-full px-1.5 shadow">
-            {economy.hammers}
-          </span>
-        </button>
-
-        {/* Undo Move */}
+        {/* 2. Undo Move */}
         <button
           onClick={() => {
             sound.playTap();
             onUseUndo();
           }}
-          className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-blue-500/20 hover:border-blue-400/50 transition-all active:scale-95 group relative"
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800/90 border border-blue-500/20 hover:border-blue-400/60 transition-all active:scale-95 group relative"
         >
           <RotateCcw className="w-5 h-5 text-blue-400 group-hover:-rotate-45 transition-transform" />
           <span className="text-[10px] font-medium text-slate-300 mt-1">Undo</span>
@@ -203,13 +209,13 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </span>
         </button>
 
-        {/* Super Magnet */}
+        {/* 3. Super Magnet */}
         <button
           onClick={() => {
             sound.playTap();
             onUseMagnet();
           }}
-          className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800 border border-fuchsia-500/20 hover:border-fuchsia-400/50 transition-all active:scale-95 group relative"
+          className="flex flex-col items-center justify-center p-2 rounded-xl bg-slate-800/60 hover:bg-slate-800/90 border border-fuchsia-500/20 hover:border-fuchsia-400/60 transition-all active:scale-95 group relative"
         >
           <Sparkles className="w-5 h-5 text-fuchsia-400 group-hover:scale-110 transition-transform" />
           <span className="text-[10px] font-medium text-slate-300 mt-1">Magnet</span>
@@ -218,18 +224,30 @@ export const GameHUD: React.FC<GameHUDProps> = ({
           </span>
         </button>
 
-        {/* Rewarded Ad / Free Booster */}
+        {/* 4. Hammer Booster */}
         <button
           onClick={() => {
             sound.playTap();
-            onOpenAdModal();
+            onToggleHammer();
           }}
-          className="flex flex-col items-center justify-center p-2 rounded-xl bg-emerald-950/40 hover:bg-emerald-900/60 border border-emerald-500/30 hover:border-emerald-400/60 transition-all active:scale-95 group relative"
+          className={`flex flex-col items-center justify-center p-2 rounded-xl border transition-all active:scale-95 group relative ${
+            isHammerMode
+              ? 'bg-rose-500/20 border-rose-500 shadow-[0_0_12px_rgba(244,63,94,0.6)] animate-pulse'
+              : 'bg-slate-800/60 hover:bg-slate-800/90 border-rose-500/20 hover:border-rose-400/60'
+          }`}
         >
-          <Tv className="w-5 h-5 text-emerald-400 group-hover:scale-110 transition-transform animate-pulse" />
-          <span className="text-[10px] font-black text-emerald-300 mt-1">Free 🎁</span>
-          <span className="absolute -top-1.5 -right-1 bg-emerald-500 text-slate-950 text-[9px] font-black rounded-full px-1">
-            AD
+          <Hammer
+            className={`w-5 h-5 ${
+              isHammerMode
+                ? 'text-rose-400'
+                : 'text-rose-400 group-hover:scale-110 transition-transform'
+            }`}
+          />
+          <span className="text-[10px] font-medium text-slate-300 mt-1">
+            {isHammerMode ? 'Cancel' : 'Hammer'}
+          </span>
+          <span className="absolute -top-1.5 -right-1 bg-rose-500 text-white text-[10px] font-black rounded-full px-1.5 shadow">
+            {economy.hammers}
           </span>
         </button>
       </div>
