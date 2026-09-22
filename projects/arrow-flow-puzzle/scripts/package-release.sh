@@ -18,6 +18,10 @@ zip -r "$DIST_DIR/$ARCHIVE_NAME" . \
   -x ".next/*" \
   -x "dist/*" \
   -x ".git/*" \
+  -x "*/bin/*" \
+  -x "*/obj/*" \
+  -x "*/*/bin/*" \
+  -x "*/*/obj/*" \
   -x "*.log" \
   -x ".DS_Store"
 
