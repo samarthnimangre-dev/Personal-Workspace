@@ -1,23 +1,18 @@
-// Spatial hash occupancy map for O(1) collision detection and raycast escape tracing
-import type { Position } from './types';
+// Spatial hash occupancy map for multi-cell arrow collision detection and vector raycasting
+import type { Position, RaycastResult } from './types';
 import type { ArrowModel } from './ArrowModel';
 import type { BoardModel } from './BoardModel';
 import { stepPosition } from './Direction';
 
-export interface RaycastTrace {
-  readonly canEscape: boolean;
-  readonly blocker?: ArrowModel;
-  readonly path: readonly Position[];
-}
-
 export class OccupancyMap {
-  private readonly map: Map<string, ArrowModel>;
+  // Maps cell key "row,col" -> ArrowModel occupying that cell
+  private readonly cellToArrow: Map<string, ArrowModel>;
 
   constructor(arrows: readonly ArrowModel[] = []) {
-    this.map = new Map();
+    this.cellToArrow = new Map();
     for (const arrow of arrows) {
       if (!arrow.isEscaped) {
-        this.set(arrow.position.row, arrow.position.col, arrow);
+        this.addArrow(arrow);
       }
     }
   }
@@ -26,65 +21,69 @@ export class OccupancyMap {
     return `${row},${col}`;
   }
 
-  has(row: number, col: number): boolean {
-    return this.map.has(OccupancyMap.key(row, col));
+  isOccupied(row: number, col: number): boolean {
+    return this.cellToArrow.has(OccupancyMap.key(row, col));
   }
 
-  get(row: number, col: number): ArrowModel | undefined {
-    return this.map.get(OccupancyMap.key(row, col));
+  getArrowAt(row: number, col: number): ArrowModel | undefined {
+    return this.cellToArrow.get(OccupancyMap.key(row, col));
   }
 
-  set(row: number, col: number, arrow: ArrowModel): void {
-    this.map.set(OccupancyMap.key(row, col), arrow);
+  addArrow(arrow: ArrowModel): void {
+    for (const cell of arrow.occupiedCells) {
+      this.cellToArrow.set(OccupancyMap.key(cell.row, cell.col), arrow);
+    }
   }
 
-  delete(row: number, col: number): boolean {
-    return this.map.delete(OccupancyMap.key(row, col));
+  removeArrow(arrow: ArrowModel): void {
+    for (const cell of arrow.occupiedCells) {
+      const key = OccupancyMap.key(cell.row, cell.col);
+      const existing = this.cellToArrow.get(key);
+      if (existing && existing.id === arrow.id) {
+        this.cellToArrow.delete(key);
+      }
+    }
   }
 
-  getAll(): readonly ArrowModel[] {
-    return Array.from(this.map.values());
+  get totalOccupiedCells(): number {
+    return this.cellToArrow.size;
   }
 
-  get count(): number {
-    return this.map.size;
-  }
-
-  // Raycasts an arrow in its direction vector across the board until bounds or collision
-  traceEscape(arrow: ArrowModel, board: BoardModel): RaycastTrace {
+  // An arrow can escape only if every cell from its head toward the board edge is empty.
+  traceEscape(arrow: ArrowModel, board: BoardModel): RaycastResult {
     const path: Position[] = [];
-    let current = stepPosition(arrow.position, arrow.direction);
+    let current = stepPosition(arrow.head, arrow.direction);
 
     while (board.isInside(current)) {
       path.push(current);
-      const blocker = this.get(current.row, current.col);
-      if (blocker && blocker.id !== arrow.id && !blocker.isEscaped) {
+      const blocker = this.getArrowAt(current.row, current.col);
+
+      // If the cell is occupied by any arrow, it blocks the escape path
+      if (blocker && blocker.id !== arrow.id) {
         return {
           canEscape: false,
-          blocker,
+          blockerId: blocker.id,
+          blockerCell: current,
           path,
         };
       }
+
       current = stepPosition(current, arrow.direction);
     }
 
+    // Reached outside the board boundaries without encountering any blocker
     return {
       canEscape: true,
       path,
     };
   }
 
-  // Finds all arrows currently unobstructed and eligible to escape
-  findUnblocked(board: BoardModel): readonly ArrowModel[] {
-    const unblocked: ArrowModel[] = [];
-    for (const arrow of this.getAll()) {
-      if (arrow.isIdle) {
-        const trace = this.traceEscape(arrow, board);
-        if (trace.canEscape) {
-          unblocked.push(arrow);
-        }
-      }
+  // Clones the occupancy map
+  clone(): OccupancyMap {
+    const copy = new OccupancyMap();
+    for (const [key, arrow] of this.cellToArrow.entries()) {
+      copy.cellToArrow.set(key, arrow);
     }
-    return unblocked;
+    return copy;
   }
 }

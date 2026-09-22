@@ -88,7 +88,7 @@ export class GameEngine {
       const result: MoveResult = {
         success: false,
         arrowId,
-        blockerId: trace.blocker?.id,
+        blockerId: trace.blockerId,
         path: trace.path,
       };
 

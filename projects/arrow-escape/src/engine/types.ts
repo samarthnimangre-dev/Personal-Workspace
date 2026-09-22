@@ -25,10 +25,20 @@ export type ArrowState = 'idle' | 'escaping' | 'escaped' | 'blocked';
 
 export interface ArrowData {
   readonly id: string;
-  readonly row: number;
-  readonly col: number;
   readonly direction: Direction;
+  readonly head?: Position;
+  readonly occupiedCells?: readonly Position[];
   readonly color?: string;
+  // Shorthand 1-cell coordinates:
+  readonly row?: number;
+  readonly col?: number;
+}
+
+export interface RaycastResult {
+  readonly canEscape: boolean;
+  readonly blockerId?: string;
+  readonly blockerCell?: Position;
+  readonly path: readonly Position[];
 }
 
 export interface MoveResult {
