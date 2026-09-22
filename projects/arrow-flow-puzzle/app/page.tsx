@@ -337,6 +337,35 @@ export default function ArrowFlowHome() {
           </p>
         </div>
 
+        {/* Visual Showcase Banner */}
+        <div className="relative w-full rounded-3xl overflow-hidden border border-slate-800 shadow-2xl group">
+          <img
+            src="/game-banner.jpg"
+            alt="ArrowFlow Cosmic Labyrinth"
+            className="w-full h-48 sm:h-64 object-cover object-center group-hover:scale-105 transition-transform duration-700"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/40 to-transparent flex items-end p-6">
+            <div className="flex items-center gap-4">
+              <img
+                src="/game-icon.jpg"
+                alt="ArrowFlow App Icon"
+                className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl border-2 border-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.6)]"
+              />
+              <div>
+                <h3 className="text-lg sm:text-xl font-black text-white tracking-wide flex items-center gap-2">
+                  <span>ArrowFlow Studio Edition</span>
+                  <span className="text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-400/40 px-2 py-0.5 rounded-full font-bold">
+                    Unity 6 & WebGL
+                  </span>
+                </h3>
+                <p className="text-xs text-slate-300">
+                  Universal C# + Next.js Hybrid Architecture with 8-Vector Mathematical Raycasting
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Bento 3-Grid */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           {/* Card 1: Web Ad Revenue */}
