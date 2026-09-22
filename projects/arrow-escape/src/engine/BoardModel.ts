@@ -101,8 +101,8 @@ export const DEFAULT_LEVELS: readonly LevelData[] = [
       { id: '5-6', row: 3, col: 1, direction: 'left', color: '#10b981' },
       { id: '5-7', row: 2, col: 0, direction: 'up', color: '#f59e0b' },
       { id: '5-8', row: 1, col: 0, direction: 'up', color: '#f59e0b' },
-      { id: '5-9', row: 1, col: 1, direction: 'down-right', color: '#ec4899' },
-      { id: '5-10', row: 2, col: 2, direction: 'up-left', color: '#8b5cf6' },
+      { id: '5-9', row: 1, col: 1, direction: 'up-left', color: '#ec4899' },
+      { id: '5-10', row: 2, col: 2, direction: 'down-right', color: '#8b5cf6' },
     ],
   },
 ];

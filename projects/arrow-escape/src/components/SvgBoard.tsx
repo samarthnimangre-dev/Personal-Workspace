@@ -1,12 +1,15 @@
-// Scalable SVG Board rendering the grid container and active vector arrows
+// Scalable, theme-aware SVG Board rendering tactile grid slots and active arrows with particle FX
 import React from 'react';
 import type { BoardModel } from '../engine/BoardModel';
 import type { ArrowModel } from '../engine/ArrowModel';
 import { SvgArrow } from './SvgArrow';
+import { ParticleOverlay } from './ParticleOverlay';
+import { particleController } from '../utils/particles';
 
 interface SvgBoardProps {
   board: BoardModel;
   arrows: readonly ArrowModel[];
+  theme: 'dark' | 'light';
   cellSize?: number;
   onArrowTap: (arrowId: string) => void;
 }
@@ -14,14 +17,32 @@ interface SvgBoardProps {
 export const SvgBoard: React.FC<SvgBoardProps> = ({
   board,
   arrows,
+  theme,
   cellSize = 72,
   onArrowTap,
 }) => {
   const boardWidth = board.cols * cellSize;
   const boardHeight = board.rows * cellSize;
-  const padding = 16;
+  const padding = 18;
   const viewBoxWidth = boardWidth + padding * 2;
   const viewBoxHeight = boardHeight + padding * 2;
+
+  const isDark = theme === 'dark';
+
+  // Handle arrow tap and spawn directional particles
+  const handleArrowTapWithFX = (arrowId: string, headCenter: { x: number; y: number }) => {
+    const arrow = arrows.find((a) => a.id === arrowId);
+    if (arrow) {
+      // Trigger particles at the head's position
+      particleController.burstEscape(
+        headCenter.x + padding,
+        headCenter.y + padding,
+        arrow.color,
+        arrow.angle
+      );
+    }
+    onArrowTap(arrowId);
+  };
 
   // Pre-generate grid background cell slots
   const gridSlots = [];
@@ -37,24 +58,27 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
   }
 
   return (
-    <div className="svg-board-wrapper w-full max-w-md mx-auto aspect-square flex items-center justify-center p-2 select-none">
+    <div className="relative svg-board-container w-full max-w-[390px] mx-auto aspect-square flex items-center justify-center p-2 select-none">
+      {/* Particle Canvas Overlay on top of SVG */}
+      <ParticleOverlay width={viewBoxWidth} height={viewBoxHeight} />
+
       <svg
         viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
-        className="w-full h-full max-w-full max-h-full drop-shadow-2xl"
+        className="w-full h-full max-w-full max-h-full drop-shadow-2xl overflow-visible"
         preserveAspectRatio="xMidYMid meet"
         style={{ touchAction: 'manipulation' }}
       >
         <defs>
-          {/* Specular highlight gradient for arrow tiles */}
+          {/* Specular gloss highlight gradient */}
           <linearGradient id="specularGloss" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.22" />
+            <stop offset="0%" stopColor="#ffffff" stopOpacity={isDark ? 0.22 : 0.45} />
             <stop offset="100%" stopColor="#ffffff" stopOpacity="0.0" />
           </linearGradient>
 
           {/* Board gradient backdrop */}
           <linearGradient id="boardBackdrop" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#0b1329" />
-            <stop offset="100%" stopColor="#030712" />
+            <stop offset="0%" stopColor={isDark ? '#0b1329' : '#ffffff'} />
+            <stop offset="100%" stopColor={isDark ? '#030712' : '#e2e8f0'} />
           </linearGradient>
         </defs>
 
@@ -64,14 +88,14 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
           y={padding - 6}
           width={boardWidth + 12}
           height={boardHeight + 12}
-          rx={20}
-          ry={20}
+          rx={22}
+          ry={22}
           fill="url(#boardBackdrop)"
-          stroke="rgba(255, 255, 255, 0.08)"
+          stroke={isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'}
           strokeWidth={1.5}
         />
 
-        {/* Background Inset Grid Slots */}
+        {/* Inset Grid Slots */}
         {gridSlots.map((slot) => (
           <rect
             key={slot.key}
@@ -81,8 +105,8 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
             height={slot.size}
             rx={14}
             ry={14}
-            fill="#020617"
-            stroke="rgba(255, 255, 255, 0.04)"
+            fill={isDark ? '#030712' : '#f8fafc'}
+            stroke={isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.06)'}
             strokeWidth={1}
           />
         ))}
@@ -94,7 +118,10 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
               key={arrow.id}
               arrow={arrow}
               cellSize={cellSize}
-              onTap={onArrowTap}
+              boardRows={board.rows}
+              boardCols={board.cols}
+              theme={theme}
+              onTap={handleArrowTapWithFX}
             />
           ))}
         </g>
