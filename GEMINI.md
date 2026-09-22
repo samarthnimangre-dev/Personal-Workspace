@@ -31,3 +31,10 @@
 - **Physical Platform Block:** The user's Reddit account (`u/SamarthBuilds_`) is fresh (<30 karma) and physically blocked by Reddit from initiating direct chats or invites (*"You need a more established account to send chat invites"*). On X, cold DMs are paywalled or restricted.
 - **Absolute Prohibition on Outbound DM Instructions:** NEVER instruct, suggest, or assume the user can initiate cold DMs or chat requests. Any strategy relying on outbound private messaging is dead on arrival.
 - **The Inbound Flip Standard:** All proposals, sample code, and proofs must be embedded directly inside the **public comment thread** on the client's post. This solves the problem publicly, earns upvotes for comment karma, and drives the client to initiate contact directly or reach out via Telegram (`@Samarth1306`).
+
+## 8. Anti-AI-Slop & Cinematic Web Engineering (The Real-World Craft Standard)
+- **Eliminate AI Slop:** Strictly reject cookie-cutter AI templates (flat static 3-card grids, repetitive radial gradient blobs, generic placeholder icons, and disjointed rectangular blocks).
+- **Kinetic Scrollytelling & Scroll Scrubbing:** Treat the viewport as a dynamic camera. Connect scroll progression directly to time, camera travel, canvas animations, and interactive story beats with smooth lingering and continuous narrative flow.
+- **Unbroken Visual Continuity:** Ensure seamless transitions between scenes and states. Avoid jarring cuts; use spatial layering, continuous motion, and frame-locked visual logic.
+- **Living, Tactile Product Engines:** Never use passive mockups or fake static cards when a real, functional interactive tool can be embedded (e.g., real-time Web Audio API visualizers, interactive SIP trunk failover simulators, live Indic language switchers, and real JSON entity extraction).
+- **Editorial Typography & Visual Hierarchy:** Pair distinctive editorial display type (e.g. Oswald) with razor-sharp geometric sans (Matt/Manrope) and high-contrast, subpixel-crisp rendering (pure black on clean surfaces) with zero font blurriness.
