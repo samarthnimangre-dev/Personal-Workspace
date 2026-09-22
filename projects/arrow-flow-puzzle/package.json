@@ -1,0 +1,29 @@
+{
+  "name": "arrow-flow-puzzle",
+  "version": "1.0.0",
+  "description": "ArrowFlow: Tangled Direction Puzzle & Monetization Engine - Viral ASMR Arrow Puzzle Game with Stripe In-App Purchases, Rewarded Ads, Skins, and Turnkey Commercial Licensing",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "canvas-confetti": "^1.9.4",
+    "lucide-react": "^1.41.0",
+    "next": "^16.3.4",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.3.3",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/node": "^22.13.0",
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.7",
+    "postcss": "^8.5.2",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^5.7.3"
+  }
+}
