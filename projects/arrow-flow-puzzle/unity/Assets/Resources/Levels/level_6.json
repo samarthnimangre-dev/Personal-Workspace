@@ -1,0 +1,97 @@
+{
+  "id": 6,
+  "title": "Fortress Gate",
+  "subtitle": "Clear the defensive perimeter first",
+  "difficulty": "medium",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 12,
+  "rewardCoins": 130,
+  "rewardGems": 35,
+  "arrows": [
+    {
+      "id": "6-1",
+      "row": 0,
+      "col": 2,
+      "direction": "up",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "6-2",
+      "row": 1,
+      "col": 2,
+      "direction": "up",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "6-3",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "6-4",
+      "row": 2,
+      "col": 1,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "6-5",
+      "row": 2,
+      "col": 3,
+      "direction": "right",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "6-6",
+      "row": 2,
+      "col": 4,
+      "direction": "right",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "6-7",
+      "row": 3,
+      "col": 2,
+      "direction": "down",
+      "color": "#ec4899"
+    },
+    {
+      "id": "6-8",
+      "row": 4,
+      "col": 2,
+      "direction": "down",
+      "color": "#ec4899"
+    },
+    {
+      "id": "6-9",
+      "row": 1,
+      "col": 1,
+      "direction": "up-left",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "6-10",
+      "row": 1,
+      "col": 3,
+      "direction": "up-right",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "6-11",
+      "row": 3,
+      "col": 1,
+      "direction": "down-left",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "6-12",
+      "row": 3,
+      "col": 3,
+      "direction": "down-right",
+      "color": "#8b5cf6"
+    }
+  ]
+}

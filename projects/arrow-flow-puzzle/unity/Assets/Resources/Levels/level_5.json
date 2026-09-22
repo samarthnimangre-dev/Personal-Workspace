@@ -1,0 +1,83 @@
+{
+  "id": 5,
+  "title": "The Pinwheel",
+  "subtitle": "Trace the outer blades before untangling the core",
+  "difficulty": "easy",
+  "rows": 4,
+  "cols": 4,
+  "parMoves": 10,
+  "rewardCoins": 110,
+  "rewardGems": 30,
+  "arrows": [
+    {
+      "id": "5-1",
+      "row": 0,
+      "col": 1,
+      "direction": "right",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "5-2",
+      "row": 0,
+      "col": 2,
+      "direction": "right",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "5-3",
+      "row": 1,
+      "col": 3,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "5-4",
+      "row": 2,
+      "col": 3,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "5-5",
+      "row": 3,
+      "col": 2,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "5-6",
+      "row": 3,
+      "col": 1,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "5-7",
+      "row": 2,
+      "col": 0,
+      "direction": "up",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "5-8",
+      "row": 1,
+      "col": 0,
+      "direction": "up",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "5-9",
+      "row": 1,
+      "col": 1,
+      "direction": "up",
+      "color": "#ec4899"
+    },
+    {
+      "id": "5-10",
+      "row": 2,
+      "col": 2,
+      "direction": "down",
+      "color": "#ec4899"
+    }
+  ]
+}

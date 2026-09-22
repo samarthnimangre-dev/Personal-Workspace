@@ -1,0 +1,223 @@
+{
+  "id": 10,
+  "title": "Singularity Labyrinth",
+  "subtitle": "The master test of topological orientation",
+  "difficulty": "master",
+  "rows": 7,
+  "cols": 7,
+  "parMoves": 30,
+  "rewardCoins": 500,
+  "rewardGems": 100,
+  "arrows": [
+    {
+      "id": "10-1",
+      "row": 0,
+      "col": 3,
+      "direction": "up",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "10-2",
+      "row": 6,
+      "col": 3,
+      "direction": "down",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "10-3",
+      "row": 3,
+      "col": 0,
+      "direction": "left",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "10-4",
+      "row": 3,
+      "col": 6,
+      "direction": "right",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "10-5",
+      "row": 1,
+      "col": 1,
+      "direction": "up-left",
+      "color": "#10b981"
+    },
+    {
+      "id": "10-6",
+      "row": 1,
+      "col": 5,
+      "direction": "up-right",
+      "color": "#10b981"
+    },
+    {
+      "id": "10-7",
+      "row": 5,
+      "col": 1,
+      "direction": "down-left",
+      "color": "#ec4899"
+    },
+    {
+      "id": "10-8",
+      "row": 5,
+      "col": 5,
+      "direction": "down-right",
+      "color": "#ec4899"
+    },
+    {
+      "id": "10-9",
+      "row": 1,
+      "col": 3,
+      "direction": "up",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "10-10",
+      "row": 5,
+      "col": 3,
+      "direction": "down",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "10-11",
+      "row": 3,
+      "col": 1,
+      "direction": "left",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "10-12",
+      "row": 3,
+      "col": 5,
+      "direction": "right",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "10-13",
+      "row": 2,
+      "col": 2,
+      "direction": "right",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "10-14",
+      "row": 2,
+      "col": 3,
+      "direction": "right",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "10-15",
+      "row": 2,
+      "col": 4,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "10-16",
+      "row": 3,
+      "col": 4,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "10-17",
+      "row": 4,
+      "col": 4,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "10-18",
+      "row": 4,
+      "col": 3,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "10-19",
+      "row": 4,
+      "col": 2,
+      "direction": "up",
+      "color": "#ec4899"
+    },
+    {
+      "id": "10-20",
+      "row": 3,
+      "col": 2,
+      "direction": "up",
+      "color": "#ec4899"
+    },
+    {
+      "id": "10-21",
+      "row": 0,
+      "col": 1,
+      "direction": "up",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "10-22",
+      "row": 0,
+      "col": 5,
+      "direction": "up",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "10-23",
+      "row": 6,
+      "col": 1,
+      "direction": "down",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "10-24",
+      "row": 6,
+      "col": 5,
+      "direction": "down",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "10-25",
+      "row": 1,
+      "col": 0,
+      "direction": "left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "10-26",
+      "row": 5,
+      "col": 0,
+      "direction": "left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "10-27",
+      "row": 1,
+      "col": 6,
+      "direction": "right",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "10-28",
+      "row": 5,
+      "col": 6,
+      "direction": "right",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "10-29",
+      "row": 2,
+      "col": 1,
+      "direction": "up",
+      "color": "#10b981"
+    },
+    {
+      "id": "10-30",
+      "row": 4,
+      "col": 5,
+      "direction": "down",
+      "color": "#ec4899"
+    }
+  ]
+}

@@ -1,0 +1,55 @@
+{
+  "id": 3,
+  "title": "Spiral Tangle",
+  "subtitle": "One arrow unlocks the chain reaction",
+  "difficulty": "beginner",
+  "rows": 3,
+  "cols": 3,
+  "parMoves": 6,
+  "rewardCoins": 75,
+  "rewardGems": 20,
+  "arrows": [
+    {
+      "id": "3-1",
+      "row": 0,
+      "col": 0,
+      "direction": "right",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "3-2",
+      "row": 0,
+      "col": 1,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "3-3",
+      "row": 1,
+      "col": 1,
+      "direction": "down",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "3-4",
+      "row": 2,
+      "col": 1,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "3-5",
+      "row": 2,
+      "col": 0,
+      "direction": "up",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "3-6",
+      "row": 0,
+      "col": 2,
+      "direction": "right",
+      "color": "#ec4899"
+    }
+  ]
+}

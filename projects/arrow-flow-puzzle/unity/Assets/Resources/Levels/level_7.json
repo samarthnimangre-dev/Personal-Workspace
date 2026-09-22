@@ -1,0 +1,125 @@
+{
+  "id": 7,
+  "title": "Tangled Labyrinth",
+  "subtitle": "Sequential locks create domino cascades",
+  "difficulty": "medium",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 16,
+  "rewardCoins": 160,
+  "rewardGems": 40,
+  "arrows": [
+    {
+      "id": "7-1",
+      "row": 0,
+      "col": 0,
+      "direction": "right",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "7-2",
+      "row": 0,
+      "col": 4,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "7-3",
+      "row": 4,
+      "col": 4,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "7-4",
+      "row": 4,
+      "col": 0,
+      "direction": "up",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "7-5",
+      "row": 1,
+      "col": 1,
+      "direction": "right",
+      "color": "#ec4899"
+    },
+    {
+      "id": "7-6",
+      "row": 1,
+      "col": 3,
+      "direction": "down",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "7-7",
+      "row": 3,
+      "col": 3,
+      "direction": "left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "7-8",
+      "row": 3,
+      "col": 1,
+      "direction": "up",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "7-9",
+      "row": 0,
+      "col": 2,
+      "direction": "up",
+      "color": "#10b981"
+    },
+    {
+      "id": "7-10",
+      "row": 2,
+      "col": 4,
+      "direction": "right",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "7-11",
+      "row": 4,
+      "col": 2,
+      "direction": "down",
+      "color": "#ec4899"
+    },
+    {
+      "id": "7-12",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "7-13",
+      "row": 2,
+      "col": 2,
+      "direction": "up",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "7-14",
+      "row": 1,
+      "col": 2,
+      "direction": "right",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "7-15",
+      "row": 2,
+      "col": 3,
+      "direction": "down",
+      "color": "#10b981"
+    },
+    {
+      "id": "7-16",
+      "row": 3,
+      "col": 2,
+      "direction": "left",
+      "color": "#f59e0b"
+    }
+  ]
+}

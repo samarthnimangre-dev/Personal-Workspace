@@ -1,0 +1,41 @@
+{
+  "id": 2,
+  "title": "Cross Traffic",
+  "subtitle": "Resolve the intersection from outside in",
+  "difficulty": "beginner",
+  "rows": 3,
+  "cols": 3,
+  "parMoves": 4,
+  "rewardCoins": 60,
+  "rewardGems": 15,
+  "arrows": [
+    {
+      "id": "2-1",
+      "row": 0,
+      "col": 1,
+      "direction": "up",
+      "color": "#10b981"
+    },
+    {
+      "id": "2-2",
+      "row": 1,
+      "col": 0,
+      "direction": "left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "2-3",
+      "row": 1,
+      "col": 2,
+      "direction": "right",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "2-4",
+      "row": 2,
+      "col": 1,
+      "direction": "down",
+      "color": "#ec4899"
+    }
+  ]
+}

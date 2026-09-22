@@ -1,0 +1,69 @@
+{
+  "id": 4,
+  "title": "Diagonal Vectors",
+  "subtitle": "Angles can slip through adjacent corridors",
+  "difficulty": "easy",
+  "rows": 4,
+  "cols": 4,
+  "parMoves": 8,
+  "rewardCoins": 90,
+  "rewardGems": 25,
+  "arrows": [
+    {
+      "id": "4-1",
+      "row": 0,
+      "col": 0,
+      "direction": "up-left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "4-2",
+      "row": 0,
+      "col": 3,
+      "direction": "up-right",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "4-3",
+      "row": 3,
+      "col": 0,
+      "direction": "down-left",
+      "color": "#ec4899"
+    },
+    {
+      "id": "4-4",
+      "row": 3,
+      "col": 3,
+      "direction": "down-right",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "4-5",
+      "row": 1,
+      "col": 1,
+      "direction": "up",
+      "color": "#10b981"
+    },
+    {
+      "id": "4-6",
+      "row": 1,
+      "col": 2,
+      "direction": "right",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "4-7",
+      "row": 2,
+      "col": 1,
+      "direction": "left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "4-8",
+      "row": 2,
+      "col": 2,
+      "direction": "down",
+      "color": "#f43f5e"
+    }
+  ]
+}

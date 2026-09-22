@@ -1,0 +1,181 @@
+{
+  "id": 9,
+  "title": "Quantum Swarm",
+  "subtitle": "Diagonal escape routes hide behind vertical sentinels",
+  "difficulty": "expert",
+  "rows": 6,
+  "cols": 6,
+  "parMoves": 24,
+  "rewardCoins": 250,
+  "rewardGems": 60,
+  "arrows": [
+    {
+      "id": "9-1",
+      "row": 0,
+      "col": 0,
+      "direction": "up-left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "9-2",
+      "row": 0,
+      "col": 5,
+      "direction": "up-right",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "9-3",
+      "row": 5,
+      "col": 0,
+      "direction": "down-left",
+      "color": "#ec4899"
+    },
+    {
+      "id": "9-4",
+      "row": 5,
+      "col": 5,
+      "direction": "down-right",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "9-5",
+      "row": 0,
+      "col": 2,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "9-6",
+      "row": 0,
+      "col": 3,
+      "direction": "right",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "9-7",
+      "row": 5,
+      "col": 2,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "9-8",
+      "row": 5,
+      "col": 3,
+      "direction": "right",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "9-9",
+      "row": 2,
+      "col": 0,
+      "direction": "up",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "9-10",
+      "row": 3,
+      "col": 0,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "9-11",
+      "row": 2,
+      "col": 5,
+      "direction": "up",
+      "color": "#ec4899"
+    },
+    {
+      "id": "9-12",
+      "row": 3,
+      "col": 5,
+      "direction": "down",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "9-13",
+      "row": 1,
+      "col": 1,
+      "direction": "up",
+      "color": "#10b981"
+    },
+    {
+      "id": "9-14",
+      "row": 1,
+      "col": 4,
+      "direction": "right",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "9-15",
+      "row": 4,
+      "col": 1,
+      "direction": "left",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "9-16",
+      "row": 4,
+      "col": 4,
+      "direction": "down",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "9-17",
+      "row": 2,
+      "col": 2,
+      "direction": "right",
+      "color": "#ec4899"
+    },
+    {
+      "id": "9-18",
+      "row": 2,
+      "col": 3,
+      "direction": "down",
+      "color": "#f59e0b"
+    },
+    {
+      "id": "9-19",
+      "row": 3,
+      "col": 3,
+      "direction": "left",
+      "color": "#10b981"
+    },
+    {
+      "id": "9-20",
+      "row": 3,
+      "col": 2,
+      "direction": "up",
+      "color": "#8b5cf6"
+    },
+    {
+      "id": "9-21",
+      "row": 1,
+      "col": 2,
+      "direction": "down",
+      "color": "#06b6d4"
+    },
+    {
+      "id": "9-22",
+      "row": 1,
+      "col": 3,
+      "direction": "left",
+      "color": "#3b82f6"
+    },
+    {
+      "id": "9-23",
+      "row": 4,
+      "col": 2,
+      "direction": "right",
+      "color": "#ec4899"
+    },
+    {
+      "id": "9-24",
+      "row": 4,
+      "col": 3,
+      "direction": "up",
+      "color": "#f59e0b"
+    }
+  ]
+}
