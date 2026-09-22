@@ -15,6 +15,8 @@ import { ShopModal } from '@/components/ShopModal';
 import { RewardedAdModal } from '@/components/RewardedAdModal';
 import { ThemeSelectorModal } from '@/components/ThemeSelectorModal';
 import { CommercialLicenseModal } from '@/components/CommercialLicenseModal';
+import { LevelEditorModal } from '@/components/LevelEditorModal';
+import { adManager } from '@/lib/ads';
 import { sound } from '@/lib/audio';
 import {
   Sparkles,
@@ -50,6 +52,7 @@ export default function ArrowFlowHome() {
   const [isAdModalOpen, setIsAdModalOpen] = useState<boolean>(false);
   const [isThemeSelectorOpen, setIsThemeSelectorOpen] = useState<boolean>(false);
   const [isCommercialModalOpen, setIsCommercialModalOpen] = useState<boolean>(false);
+  const [isLevelEditorOpen, setIsLevelEditorOpen] = useState<boolean>(false);
   const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
 
   // Sync economy with localStorage
@@ -105,7 +108,25 @@ export default function ArrowFlowHome() {
 
   const handleWatchAdDouble = () => {
     setIsVictoryOpen(false);
-    setIsAdModalOpen(true);
+    adManager.requestRewardedAd(
+      () => {
+        handleAdCompleted();
+      },
+      () => {
+        setIsAdModalOpen(true);
+      }
+    );
+  };
+
+  const handleOpenAdFromHud = () => {
+    adManager.requestRewardedAd(
+      () => {
+        handleAdCompleted();
+      },
+      () => {
+        setIsAdModalOpen(true);
+      }
+    );
   };
 
   const handleAdCompleted = () => {
@@ -238,7 +259,7 @@ export default function ArrowFlowHome() {
           onUseMagnet={handleUseMagnet}
           onOpenShop={() => setIsShopOpen(true)}
           onOpenThemeSelector={() => setIsThemeSelectorOpen(true)}
-          onOpenAdModal={() => setIsAdModalOpen(true)}
+          onOpenAdModal={handleOpenAdFromHud}
           onOpenDevLicenseModal={() => setIsCommercialModalOpen(true)}
           onToggleSound={handleToggleSound}
           soundEnabled={soundEnabled}
@@ -260,8 +281,8 @@ export default function ArrowFlowHome() {
           magnetTrigger={magnetTrigger}
         />
 
-        {/* Restart / Shuffle quick button */}
-        <div className="flex items-center gap-3 mt-1">
+        {/* Restart / Shuffle / Level Editor quick buttons */}
+        <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
           <button
             onClick={() => {
               sound.playTap();
@@ -274,7 +295,7 @@ export default function ArrowFlowHome() {
             className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white bg-slate-900/60 hover:bg-slate-800 border border-slate-800 px-3 py-1 rounded-full transition-all"
           >
             <RotateCcw className="w-3 h-3 text-cyan-400" />
-            <span>Restart Board</span>
+            <span>Restart</span>
           </button>
 
           <button
@@ -286,7 +307,18 @@ export default function ArrowFlowHome() {
             className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white bg-slate-900/60 hover:bg-slate-800 border border-slate-800 px-3 py-1 rounded-full transition-all"
           >
             <Sparkles className="w-3 h-3 text-amber-400" />
-            <span>New Random Puzzle</span>
+            <span>Random Maze</span>
+          </button>
+
+          <button
+            onClick={() => {
+              sound.playTap();
+              setIsLevelEditorOpen(true);
+            }}
+            className="flex items-center gap-1.5 text-xs text-slate-400 hover:text-white bg-slate-900/60 hover:bg-slate-800 border border-slate-800 px-3 py-1 rounded-full transition-all"
+          >
+            <Code2 className="w-3 h-3 text-fuchsia-400" />
+            <span>Level Editor</span>
           </button>
         </div>
       </section>
@@ -429,6 +461,17 @@ export default function ArrowFlowHome() {
       <CommercialLicenseModal
         isOpen={isCommercialModalOpen}
         onClose={() => setIsCommercialModalOpen(false)}
+      />
+
+      <LevelEditorModal
+        isOpen={isLevelEditorOpen}
+        onPlayTestLevel={(customLevel) => {
+          setCurrentLevel(customLevel);
+          setMovesCount(0);
+          setCombo(0);
+          setIsHammerMode(false);
+        }}
+        onClose={() => setIsLevelEditorOpen(false)}
       />
     </main>
   );

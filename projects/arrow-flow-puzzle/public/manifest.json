@@ -1,0 +1,17 @@
+{
+  "name": "ArrowFlow: Tangled Direction Puzzle",
+  "short_name": "ArrowFlow",
+  "description": "Tactile hyper-casual directional puzzle game with ASMR untangling mechanics",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#030712",
+  "theme_color": "#06b6d4",
+  "orientation": "portrait-primary",
+  "icons": [
+    {
+      "src": "/favicon.ico",
+      "sizes": "64x64 32x32 24x24 16x16",
+      "type": "image/x-icon"
+    }
+  ]
+}
