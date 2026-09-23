@@ -340,7 +340,7 @@ export function useGameState(initialLevelId: number = 1) {
       // Execute side effects cleanly outside React state updaters
       if (result.success) {
         // ESCAPE EVENT
-        soundEffects.playEscape();
+        soundEffects.playEscape(arrow.length);
         haptics.escape();
 
         // Directional escape particle burst at head position

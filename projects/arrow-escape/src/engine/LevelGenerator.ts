@@ -66,7 +66,7 @@ export class LevelGenerator {
         defaultCols = 4;
         defaultCount = 7;
         defaultMinLen = 1;
-        defaultMaxLen = 2;
+        defaultMaxLen = 3;
         defaultDiagonals = true;
         break;
       case 'hard':
@@ -74,7 +74,7 @@ export class LevelGenerator {
         defaultCols = 5;
         defaultCount = 11;
         defaultMinLen = 1;
-        defaultMaxLen = 3;
+        defaultMaxLen = 4;
         defaultDiagonals = true;
         break;
       case 'expert':
@@ -82,20 +82,27 @@ export class LevelGenerator {
         defaultCols = 6;
         defaultCount = 16;
         defaultMinLen = 1;
-        defaultMaxLen = 3;
+        defaultMaxLen = 5;
         defaultDiagonals = true;
         break;
     }
+
+    const rows = options.rows ?? defaultRows;
+    const cols = options.cols ?? defaultCols;
+    const minLength = options.minLength ?? defaultMinLen;
+    const maxLength = Math.max(minLength, options.maxLength ?? defaultMaxLen);
+    const maxFittingArrows = Math.max(2, Math.floor((rows * cols * 0.8) / Math.max(1, minLength)));
+    const arrowCount = Math.min(options.arrowCount ?? defaultCount, maxFittingArrows);
 
     return {
       levelNumber,
       masterSeed,
       difficulty,
-      rows: options.rows ?? defaultRows,
-      cols: options.cols ?? defaultCols,
-      arrowCount: options.arrowCount ?? defaultCount,
-      minLength: options.minLength ?? defaultMinLen,
-      maxLength: options.maxLength ?? defaultMaxLen,
+      rows,
+      cols,
+      arrowCount,
+      minLength,
+      maxLength,
       allowDiagonals: options.allowDiagonals ?? defaultDiagonals,
     };
   }
@@ -161,17 +168,75 @@ export class LevelGenerator {
         const occupiedCells: Position[] = [head];
         let bodyValid = true;
 
-        for (let step = 1; step < desiredLength; step++) {
-          const bodyCell: Position = {
-            row: head.row - delta.dRow * step,
-            col: head.col - delta.dCol * step,
+        if (desiredLength > 1) {
+          const firstStep: Position = {
+            row: head.row - delta.dRow,
+            col: head.col - delta.dCol,
           };
 
-          if (!board.isInsideShape(bodyCell) || occupancy.isOccupied(bodyCell.row, bodyCell.col)) {
+          if (!board.isInsideShape(firstStep) || occupancy.isOccupied(firstStep.row, firstStep.col)) {
             bodyValid = false;
-            break;
+          } else {
+            occupiedCells.push(firstStep);
           }
-          occupiedCells.push(bodyCell);
+        }
+
+        if (bodyValid && desiredLength > 2) {
+          let curCell = occupiedCells[1];
+          let curDrow = -delta.dRow;
+          let curDcol = -delta.dCol;
+
+          for (let step = 2; step < desiredLength; step++) {
+            const candidates: { dRow: number; dCol: number }[] = [];
+            const isOrthogonal =
+              (curDrow === 0 && Math.abs(curDcol) === 1) ||
+              (curDcol === 0 && Math.abs(curDrow) === 1);
+
+            if (isOrthogonal) {
+              const straight = { dRow: curDrow, dCol: curDcol };
+              const turnLeft = { dRow: -curDcol, dCol: curDrow };
+              const turnRight = { dRow: curDcol, dCol: -curDrow };
+
+              // 65% chance to prioritize bends/turns for serpentine snake arrows
+              if (rng.next() < 0.65) {
+                if (rng.next() < 0.5) {
+                  candidates.push(turnLeft, turnRight, straight);
+                } else {
+                  candidates.push(turnRight, turnLeft, straight);
+                }
+              } else {
+                candidates.push(straight, turnLeft, turnRight);
+              }
+            } else {
+              candidates.push({ dRow: curDrow, dCol: curDcol });
+            }
+
+            let foundNext = false;
+            for (const cand of candidates) {
+              const nextCell: Position = {
+                row: curCell.row + cand.dRow,
+                col: curCell.col + cand.dCol,
+              };
+
+              if (
+                board.isInsideShape(nextCell) &&
+                !occupancy.isOccupied(nextCell.row, nextCell.col) &&
+                !occupiedCells.some((c) => c.row === nextCell.row && c.col === nextCell.col)
+              ) {
+                occupiedCells.push(nextCell);
+                curCell = nextCell;
+                curDrow = cand.dRow;
+                curDcol = cand.dCol;
+                foundNext = true;
+                break;
+              }
+            }
+
+            if (!foundNext) {
+              bodyValid = false;
+              break;
+            }
+          }
         }
 
         if (bodyValid) {

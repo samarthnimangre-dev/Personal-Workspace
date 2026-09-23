@@ -392,5 +392,37 @@ describe('LevelGenerator & ArrowEscapeSolver - Procedural Engine Test Suite', ()
       // Must still be 100% solvable
       expect(ArrowEscapeSolver.isSolvable(customLevel)).toBe(true);
     });
+
+    it('generates bended serpentine arrows (L/S/U shapes) with non-collinear body segments on expert difficulty', () => {
+      let foundBendedArrow = false;
+
+      // Check across several seeds to verify bended serpent arrows are generated
+      for (let s = 1; s <= 10; s++) {
+        const level = LevelGenerator.generateLevel({
+          difficulty: 'expert',
+          minLength: 3,
+          maxLength: 5,
+          seed: `bended-test-${s}`,
+        });
+
+        for (const arrow of level.arrows) {
+          const cells = arrow.occupiedCells ?? [];
+          if (cells.length >= 3) {
+            for (let i = 0; i < cells.length - 2; i++) {
+              const d0 = { r: cells[i + 1].row - cells[i].row, c: cells[i + 1].col - cells[i].col };
+              const d1 = { r: cells[i + 2].row - cells[i + 1].row, c: cells[i + 2].col - cells[i + 1].col };
+              if (d0.r !== d1.r || d0.c !== d1.c) {
+                foundBendedArrow = true;
+                break;
+              }
+            }
+          }
+          if (foundBendedArrow) break;
+        }
+        if (foundBendedArrow) break;
+      }
+
+      expect(foundBendedArrow).toBe(true);
+    });
   });
 });

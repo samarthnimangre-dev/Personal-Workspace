@@ -81,30 +81,44 @@ class SoundEffectsManager {
   }
 
   /**
-   * Smooth upward melodic escape whoosh
+   * Smooth upward melodic escape whoosh (resonant serpentine glide for long/bended arrows)
    */
-  public playEscape(): void {
+  public playEscape(arrowLength: number = 1): void {
     const ctx = this.initContext();
     if (!ctx || this.isMuted) return;
+
+    const now = ctx.currentTime;
+    const isSerpent = arrowLength >= 3;
+    const duration = isSerpent ? 0.32 : 0.2;
 
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
 
-    osc.type = 'triangle';
-    const now = ctx.currentTime;
+    osc.type = isSerpent ? 'sawtooth' : 'triangle';
+    const baseFreq = isSerpent ? 280 : 380;
+    const targetFreq = isSerpent ? 880 : 780;
 
-    // Upward pitch glide from 380Hz to 780Hz
-    osc.frequency.setValueAtTime(380, now);
-    osc.frequency.exponentialRampToValueAtTime(780, now + 0.16);
+    osc.frequency.setValueAtTime(baseFreq, now);
+    osc.frequency.exponentialRampToValueAtTime(targetFreq, now + duration * 0.85);
 
-    gain.gain.setValueAtTime(0.25, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.2);
+    gain.gain.setValueAtTime(isSerpent ? 0.28 : 0.25, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + duration);
 
-    osc.connect(gain);
+    if (isSerpent) {
+      const filter = ctx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(1200, now);
+      filter.frequency.exponentialRampToValueAtTime(3200, now + duration * 0.85);
+      osc.connect(filter);
+      filter.connect(gain);
+    } else {
+      osc.connect(gain);
+    }
+
     gain.connect(this.masterGain ?? ctx.destination);
 
     osc.start(now);
-    osc.stop(now + 0.2);
+    osc.stop(now + duration);
   }
 
   /**

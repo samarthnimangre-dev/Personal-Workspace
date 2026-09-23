@@ -111,26 +111,29 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
   else if (isPivot) tileStroke = '#f59e0b';
   else if (isHinted) tileStroke = '#fbbf24';
 
-  // Find all adjacent pairs of cells in multi-segment arrows for seamless bridging
+  // Find consecutive adjacent pairs of cells in multi-segment arrows for seamless bridging
   const adjacentPairs: { key: string; cellA: Position; cellB: Position; isHorizontal: boolean }[] = [];
   if (arrow.occupiedCells.length > 1) {
-    for (let i = 0; i < arrow.occupiedCells.length; i++) {
-      for (let j = i + 1; j < arrow.occupiedCells.length; j++) {
-        const cA = arrow.occupiedCells[i];
-        const cB = arrow.occupiedCells[j];
-        const dR = Math.abs(cA.row - cB.row);
-        const dC = Math.abs(cA.col - cB.col);
-        if (dR + dC === 1) {
-          adjacentPairs.push({
-            key: `pair-${cA.row},${cA.col}-${cB.row},${cB.col}`,
-            cellA: cA,
-            cellB: cB,
-            isHorizontal: cA.row === cB.row,
-          });
-        }
+    for (let i = 0; i < arrow.occupiedCells.length - 1; i++) {
+      const cA = arrow.occupiedCells[i];
+      const cB = arrow.occupiedCells[i + 1];
+      const dR = Math.abs(cA.row - cB.row);
+      const dC = Math.abs(cA.col - cB.col);
+      if (dR + dC === 1) {
+        adjacentPairs.push({
+          key: `pair-${i}-${cA.row},${cA.col}-${cB.row},${cB.col}`,
+          cellA: cA,
+          cellB: cB,
+          isHorizontal: cA.row === cB.row,
+        });
       }
     }
   }
+
+  // Pre-calculate continuous spine points for round-joint laser conduits
+  const spinePoints = arrow.occupiedCells
+    .map((c) => `${c.col * cellSize + center},${c.row * cellSize + center}`)
+    .join(' ');
 
   return (
     <g
@@ -388,43 +391,34 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
       {/* ===================================================================
           LAYER 5: TWO-PASS "WHITE-HOT LASER CORE" CONDUITS & GLYPHS
           =================================================================== */}
-      {/* 5A: Multi-Segment Laser Conduit Spine Lines */}
-      {adjacentPairs.map(({ key, cellA, cellB }) => {
-        const ax = cellA.col * cellSize + center;
-        const ay = cellA.row * cellSize + center;
-        const bx = cellB.col * cellSize + center;
-        const by = cellB.row * cellSize + center;
-
-        return (
-          <g key={`conduit-${key}`}>
-            {/* Pass 1: Outer Saturated Neon Conduit */}
-            <line
-              x1={ax}
-              y1={ay}
-              x2={bx}
-              y2={by}
-              stroke={isBlocked ? '#f43f5e' : accentColor}
-              strokeWidth={outerStrokeWidth}
-              strokeLinecap="round"
-              style={{
-                filter: isBlocked
-                  ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
-                  : `drop-shadow(0 0 6px ${accentColor}) drop-shadow(0 0 10px ${accentColor}80)`,
-              }}
-            />
-            {/* Pass 2: White-Hot Laser Core Centerline */}
-            <line
-              x1={ax}
-              y1={ay}
-              x2={bx}
-              y2={by}
-              stroke="#ffffff"
-              strokeWidth={laserCoreWidth}
-              strokeLinecap="round"
-            />
-          </g>
-        );
-      })}
+      {/* 5A: Continuous Multi-Segment Laser Conduit Spine with Seamless Rounded Elbow Fillets */}
+      {arrow.occupiedCells.length > 1 && (
+        <g key="laser-conduit-spine">
+          {/* Pass 1: Outer Saturated Neon Conduit with Round Joints */}
+          <polyline
+            points={spinePoints}
+            fill="none"
+            stroke={isBlocked ? '#f43f5e' : accentColor}
+            strokeWidth={outerStrokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{
+              filter: isBlocked
+                ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
+                : `drop-shadow(0 0 6px ${accentColor}) drop-shadow(0 0 10px ${accentColor}80)`,
+            }}
+          />
+          {/* Pass 2: Pure White-Hot Laser Core Centerline with Round Joints */}
+          <polyline
+            points={spinePoints}
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth={laserCoreWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </g>
+      )}
 
       {/* 5B: Cell Glyphs (Head Chevron & Body Conduit Nodes) */}
       {arrow.occupiedCells.map((cell) => {

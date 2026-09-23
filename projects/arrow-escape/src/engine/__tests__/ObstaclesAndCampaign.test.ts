@@ -396,7 +396,8 @@ describe('Obstacles & Mechanics Suite', () => {
   });
 
   describe('Campaign Levels Complete Solvability', () => {
-    it('guarantees all 25 handcrafted campaign levels are fully solvable', () => {
+    it('guarantees all 35 handcrafted campaign levels are fully solvable', () => {
+      expect(CAMPAIGN_LEVELS).toHaveLength(35);
       for (const level of CAMPAIGN_LEVELS) {
         expect(level.id).toBeGreaterThanOrEqual(1);
         expect(level.arrows.length).toBeGreaterThanOrEqual(3);
