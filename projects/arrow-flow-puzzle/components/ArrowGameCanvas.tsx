@@ -2,7 +2,13 @@
 
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { ArrowTile, LevelConfig, ThemeDefinition, HistoryMove } from '@/types/game';
-import { traceArrowEscape, findUnblockedArrows, getDirectionDelta, getDirectionAngle } from '@/lib/raycast';
+import {
+  traceArrowEscape,
+  findUnblockedArrows,
+  getDirectionDelta,
+  getDirectionAngle,
+  rotateDirection90CW,
+} from '@/lib/raycast';
 import { sound } from '@/lib/audio';
 import confetti from 'canvas-confetti';
 
@@ -21,7 +27,6 @@ interface ArrowGameCanvasProps {
   magnetTrigger: number;
 }
 
-// Particle for sparks, debris, trails
 interface Particle {
   x: number;
   y: number;
@@ -35,11 +40,21 @@ interface Particle {
   drag?: number;
   gravity?: number;
   isShard?: boolean;
+  isIce?: boolean;
   rotation?: number;
   rotSpeed?: number;
 }
 
-// Floating combo / feedback text
+interface Shockwave {
+  x: number;
+  y: number;
+  radius: number;
+  maxRadius: number;
+  color: string;
+  alpha: number;
+  lineWidth: number;
+}
+
 interface FloatingText {
   id: string;
   text: string;
@@ -51,22 +66,21 @@ interface FloatingText {
   createdAt: number;
 }
 
-// Dynamic state for each arrow in the physics engine
 interface ArrowAnimState {
   arrow: ArrowTile;
-  currentX: number;
-  currentY: number;
-  targetX: number;
-  targetY: number;
   homeX: number;
   homeY: number;
-  angle: number;
+  renderX: number;
+  renderY: number;
+  baseAngle: number;
+  visualAngle: number;
+  targetVisualAngle: number;
   state: 'idle' | 'launching_escape' | 'launching_blocked' | 'recoil' | 'shattering' | 'done';
   launchStartTime?: number;
   recoilStartTime?: number;
   recoilMaxOffset?: number;
-  blockerId?: string;
   isHinted?: boolean;
+  iceHitsLeft: number;
 }
 
 export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
@@ -90,12 +104,19 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
   const [movesCount, setMovesCount] = useState<number>(0);
   const [combo, setCombo] = useState<number>(0);
 
-  // References for high-rate physics loop
+  // Physics & Particle systems
   const animStatesRef = useRef<Map<string, ArrowAnimState>>(new Map());
   const particlesRef = useRef<Particle[]>([]);
+  const shockwavesRef = useRef<Shockwave[]>([]);
   const floatingTextsRef = useRef<FloatingText[]>([]);
   const screenShakeRef = useRef<number>(0);
-  const pointerPosRef = useRef<{ x: number; y: number; isDown: boolean }>({ x: 0, y: 0, isDown: false });
+
+  // 2.5D Isometric Tilt Matrix
+  const tiltXRef = useRef<number>(0);
+  const tiltYRef = useRef<number>(0);
+  const targetTiltXRef = useRef<number>(0);
+  const targetTiltYRef = useRef<number>(0);
+
   const hoveredArrowIdRef = useRef<string | null>(null);
   const boardLayoutRef = useRef<{
     cellSize: number;
@@ -115,7 +136,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     height: 400,
   });
 
-  // Re-initialize when level changes
+  // Re-initialize level
   useEffect(() => {
     setActiveArrows(level.arrows);
     setMoveHistory([]);
@@ -123,7 +144,9 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     setCombo(0);
     onComboUpdate(0);
     particlesRef.current = [];
+    shockwavesRef.current = [];
     floatingTextsRef.current = [];
+    animStatesRef.current.clear();
   }, [level, onComboUpdate]);
 
   // Handle Undo
@@ -143,32 +166,30 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
       const lucky = unblocked[0];
       sound.playHint();
 
-      // Trigger hint pulse on this arrow
-      const state = animStatesRef.current.get(lucky.id);
-      if (state) {
-        state.isHinted = true;
+      const st = animStatesRef.current.get(lucky.id);
+      if (st) {
+        st.isHinted = true;
         setTimeout(() => {
-          if (state) state.isHinted = false;
+          if (st) st.isHinted = false;
         }, 3200);
       }
 
-      // Spawn celestial hint sparkles around it
       const bl = boardLayoutRef.current;
       const hx = bl.startX + lucky.col * bl.cellSize + bl.cellSize / 2;
       const hy = bl.startY + lucky.row * bl.cellSize + bl.cellSize / 2;
-      for (let i = 0; i < 25; i++) {
+      for (let i = 0; i < 28; i++) {
         const ang = Math.random() * Math.PI * 2;
-        const spd = 1 + Math.random() * 3;
+        const spd = 1.5 + Math.random() * 3.5;
         particlesRef.current.push({
           x: hx,
           y: hy,
           vx: Math.cos(ang) * spd,
           vy: Math.sin(ang) * spd,
           color: '#fbbf24',
-          size: 2 + Math.random() * 3,
+          size: 2.5 + Math.random() * 3.5,
           alpha: 1,
           life: 0,
-          maxLife: 40 + Math.random() * 20,
+          maxLife: 45 + Math.random() * 20,
         });
       }
     } else {
@@ -189,18 +210,20 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     unblocked.forEach((arr, idx) => {
       setTimeout(() => {
         handleExecuteEscape(arr);
-      }, idx * 60);
+      }, idx * 65);
     });
   }, [magnetTrigger]);
 
-  // Trigger level victory
+  // Check victory
   const checkVictory = useCallback(
-    (remainingArrows: ArrowTile[]) => {
-      if (remainingArrows.length === 0) {
+    (remaining: ArrowTile[]) => {
+      // Victory occurs when all arrows (except non-blocking bombs) have escaped
+      const remainingGameArrows = remaining.filter((a) => !a.isBomb);
+      if (remainingGameArrows.length === 0) {
         sound.playWin();
         try {
           confetti({
-            particleCount: 100,
+            particleCount: 110,
             spread: 90,
             origin: { y: 0.5 },
             colors: ['#06b6d4', '#ec4899', '#f59e0b', '#10b981', '#a855f7'],
@@ -214,11 +237,11 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
 
   // Launch unblocked arrow free
   const handleExecuteEscape = (arrow: ArrowTile) => {
-    const state = animStatesRef.current.get(arrow.id);
-    if (!state || state.state !== 'idle') return;
+    const st = animStatesRef.current.get(arrow.id);
+    if (!st || st.state !== 'idle') return;
 
-    state.state = 'launching_escape';
-    state.launchStartTime = performance.now();
+    st.state = 'launching_escape';
+    st.launchStartTime = performance.now();
 
     const nextCombo = combo + 1;
     setCombo(nextCombo);
@@ -229,10 +252,8 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     setMovesCount(newMoves);
     onMoveMade(newMoves);
 
-    // Save move to history
     setMoveHistory((prev) => [...prev, { arrow, index: prev.length }]);
 
-    // Show floating combo text if combo >= 2
     if (nextCombo >= 2) {
       const bl = boardLayoutRef.current;
       const hx = bl.startX + arrow.col * bl.cellSize + bl.cellSize / 2;
@@ -241,50 +262,48 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         id: Math.random().toString(),
         text: nextCombo === 2 ? '2x FLOW!' : nextCombo === 3 ? '3x CASCADE!' : `${nextCombo}x UNSTOPPABLE!`,
         x: hx,
-        y: hy - 15,
+        y: hy - 18,
         color: nextCombo >= 4 ? '#ec4899' : '#06b6d4',
-        scale: 1.3,
+        scale: 1.35,
         alpha: 1,
         createdAt: performance.now(),
       });
     }
 
-    // Schedule arrow removal
     setTimeout(() => {
       setActiveArrows((prev) => {
         const next = prev.filter((a) => a.id !== arrow.id);
         checkVictory(next);
         return next;
       });
-    }, 450);
+    }, 420);
   };
 
   // Hammer smash disintegration
   const handleExecuteHammer = (arrow: ArrowTile) => {
-    const state = animStatesRef.current.get(arrow.id);
-    if (!state) return;
+    const st = animStatesRef.current.get(arrow.id);
+    if (!st) return;
 
     sound.playHammer();
     screenShakeRef.current = 14;
     onDeactivateHammer();
 
-    state.state = 'shattering';
+    st.state = 'shattering';
 
-    // Spawn 24 shatter polygon fragments
     const bl = boardLayoutRef.current;
     const hx = bl.startX + arrow.col * bl.cellSize + bl.cellSize / 2;
     const hy = bl.startY + arrow.row * bl.cellSize + bl.cellSize / 2;
 
     for (let i = 0; i < 28; i++) {
       const ang = Math.random() * Math.PI * 2;
-      const spd = 3 + Math.random() * 8;
+      const spd = 3.5 + Math.random() * 8;
       particlesRef.current.push({
-        x: hx + (Math.random() - 0.5) * 20,
-        y: hy + (Math.random() - 0.5) * 20,
+        x: hx + (Math.random() - 0.5) * 16,
+        y: hy + (Math.random() - 0.5) * 16,
         vx: Math.cos(ang) * spd,
         vy: Math.sin(ang) * spd - 2,
         color: Math.random() > 0.4 ? (arrow.color || theme.accentColor) : '#f43f5e',
-        size: 4 + Math.random() * 6,
+        size: 4 + Math.random() * 5,
         alpha: 1,
         life: 0,
         maxLife: 35 + Math.random() * 20,
@@ -302,10 +321,119 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         checkVictory(next);
         return next;
       });
-    }, 300);
+    }, 280);
   };
 
-  // Tap handler (Collision Raycasting & Physics Launch)
+  // Detonate TNT Bomb tile
+  const handleExecuteBomb = (bombTile: ArrowTile) => {
+    sound.playBomb();
+    screenShakeRef.current = 18;
+
+    const bl = boardLayoutRef.current;
+    const hx = bl.startX + bombTile.col * bl.cellSize + bl.cellSize / 2;
+    const hy = bl.startY + bombTile.row * bl.cellSize + bl.cellSize / 2;
+
+    // Expanding shockwave ring
+    shockwavesRef.current.push({
+      x: hx,
+      y: hy,
+      radius: 10,
+      maxRadius: bl.cellSize * 2.2,
+      color: '#f97316',
+      alpha: 1,
+      lineWidth: 5,
+    });
+
+    // 35 fiery explosion sparks
+    for (let i = 0; i < 35; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = 4 + Math.random() * 10;
+      particlesRef.current.push({
+        x: hx,
+        y: hy,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd - 1,
+        color: Math.random() > 0.5 ? '#ef4444' : Math.random() > 0.3 ? '#f97316' : '#fbbf24',
+        size: 4 + Math.random() * 6,
+        alpha: 1,
+        life: 0,
+        maxLife: 30 + Math.random() * 20,
+        drag: 0.92,
+        gravity: 0.25,
+      });
+    }
+
+    // Clear bomb itself + shatter ice / remove blockers in 3x3 radius
+    setTimeout(() => {
+      setActiveArrows((prev) => {
+        const next = prev
+          .map((a) => {
+            if (a.id === bombTile.id) return null; // Remove bomb
+            const dr = Math.abs(a.row - bombTile.row);
+            const dc = Math.abs(a.col - bombTile.col);
+            if (dr <= 1 && dc <= 1) {
+              if (a.isFrozen) {
+                // Shatter ice
+                return { ...a, isFrozen: false, hitsLeft: 0 };
+              }
+              // If standard blocker in blast, disintegrate it!
+              return null;
+            }
+            return a;
+          })
+          .filter(Boolean) as ArrowTile[];
+
+        checkVictory(next);
+        return next;
+      });
+    }, 200);
+  };
+
+  // Shatter ice on frozen arrow
+  const handleChipIce = (frozenArrow: ArrowTile) => {
+    sound.playIceCrack();
+    screenShakeRef.current = 6;
+
+    const bl = boardLayoutRef.current;
+    const hx = bl.startX + frozenArrow.col * bl.cellSize + bl.cellSize / 2;
+    const hy = bl.startY + frozenArrow.row * bl.cellSize + bl.cellSize / 2;
+
+    // Spawn 20 crystal ice shards
+    for (let i = 0; i < 20; i++) {
+      const ang = Math.random() * Math.PI * 2;
+      const spd = 2 + Math.random() * 6;
+      particlesRef.current.push({
+        x: hx + (Math.random() - 0.5) * 15,
+        y: hy + (Math.random() - 0.5) * 15,
+        vx: Math.cos(ang) * spd,
+        vy: Math.sin(ang) * spd - 1,
+        color: Math.random() > 0.4 ? '#38bdf8' : '#e0f2fe',
+        size: 3 + Math.random() * 4.5,
+        alpha: 1,
+        life: 0,
+        maxLife: 28 + Math.random() * 15,
+        drag: 0.93,
+        gravity: 0.3,
+        isIce: true,
+      });
+    }
+
+    setActiveArrows((prev) =>
+      prev.map((a) => {
+        if (a.id === frozenArrow.id) {
+          const nextHits = (a.hitsLeft ?? 1) - 1;
+          return {
+            ...a,
+            hitsLeft: nextHits,
+            isFrozen: nextHits > 0,
+          };
+        }
+        return a;
+      })
+    );
+  };
+
+  // Main canvas interaction picking
   const handleCanvasInteraction = (clientX: number, clientY: number) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -315,62 +443,87 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     const y = clientY - rect.top;
 
     const bl = boardLayoutRef.current;
-
-    // Pick clicked cell
     const col = Math.floor((x - bl.startX) / bl.cellSize);
     const row = Math.floor((y - bl.startY) / bl.cellSize);
 
     if (col < 0 || col >= level.cols || row < 0 || row >= level.rows) return;
 
-    const clickedArrow = activeArrows.find((a) => a.row === row && a.col === col);
-    if (!clickedArrow) return;
+    const clicked = activeArrows.find((a) => a.row === row && a.col === col);
+    if (!clicked) return;
 
-    // Check if arrow is currently in an animation
-    const state = animStatesRef.current.get(clickedArrow.id);
-    if (!state || state.state !== 'idle') return;
+    const st = animStatesRef.current.get(clicked.id);
+    if (!st || st.state !== 'idle') return;
 
     // 1. Hammer Mode
     if (isHammerMode) {
-      handleExecuteHammer(clickedArrow);
+      handleExecuteHammer(clicked);
       return;
     }
 
-    // 2. Raycast Escape Trace
-    const res = traceArrowEscape(clickedArrow, activeArrows, level.rows, level.cols);
+    // 2. TNT Bomb Block
+    if (clicked.isBomb) {
+      handleExecuteBomb(clicked);
+      return;
+    }
+
+    // 3. Frozen Block (Tapped directly)
+    if (clicked.isFrozen && (clicked.hitsLeft ?? 1) > 0) {
+      handleChipIce(clicked);
+      return;
+    }
+
+    // 4. Raycast Escape Trace
+    const res = traceArrowEscape(clicked, activeArrows, level.rows, level.cols);
 
     if (res.canEscape) {
-      handleExecuteEscape(clickedArrow);
+      handleExecuteEscape(clicked);
     } else {
-      // 3. Collision Blocked Rebound Physics
+      // 5. Blocked Collision & Physics
       setCombo(0);
       onComboUpdate(0);
-      sound.playBlocked();
 
-      state.state = 'launching_blocked';
-      state.launchStartTime = performance.now();
-      state.blockerId = res.blockerId;
-      state.recoilMaxOffset = bl.cellSize * 0.38;
-
-      // Board micro-shake
-      screenShakeRef.current = 6;
-
-      // Blocker arrow subtle reactive wobble
+      // Check if blocker is frozen — bumping it chips the ice!
       if (res.blockerId) {
-        const blockerState = animStatesRef.current.get(res.blockerId);
-        if (blockerState && blockerState.state === 'idle') {
-          blockerState.state = 'recoil';
-          blockerState.recoilStartTime = performance.now();
-          blockerState.recoilMaxOffset = bl.cellSize * 0.12;
+        const blocker = activeArrows.find((a) => a.id === res.blockerId);
+        if (blocker && blocker.isFrozen) {
+          handleChipIce(blocker);
         }
       }
 
-      // Spawn collision impact sparks at border between clicked arrow and blocker
-      const delta = getDirectionDelta(clickedArrow.direction);
-      const impactX = bl.startX + (clickedArrow.col + delta.dCol * 0.5 + 0.5) * bl.cellSize;
-      const impactY = bl.startY + (clickedArrow.row + delta.dRow * 0.5 + 0.5) * bl.cellSize;
+      // Check if arrow is a Pivot Arrow (Rotates 90° CW on collision!)
+      if (clicked.isPivot) {
+        sound.playPivot();
+        const nextDir = rotateDirection90CW(clicked.direction);
+        st.state = 'launching_blocked';
+        st.launchStartTime = performance.now();
+        st.recoilMaxOffset = bl.cellSize * 0.32;
+        screenShakeRef.current = 5;
+
+        // Smoothly rotate visual angle by +90 degrees
+        st.targetVisualAngle = st.visualAngle + Math.PI / 2;
+
+        // Update active arrow direction
+        setTimeout(() => {
+          setActiveArrows((prev) =>
+            prev.map((a) => (a.id === clicked.id ? { ...a, direction: nextDir } : a))
+          );
+        }, 180);
+      } else {
+        // Standard Rebound Physics
+        sound.playBlocked();
+        st.state = 'launching_blocked';
+        st.launchStartTime = performance.now();
+        st.recoilMaxOffset = bl.cellSize * 0.38;
+        screenShakeRef.current = 6;
+      }
+
+      // Spawn collision impact sparks at border
+      const delta = getDirectionDelta(clicked.direction);
+      const impactX = bl.startX + (clicked.col + delta.dCol * 0.5 + 0.5) * bl.cellSize;
+      const impactY = bl.startY + (clicked.row + delta.dRow * 0.5 + 0.5) * bl.cellSize;
 
       for (let i = 0; i < 18; i++) {
-        const baseAngle = (getDirectionAngle(clickedArrow.direction) * Math.PI) / 180 + Math.PI;
+        const baseAngle = (getDirectionAngle(clicked.direction) * Math.PI) / 180 + Math.PI;
         const spreadAngle = baseAngle + (Math.random() - 0.5) * 1.8;
         const speed = 2 + Math.random() * 5;
         particlesRef.current.push({
@@ -389,7 +542,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     }
   };
 
-  // Main 60 FPS Render & Physics Loop
+  // 60 FPS Render Loop
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -413,6 +566,10 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
       ctx.save();
       ctx.scale(dpr, dpr);
 
+      // Smooth 2.5D Isometric Tilt Matrix (Lerp towards target)
+      tiltXRef.current += (targetTiltXRef.current - tiltXRef.current) * 0.08;
+      tiltYRef.current += (targetTiltYRef.current - tiltYRef.current) * 0.08;
+
       // Screen Shake
       let shakeX = 0;
       let shakeY = 0;
@@ -425,15 +582,13 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
       }
       ctx.translate(shakeX, shakeY);
 
-      // Clear Frame with Deep Contrast
+      // Clear Frame
       ctx.clearRect(0, 0, width, height);
 
-      // Compute Responsive Board Layout
-      const maxBoardW = Math.min(width - 32, 440);
-      const maxBoardH = Math.min(height - 40, 480);
-      const cellSize = Math.floor(
-        Math.min(maxBoardW / level.cols, maxBoardH / level.rows)
-      );
+      // Layout Calculation
+      const maxBoardW = Math.min(width - 28, 440);
+      const maxBoardH = Math.min(height - 36, 480);
+      const cellSize = Math.floor(Math.min(maxBoardW / level.cols, maxBoardH / level.rows));
       const boardWidth = cellSize * level.cols;
       const boardHeight = cellSize * level.rows;
       const startX = Math.floor((width - boardWidth) / 2);
@@ -441,48 +596,59 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
 
       boardLayoutRef.current = { cellSize, startX, startY, boardWidth, boardHeight, width, height };
 
-      // 1. Draw Floating Ambient Dust Particles in Canvas Background
-      if (Math.random() < 0.15 && particlesRef.current.length < 80) {
+      // Draw Floating Ambient Background Particles
+      if (Math.random() < 0.15 && particlesRef.current.length < 70) {
         particlesRef.current.push({
           x: Math.random() * width,
           y: height + 10,
           vx: (Math.random() - 0.5) * 0.4,
           vy: -0.3 - Math.random() * 0.5,
           color: theme.accentColor,
-          size: 1 + Math.random() * 2,
+          size: 1.5 + Math.random() * 2,
           alpha: 0.15 + Math.random() * 0.25,
           life: 0,
-          maxLife: 200 + Math.random() * 100,
+          maxLife: 180 + Math.random() * 100,
         });
       }
 
-      // 2. Render Board Plinth / Glass Slab Background
+      // Board Plinth Base with 2.5D Perspective Projection
       ctx.save();
-      // Drop Shadow for 3D depth
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-      ctx.shadowBlur = 35;
-      ctx.shadowOffsetY = 15;
+      const centerX = width / 2;
+      const centerY = height / 2;
+      ctx.translate(centerX, centerY);
+      ctx.transform(1, tiltYRef.current * 0.04, tiltXRef.current * 0.04, 1, 0, 0);
+      ctx.translate(-centerX, -centerY);
 
-      // Board Container Rounded Rect
+      // Deep 3D Drop Shadow
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.75)';
+      ctx.shadowBlur = 38;
+      ctx.shadowOffsetY = 16 + tiltYRef.current * 10;
+      ctx.shadowOffsetX = tiltXRef.current * 10;
+
       const pad = 14;
       ctx.beginPath();
       ctx.roundRect(startX - pad, startY - pad, boardWidth + pad * 2, boardHeight + pad * 2, 24);
-      ctx.fillStyle = 'rgba(10, 15, 29, 0.85)';
+      ctx.fillStyle = 'rgba(10, 15, 29, 0.9)';
       ctx.fill();
       ctx.restore();
 
-      // Board Border Rim Light
+      // Board Rim Glow
+      ctx.save();
+      ctx.translate(centerX, centerY);
+      ctx.transform(1, tiltYRef.current * 0.04, tiltXRef.current * 0.04, 1, 0, 0);
+      ctx.translate(-centerX, -centerY);
+
       ctx.beginPath();
       ctx.roundRect(startX - pad, startY - pad, boardWidth + pad * 2, boardHeight + pad * 2, 24);
       ctx.lineWidth = 1.5;
       const borderGrad = ctx.createLinearGradient(startX, startY, startX + boardWidth, startY + boardHeight);
-      borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.15)');
-      borderGrad.addColorStop(0.5, 'rgba(6, 182, 212, 0.3)');
-      borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.05)');
+      borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+      borderGrad.addColorStop(0.5, 'rgba(6, 182, 212, 0.35)');
+      borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.06)');
       ctx.strokeStyle = borderGrad;
       ctx.stroke();
 
-      // 3. Draw Grid Slot Foundations (Subtle recessed wells)
+      // Draw Grid Slots
       for (let r = 0; r < level.rows; r++) {
         for (let c = 0; c < level.cols; c++) {
           const gx = startX + c * cellSize;
@@ -500,7 +666,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         }
       }
 
-      // Synchronize Animation States with Active Arrows
+      // Synchronize Animation States
       const now = performance.now();
       const currentMap = animStatesRef.current;
 
@@ -513,54 +679,53 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         if (!st) {
           st = {
             arrow,
-            currentX: hx,
-            currentY: hy,
-            targetX: hx,
-            targetY: hy,
             homeX: hx,
             homeY: hy,
-            angle: ang,
+            renderX: hx,
+            renderY: hy,
+            baseAngle: ang,
+            visualAngle: ang,
+            targetVisualAngle: ang,
             state: 'idle',
+            iceHitsLeft: arrow.hitsLeft ?? (arrow.isFrozen ? 1 : 0),
           };
           currentMap.set(arrow.id, st);
         } else {
           st.arrow = arrow;
           st.homeX = hx;
           st.homeY = hy;
-          st.angle = ang;
+          st.baseAngle = ang;
         }
       });
 
-      // 4. Update and Render Each Arrow Entity
+      // Update & Render Each Tile
       currentMap.forEach((st) => {
         if (st.state === 'done') return;
-
-        const delta = getDirectionDelta(st.arrow.direction);
-        const tileColor = st.arrow.color || theme.accentColor;
 
         let renderX = st.homeX;
         let renderY = st.homeY;
         let scale = 1;
         let alpha = 1;
 
-        // PHYSICS STATE MACHINE
+        // Smoothly interpolate visual angle (for Pivot 90° rotations)
+        st.visualAngle += (st.targetVisualAngle - st.visualAngle) * 0.2;
+
+        // Physics State Machine
         if (st.state === 'launching_escape') {
-          // Accelerate off-screen along raycast vector
           const elapsed = (now - (st.launchStartTime || now)) / 1000;
-          const speed = 1200 * Math.pow(elapsed * 2.2, 1.6);
-          renderX = st.homeX + Math.cos(st.angle) * speed;
-          renderY = st.homeY + Math.sin(st.angle) * speed;
-          scale = 1 + elapsed * 0.3;
+          const speed = 1250 * Math.pow(elapsed * 2.2, 1.6);
+          renderX = st.homeX + Math.cos(st.visualAngle) * speed;
+          renderY = st.homeY + Math.sin(st.visualAngle) * speed;
+          scale = 1 + elapsed * 0.35;
           alpha = Math.max(0, 1 - elapsed * 1.8);
 
-          // Emit speed trail particles
-          if (Math.random() < 0.8) {
+          if (Math.random() < 0.85) {
             particlesRef.current.push({
               x: renderX + (Math.random() - 0.5) * 10,
               y: renderY + (Math.random() - 0.5) * 10,
-              vx: -Math.cos(st.angle) * (1 + Math.random() * 2),
-              vy: -Math.sin(st.angle) * (1 + Math.random() * 2),
-              color: tileColor,
+              vx: -Math.cos(st.visualAngle) * (1 + Math.random() * 2),
+              vy: -Math.sin(st.visualAngle) * (1 + Math.random() * 2),
+              color: st.arrow.color || theme.accentColor,
               size: 3 + Math.random() * 4,
               alpha: 0.9,
               life: 0,
@@ -568,37 +733,29 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
             });
           }
 
-          if (elapsed > 0.45) {
+          if (elapsed > 0.42) {
             st.state = 'done';
           }
         } else if (st.state === 'launching_blocked') {
-          // Forward collision surge
           const elapsed = (now - (st.launchStartTime || now)) / 1000;
-          const reachDuration = 0.08;
+          const reach = 0.08;
 
-          if (elapsed < reachDuration) {
-            const forwardProgress = elapsed / reachDuration;
-            const dist = (st.recoilMaxOffset || 20) * forwardProgress;
-            renderX = st.homeX + Math.cos(st.angle) * dist;
-            renderY = st.homeY + Math.sin(st.angle) * dist;
+          if (elapsed < reach) {
+            const dist = (st.recoilMaxOffset || 20) * (elapsed / reach);
+            renderX = st.homeX + Math.cos(st.visualAngle) * dist;
+            renderY = st.homeY + Math.sin(st.visualAngle) * dist;
           } else {
-            // Reached impact point -> switch to damped spring recoil
             st.state = 'recoil';
             st.recoilStartTime = now;
           }
         } else if (st.state === 'recoil') {
-          // Damped harmonic oscillation spring: x(t) = A * e^(-γt) * cos(ωt)
           const elapsed = (now - (st.recoilStartTime || now)) / 1000;
-          const decay = 18; // Spring damping
-          const freq = 42; // Spring frequency
-          const envelope = Math.exp(-decay * elapsed);
-          const oscillation = Math.cos(freq * elapsed);
-          const offset = (st.recoilMaxOffset || 18) * envelope * oscillation;
+          const offset = (st.recoilMaxOffset || 18) * Math.exp(-18 * elapsed) * Math.cos(42 * elapsed);
 
-          renderX = st.homeX + Math.cos(st.angle) * offset;
-          renderY = st.homeY + Math.sin(st.angle) * offset;
+          renderX = st.homeX + Math.cos(st.visualAngle) * offset;
+          renderY = st.homeY + Math.sin(st.visualAngle) * offset;
 
-          if (elapsed > 0.3) {
+          if (elapsed > 0.28) {
             st.state = 'idle';
             renderX = st.homeX;
             renderY = st.homeY;
@@ -607,7 +764,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
 
         if (alpha <= 0.01) return;
 
-        // DRAW 3D TACTILE ARROW TILE
+        // Render Tile Entity
         ctx.save();
         ctx.translate(renderX, renderY);
         ctx.scale(scale, scale);
@@ -615,25 +772,27 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
 
         const tileSize = cellSize - 10;
         const rRadius = Math.max(8, tileSize * 0.22);
+        const isHovered = hoveredArrowIdRef.current === st.arrow.id;
 
-        // 3D Drop Shadow underneath tile
+        // 3D Tile Shadow
         ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
         ctx.shadowBlur = 12;
         ctx.shadowOffsetY = 6;
 
-        // Base Tactile Capsule Rounded Box
         ctx.beginPath();
         ctx.roundRect(-tileSize / 2, -tileSize / 2, tileSize, tileSize, rRadius);
 
-        // Ambient glow when hovered or hinted
-        const isHovered = hoveredArrowIdRef.current === st.arrow.id;
-        const isHinted = st.isHinted;
-
-        // Tile Surface Material Gradient
+        // Surface Material
         const tileGrad = ctx.createLinearGradient(0, -tileSize / 2, 0, tileSize / 2);
-        if (isHinted) {
+        if (st.isHinted) {
           tileGrad.addColorStop(0, '#fef08a');
           tileGrad.addColorStop(1, '#eab308');
+        } else if (st.arrow.isBomb) {
+          tileGrad.addColorStop(0, '#7f1d1d');
+          tileGrad.addColorStop(1, '#450a0a');
+        } else if (st.arrow.isPivot) {
+          tileGrad.addColorStop(0, '#2e1065');
+          tileGrad.addColorStop(1, '#1e1b4b');
         } else if (isHovered) {
           tileGrad.addColorStop(0, '#1e293b');
           tileGrad.addColorStop(1, '#0f172a');
@@ -646,7 +805,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         ctx.fill();
         ctx.restore();
 
-        // Tile Border Rim Bevel
+        // Rim Bevel Border
         ctx.save();
         ctx.translate(renderX, renderY);
         ctx.scale(scale, scale);
@@ -654,15 +813,19 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
 
         ctx.beginPath();
         ctx.roundRect(-tileSize / 2, -tileSize / 2, tileSize, tileSize, rRadius);
-        ctx.lineWidth = isHinted ? 2.5 : isHovered ? 2 : 1.2;
-        ctx.strokeStyle = isHinted
+        ctx.lineWidth = st.isHinted ? 2.5 : isHovered ? 2 : 1.2;
+        ctx.strokeStyle = st.isHinted
           ? '#fbbf24'
+          : st.arrow.isBomb
+          ? '#ef4444'
+          : st.arrow.isPivot
+          ? '#c084fc'
           : isHovered
-          ? tileColor
+          ? st.arrow.color || theme.accentColor
           : 'rgba(255, 255, 255, 0.12)';
         ctx.stroke();
 
-        // Gloss Specular Highlight Line on top edge
+        // Top Gloss Specular Highlight Line
         ctx.beginPath();
         ctx.roundRect(-tileSize / 2 + 3, -tileSize / 2 + 2, tileSize - 6, tileSize * 0.35, [
           rRadius - 2,
@@ -670,65 +833,144 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
           2,
           2,
         ]);
-        const glossGrad = ctx.createLinearGradient(0, -tileSize / 2, 0, -tileSize / 2 + tileSize * 0.35);
-        glossGrad.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
-        glossGrad.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
-        ctx.fillStyle = glossGrad;
+        const gloss = ctx.createLinearGradient(0, -tileSize / 2, 0, -tileSize / 2 + tileSize * 0.35);
+        gloss.addColorStop(0, 'rgba(255, 255, 255, 0.22)');
+        gloss.addColorStop(1, 'rgba(255, 255, 255, 0.0)');
+        ctx.fillStyle = gloss;
         ctx.fill();
 
-        // 5. DRAW THE LUMINOUS NEON ARROW GLYPH
-        ctx.save();
-        ctx.rotate(st.angle);
+        // Render Special Mechanics Overlay
+        if (st.arrow.isBomb) {
+          // TNT Bomb Icon with glowing pulsating fuse
+          ctx.save();
+          ctx.font = `bold ${Math.floor(tileSize * 0.44)}px system-ui`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.shadowColor = '#ef4444';
+          ctx.shadowBlur = 14;
+          ctx.fillText('💣', 0, 1);
+          ctx.restore();
+        } else {
+          // If Pivot Arrow: Draw circular golden pivot ring
+          if (st.arrow.isPivot) {
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(0, 0, tileSize * 0.38, 0, Math.PI * 2);
+            ctx.lineWidth = 1.5;
+            ctx.strokeStyle = 'rgba(192, 132, 252, 0.45)';
+            ctx.setLineDash([4, 4]);
+            ctx.stroke();
+            ctx.restore();
+          }
 
-        const arrowLen = tileSize * 0.54;
-        const headSize = tileSize * 0.24;
-        const stemWidth = Math.max(3.5, tileSize * 0.09);
+          // Luminous Neon Arrow Glyph
+          ctx.save();
+          ctx.rotate(st.visualAngle);
 
-        // Neon Glow Pass
-        ctx.shadowColor = tileColor;
-        ctx.shadowBlur = isHinted ? 20 : 12;
+          const arrowLen = tileSize * 0.54;
+          const headSize = tileSize * 0.24;
+          const stemWidth = Math.max(3.5, tileSize * 0.09);
+          const arrowColor = st.arrow.color || (st.arrow.isPivot ? '#c084fc' : theme.accentColor);
 
-        // Arrow Stem Line
-        ctx.beginPath();
-        ctx.moveTo(-arrowLen / 2 + 2, 0);
-        ctx.lineTo(arrowLen / 2 - headSize * 0.6, 0);
-        ctx.lineWidth = stemWidth;
-        ctx.lineCap = 'round';
-        ctx.strokeStyle = tileColor;
-        ctx.stroke();
+          ctx.shadowColor = arrowColor;
+          ctx.shadowBlur = st.isHinted ? 20 : 12;
 
-        // Arrowhead Chevron
-        ctx.beginPath();
-        ctx.moveTo(arrowLen / 2 - headSize, -headSize * 0.9);
-        ctx.lineTo(arrowLen / 2, 0);
-        ctx.lineTo(arrowLen / 2 - headSize, headSize * 0.9);
-        ctx.lineWidth = stemWidth;
-        ctx.lineCap = 'round';
-        ctx.lineJoin = 'round';
-        ctx.strokeStyle = tileColor;
-        ctx.stroke();
+          // Arrow Stem
+          ctx.beginPath();
+          ctx.moveTo(-arrowLen / 2 + 2, 0);
+          ctx.lineTo(arrowLen / 2 - headSize * 0.6, 0);
+          ctx.lineWidth = stemWidth;
+          ctx.lineCap = 'round';
+          ctx.strokeStyle = arrowColor;
+          ctx.stroke();
 
-        // White Hot Core Pass for high-energy laser look
-        ctx.shadowBlur = 0;
-        ctx.lineWidth = stemWidth * 0.45;
-        ctx.strokeStyle = '#ffffff';
+          // Arrow Head
+          ctx.beginPath();
+          ctx.moveTo(arrowLen / 2 - headSize, -headSize * 0.9);
+          ctx.lineTo(arrowLen / 2, 0);
+          ctx.lineTo(arrowLen / 2 - headSize, headSize * 0.9);
+          ctx.lineWidth = stemWidth;
+          ctx.lineCap = 'round';
+          ctx.lineJoin = 'round';
+          ctx.strokeStyle = arrowColor;
+          ctx.stroke();
 
-        ctx.beginPath();
-        ctx.moveTo(-arrowLen / 2 + 2, 0);
-        ctx.lineTo(arrowLen / 2 - headSize * 0.6, 0);
-        ctx.stroke();
+          // White-hot laser core
+          ctx.shadowBlur = 0;
+          ctx.lineWidth = stemWidth * 0.45;
+          ctx.strokeStyle = '#ffffff';
 
-        ctx.beginPath();
-        ctx.moveTo(arrowLen / 2 - headSize * 0.95, -headSize * 0.85);
-        ctx.lineTo(arrowLen / 2 - 1, 0);
-        ctx.lineTo(arrowLen / 2 - headSize * 0.95, headSize * 0.85);
-        ctx.stroke();
+          ctx.beginPath();
+          ctx.moveTo(-arrowLen / 2 + 2, 0);
+          ctx.lineTo(arrowLen / 2 - headSize * 0.6, 0);
+          ctx.stroke();
 
-        ctx.restore();
+          ctx.beginPath();
+          ctx.moveTo(arrowLen / 2 - headSize * 0.95, -headSize * 0.85);
+          ctx.lineTo(arrowLen / 2 - 1, 0);
+          ctx.lineTo(arrowLen / 2 - headSize * 0.95, headSize * 0.85);
+          ctx.stroke();
+
+          ctx.restore();
+        }
+
+        // Render Frozen Ice Crystal Crust Overlay
+        if (st.arrow.isFrozen) {
+          ctx.save();
+          ctx.beginPath();
+          ctx.roundRect(-tileSize / 2, -tileSize / 2, tileSize, tileSize, rRadius);
+          ctx.fillStyle = 'rgba(56, 189, 248, 0.35)';
+          ctx.fill();
+
+          ctx.lineWidth = 1.5;
+          ctx.strokeStyle = 'rgba(224, 242, 254, 0.7)';
+          ctx.stroke();
+
+          // Ice fracture crack lines
+          ctx.beginPath();
+          ctx.moveTo(-tileSize * 0.3, -tileSize * 0.2);
+          ctx.lineTo(0, 0);
+          ctx.lineTo(tileSize * 0.25, -tileSize * 0.3);
+          ctx.moveTo(0, 0);
+          ctx.lineTo(-tileSize * 0.1, tileSize * 0.3);
+          ctx.lineWidth = 1.2;
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.8)';
+          ctx.stroke();
+
+          // Frost Icon
+          ctx.font = `${Math.floor(tileSize * 0.26)}px system-ui`;
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('❄️', tileSize * 0.28, -tileSize * 0.28);
+          ctx.restore();
+        }
+
         ctx.restore();
       });
 
-      // 6. UPDATE AND DRAW PARTICLES
+      ctx.restore(); // Restore board tilt
+
+      // Render Expanding Shockwave Rings
+      for (let i = shockwavesRef.current.length - 1; i >= 0; i--) {
+        const sw = shockwavesRef.current[i];
+        sw.radius += 5.5;
+        sw.alpha = Math.max(0, 1 - sw.radius / sw.maxRadius);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.arc(sw.x, sw.y, sw.radius, 0, Math.PI * 2);
+        ctx.lineWidth = sw.lineWidth * sw.alpha;
+        ctx.strokeStyle = sw.color;
+        ctx.globalAlpha = sw.alpha;
+        ctx.stroke();
+        ctx.restore();
+
+        if (sw.radius >= sw.maxRadius) {
+          shockwavesRef.current.splice(i, 1);
+        }
+      }
+
+      // Render Particles
       for (let i = particlesRef.current.length - 1; i >= 0; i--) {
         const p = particlesRef.current[i];
         p.life++;
@@ -750,7 +992,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         ctx.globalAlpha = currentAlpha;
         ctx.fillStyle = p.color;
 
-        if (p.isShard) {
+        if (p.isShard || p.isIce) {
           ctx.translate(p.x, p.y);
           if (p.rotation !== undefined && p.rotSpeed !== undefined) {
             p.rotation += p.rotSpeed;
@@ -774,7 +1016,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         }
       }
 
-      // 7. DRAW FLOATING COMBO TEXT LABELS
+      // Render Floating Combo Labels
       for (let i = floatingTextsRef.current.length - 1; i >= 0; i--) {
         const ft = floatingTextsRef.current[i];
         const age = (now - ft.createdAt) / 1000;
@@ -804,7 +1046,6 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         ctx.lineWidth = 1;
         ctx.strokeStyle = ft.color;
         ctx.strokeText(ft.text, 0, 0);
-
         ctx.restore();
       }
 
@@ -821,7 +1062,7 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     };
   }, [activeArrows, level, theme]);
 
-  // Pointer move handler for hover highlight
+  // Pointer move handler with 2.5D tilt tracking
   const handlePointerMove = (e: React.PointerEvent<HTMLCanvasElement>) => {
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -829,6 +1070,12 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
     const rect = canvas.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
+
+    // Track 2.5D Isometric Tilt Matrix
+    const normX = (x / rect.width - 0.5) * 2;
+    const normY = (y / rect.height - 0.5) * 2;
+    targetTiltXRef.current = normX * 0.8;
+    targetTiltYRef.current = normY * 0.8;
 
     const bl = boardLayoutRef.current;
     const col = Math.floor((x - bl.startX) / bl.cellSize);
@@ -850,6 +1097,8 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
         onPointerMove={handlePointerMove}
         onPointerLeave={() => {
           hoveredArrowIdRef.current = null;
+          targetTiltXRef.current = 0;
+          targetTiltYRef.current = 0;
         }}
         className="w-full max-w-[480px] h-[360px] sm:h-[420px] md:h-[460px] cursor-pointer rounded-3xl"
         style={{ touchAction: 'none' }}

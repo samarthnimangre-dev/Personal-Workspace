@@ -18,6 +18,11 @@ export interface ArrowTile {
   removalDirection?: ArrowDirection;
   isBlockedShake?: boolean;
   isHinted?: boolean;
+  isPivot?: boolean; // Rotates 90 degrees clockwise on collision
+  isFrozen?: boolean; // Encased in ice, requires a hit to break free
+  hitsLeft?: number; // Remaining hits to break ice
+  isBomb?: boolean; // Detonates on tap, clearing 3x3 radius
+  rotationDeg?: number; // Visual angle override for animated pivots
 }
 
 export interface LevelConfig {

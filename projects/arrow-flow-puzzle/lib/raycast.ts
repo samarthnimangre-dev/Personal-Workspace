@@ -53,12 +53,42 @@ export function getDirectionAngle(dir: ArrowDirection): number {
   }
 }
 
+export function rotateDirection90CW(dir: ArrowDirection): ArrowDirection {
+  switch (dir) {
+    case 'up':
+      return 'right';
+    case 'right':
+      return 'down';
+    case 'down':
+      return 'left';
+    case 'left':
+      return 'up';
+    case 'up-right':
+      return 'down-right';
+    case 'down-right':
+      return 'down-left';
+    case 'down-left':
+      return 'up-left';
+    case 'up-left':
+      return 'up-right';
+    default:
+      return dir;
+  }
+}
+
 export function traceArrowEscape(
   arrow: ArrowTile,
   activeArrows: ArrowTile[],
   rows: number,
   cols: number
 ): RaycastResult {
+  if (arrow.isFrozen && (arrow.hitsLeft ?? 1) > 0) {
+    return {
+      canEscape: false,
+      pathCells: [],
+    };
+  }
+
   const { dRow, dCol } = getDirectionDelta(arrow.direction);
   const pathCells: { row: number; col: number }[] = [];
 
@@ -102,7 +132,7 @@ export function findUnblockedArrows(
 ): ArrowTile[] {
   const unblocked: ArrowTile[] = [];
   for (const arrow of activeArrows) {
-    if (!arrow.isRemoving) {
+    if (!arrow.isRemoving && (!arrow.isFrozen || (arrow.hitsLeft ?? 0) <= 0) && !arrow.isBomb) {
       const res = traceArrowEscape(arrow, activeArrows, rows, cols);
       if (res.canEscape) {
         unblocked.push(arrow);
