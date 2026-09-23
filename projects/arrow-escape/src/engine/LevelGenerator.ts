@@ -108,9 +108,22 @@ export class LevelGenerator {
     occupancy: OccupancyMap,
     desiredLength: number,
     directions: readonly Direction[],
-    rng: SeededRng
+    rng: SeededRng,
+    placedArrows?: readonly ArrowData[]
   ): { head: Position; occupiedCells: Position[]; direction: Direction } | null {
-    // Generate all available empty cells as potential heads
+    // 1. Build set of cells that lie on the escape rays of already placed arrows
+    const existingEscapeRays = new Set<string>();
+    if (placedArrows && placedArrows.length > 0) {
+      for (const arrow of placedArrows) {
+        let scan = stepPosition(arrow.head!, arrow.direction);
+        while (board.isInside(scan)) {
+          existingEscapeRays.add(`${scan.row},${scan.col}`);
+          scan = stepPosition(scan, arrow.direction);
+        }
+      }
+    }
+
+    // 2. Generate all available empty cells as potential heads
     const candidateHeads: Position[] = [];
     for (let r = 0; r < board.rows; r++) {
       for (let c = 0; c < board.cols; c++) {
@@ -122,6 +135,9 @@ export class LevelGenerator {
 
     rng.shuffle(candidateHeads);
     const shuffledDirs = rng.shuffle([...directions]);
+
+    const intersectingCandidates: { head: Position; occupiedCells: Position[]; direction: Direction }[] = [];
+    const fallbackCandidates: { head: Position; occupiedCells: Position[]; direction: Direction }[] = [];
 
     for (const head of candidateHeads) {
       for (const dir of shuffledDirs) {
@@ -159,9 +175,26 @@ export class LevelGenerator {
         }
 
         if (bodyValid) {
-          return { head, occupiedCells, direction: dir };
+          const candidate = { head, occupiedCells, direction: dir };
+          const intersectsExistingRay = occupiedCells.some((cell) =>
+            existingEscapeRays.has(`${cell.row},${cell.col}`)
+          );
+
+          if (intersectsExistingRay) {
+            intersectingCandidates.push(candidate);
+          } else {
+            fallbackCandidates.push(candidate);
+          }
         }
       }
+    }
+
+    if (intersectingCandidates.length > 0) {
+      return rng.choice(intersectingCandidates);
+    }
+
+    if (fallbackCandidates.length > 0) {
+      return rng.choice(fallbackCandidates);
     }
 
     return null;
@@ -193,14 +226,24 @@ export class LevelGenerator {
       let generationFailed = false;
 
       for (let i = 0; i < config.arrowCount; i++) {
-        const len = rng.nextInt(config.minLength, config.maxLength);
-        const placement = this.findValidReversePlacement(
-          board,
-          occupancy,
-          len,
-          directions,
-          rng
-        );
+        const desiredLen = rng.nextInt(config.minLength, config.maxLength);
+        const minLen = Math.max(1, config.minLength);
+        let placement: { head: Position; occupiedCells: Position[]; direction: Direction } | null = null;
+
+        // Dynamic length reduction: if desired length fails, try len - 1 down to minLen (or 1)
+        for (let l = desiredLen; l >= minLen; l--) {
+          placement = this.findValidReversePlacement(
+            board,
+            occupancy,
+            l,
+            directions,
+            rng,
+            placedArrows
+          );
+          if (placement) {
+            break;
+          }
+        }
 
         if (!placement) {
           // Board is too full or cramped to legally place another unblocked arrow

@@ -11,7 +11,7 @@ export class OccupancyMap {
   constructor(arrows: readonly ArrowModel[] = []) {
     this.cellToArrow = new Map();
     for (const arrow of arrows) {
-      if (!arrow.isEscaped) {
+      if (!arrow.isEscaped && !arrow.isEscaping) {
         this.addArrow(arrow);
       }
     }
@@ -59,7 +59,7 @@ export class OccupancyMap {
       const blocker = this.getArrowAt(current.row, current.col);
 
       // If the cell is occupied by any arrow, it blocks the escape path
-      if (blocker && blocker.id !== arrow.id) {
+      if (blocker) {
         return {
           canEscape: false,
           blockerId: blocker.id,

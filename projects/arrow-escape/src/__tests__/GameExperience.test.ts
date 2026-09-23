@@ -107,11 +107,22 @@ describe('Complete Game Experience Integration Suite', () => {
       expect(getDifficultyForLevel(45)).toBe('expert');
     });
 
-    it('verifies campaign levels fetched from registry are structurally valid and solvable', () => {
-      // Test key milestone levels across difficulty boundaries
-      const milestoneLevels = [1, 5, 10, 20, 30];
+    it('verifies Level 3 is free of cycle deadlocks and solves in the verified sequence', () => {
+      const level3 = levelRegistry.getLevel(3);
+      expect(level3.id).toBe(3);
+      expect(level3.parMoves).toBe(6);
 
-      for (const lvlId of milestoneLevels) {
+      const arrow35 = level3.arrows.find((a) => a.id === '3-5');
+      expect(arrow35).toBeDefined();
+      expect(arrow35!.direction).toBe('down');
+
+      const solverResult = ArrowEscapeSolver.solve(level3);
+      expect(solverResult.solvable).toBe(true);
+      expect(solverResult.solutionMoves).toEqual(['3-5', '3-4', '3-3', '3-2', '3-6', '3-1']);
+    });
+
+    it('verifies all 50 campaign levels fetched from registry are structurally valid and solvable', () => {
+      for (let lvlId = 1; lvlId <= TOTAL_CAMPAIGN_LEVELS; lvlId++) {
         const level = levelRegistry.getLevel(lvlId);
         expect(level.id).toBe(lvlId);
         expect(level.arrows.length).toBeGreaterThan(0);
@@ -121,6 +132,7 @@ describe('Complete Game Experience Integration Suite', () => {
         const solverResult = ArrowEscapeSolver.solve(level);
         expect(solverResult.solvable).toBe(true);
         expect(solverResult.solutionMoves).toBeDefined();
+        expect(solverResult.solutionMoves!.length).toBe(level.arrows.length);
       }
     });
   });

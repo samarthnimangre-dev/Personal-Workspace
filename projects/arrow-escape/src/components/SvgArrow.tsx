@@ -9,7 +9,7 @@ interface SvgArrowProps {
   boardRows: number;
   boardCols: number;
   theme: 'dark' | 'light';
-  onTap: (arrowId: string, headCenter: { x: number; y: number }) => void;
+  onTap: (arrowId: string) => void;
 }
 
 export const SvgArrow: React.FC<SvgArrowProps> = ({
@@ -49,11 +49,7 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     if (!arrow.isIdle) return;
-
-    // Calculate absolute center of the arrow's head cell for particle spawning
-    const headX = arrow.head.col * cellSize + center;
-    const headY = arrow.head.row * cellSize + center;
-    onTap(arrow.id, { x: headX, y: headY });
+    onTap(arrow.id);
   };
 
   // Color schemes based on state and theme
@@ -67,7 +63,7 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
     : arrow.color;
 
   const glyphColor = isBlocked
-    ? '#fca5a5'
+    ? isDark ? '#fca5a5' : '#991b1b'
     : isDark ? '#ffffff' : '#0f172a';
 
   return (

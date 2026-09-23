@@ -96,6 +96,7 @@ export class GameEngine {
       const nextState: GameEngineState = {
         ...state,
         arrows: nextArrows,
+        occupancy: new OccupancyMap(Array.from(nextArrows.values())),
         movesCount: nextMovesCount,
         lastResult: result,
       };
@@ -107,7 +108,7 @@ export class GameEngine {
   // Marks an escaping arrow as fully escaped and checks for level victory
   static finalizeEscape(state: GameEngineState, arrowId: string): GameEngineState {
     const arrow = state.arrows.get(arrowId);
-    if (!arrow) return state;
+    if (!arrow || arrow.state !== 'escaping') return state;
 
     const updatedArrow = arrow.withState('escaped');
     const nextArrows = new Map(state.arrows);
@@ -137,6 +138,7 @@ export class GameEngine {
     return {
       ...state,
       arrows: nextArrows,
+      occupancy: new OccupancyMap(Array.from(nextArrows.values())),
     };
   }
 }

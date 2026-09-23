@@ -68,7 +68,7 @@ export const GameView: React.FC<GameViewProps> = ({
 
   return (
     <div
-      className={`game-bg-container flex flex-col justify-between items-center w-full max-w-md mx-auto min-h-[100dvh] h-[100dvh] p-3 sm:p-4 select-none relative overflow-hidden ${
+      className={`game-bg-container flex flex-col justify-between items-center w-full max-w-md mx-auto min-h-[100dvh] h-[100dvh] px-3 sm:px-4 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] pb-[max(0.75rem,env(safe-area-inset-bottom))] select-none relative overflow-hidden ${
         isDark ? 'text-slate-100' : 'text-slate-900'
       }`}
     >
@@ -141,7 +141,7 @@ export const GameView: React.FC<GameViewProps> = ({
         </div>
 
         {/* Right: Moves & Action Controls */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Moves HUD */}
           <div className="flex flex-col items-end mr-0.5">
             <span className={`text-[9px] uppercase font-bold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
@@ -158,7 +158,7 @@ export const GameView: React.FC<GameViewProps> = ({
           {/* Quick Sound Mute Button */}
           <button
             onClick={onToggleSound}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs transition-transform active:scale-95 border ${
+            className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm transition-transform active:scale-95 border ${
               isDark
                 ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700/80 text-slate-300'
                 : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -172,7 +172,7 @@ export const GameView: React.FC<GameViewProps> = ({
           {/* Quick Restart Button */}
           <button
             onClick={onRestart}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center text-sm font-bold transition-transform active:scale-95 border ${
+            className={`w-11 h-11 rounded-xl flex items-center justify-center text-base font-bold transition-transform active:scale-95 border ${
               isDark
                 ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700/80 text-slate-300'
                 : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -186,7 +186,7 @@ export const GameView: React.FC<GameViewProps> = ({
           {/* Settings / Pause Button */}
           <button
             onClick={onOpenSettings}
-            className={`w-8 h-8 rounded-xl flex items-center justify-center text-xs transition-transform active:scale-95 border ${
+            className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm transition-transform active:scale-95 border ${
               isDark
                 ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700/80 text-slate-300'
                 : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -224,7 +224,7 @@ export const GameView: React.FC<GameViewProps> = ({
         <select
           value={level.id}
           onChange={(e) => onSelectLevel(Number(e.target.value))}
-          className={`text-xs rounded-xl px-2.5 py-1.5 border focus:outline-none focus:border-cyan-400 cursor-pointer font-medium ${
+          className={`text-base sm:text-xs rounded-xl px-2.5 py-1.5 min-h-[44px] border focus:outline-none focus:border-cyan-400 cursor-pointer font-medium ${
             isDark
               ? 'bg-slate-800 text-slate-200 border-slate-700'
               : 'bg-slate-100 text-slate-800 border-slate-300'
@@ -247,7 +247,7 @@ export const GameView: React.FC<GameViewProps> = ({
           Settings & Pause Modal
           ===================================================================== */}
       <SettingsModal
-        isOpen={isSettingsOpen}
+        isOpen={isSettingsOpen && status !== 'won' && !isGameOver}
         settings={settings}
         progress={progress}
         currentLevelId={level.id}
@@ -321,7 +321,7 @@ export const GameView: React.FC<GameViewProps> = ({
       {/* =====================================================================
           Game Over Modal (Challenge Mode: Out of Lives)
           ===================================================================== */}
-      {isGameOver && (
+      {isGameOver && status !== 'won' && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/85 backdrop-blur-md animate-fade-in">
           <div
             className={`w-full max-w-xs rounded-3xl p-6 text-center shadow-2xl border flex flex-col items-center animate-modal-in ${

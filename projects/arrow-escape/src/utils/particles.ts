@@ -28,6 +28,11 @@ export class ParticleSystemController implements ParticleTrigger {
   private isRunning: boolean = false;
 
   public bindCanvas(canvas: HTMLCanvasElement | null) {
+    if (!canvas && this.animId) {
+      cancelAnimationFrame(this.animId);
+      this.animId = null;
+      this.isRunning = false;
+    }
     this.canvas = canvas;
     this.ctx = canvas ? canvas.getContext('2d') : null;
   }
@@ -78,8 +83,6 @@ export class ParticleSystemController implements ParticleTrigger {
           this.ctx.beginPath();
           this.ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
           this.ctx.fillStyle = p.color;
-          this.ctx.shadowColor = p.color;
-          this.ctx.shadowBlur = 6;
           this.ctx.fill();
         }
 
@@ -126,9 +129,13 @@ export class ParticleSystemController implements ParticleTrigger {
     const palette = ['#06b6d4', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#f43f5e'];
     const count = 70;
 
+    // Dynamically calculate spawn baseline to guarantee confetti spawns inside canvas on all board sizes
+    const spawnBaseY = Math.min(height * 0.65, Math.max(40, height - 50));
+    const yJitter = Math.min(30, height * 0.15);
+
     for (let i = 0; i < count; i++) {
-      const x = width * 0.5 + (Math.random() - 0.5) * (width * 0.6);
-      const y = height * 0.65 + (Math.random() - 0.5) * 40;
+      const x = width * 0.5 + (Math.random() - 0.5) * (width * 0.7);
+      const y = Math.max(20, Math.min(height - 15, spawnBaseY + (Math.random() - 0.5) * yJitter * 2));
       const angle = -Math.PI / 2 + (Math.random() - 0.5) * 1.4;
       const speed = 4 + Math.random() * 6.5;
 

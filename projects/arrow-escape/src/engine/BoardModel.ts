@@ -65,7 +65,7 @@ export const DEFAULT_LEVELS: readonly LevelData[] = [
       { id: '3-2', row: 0, col: 1, direction: 'down', color: '#3b82f6' },
       { id: '3-3', row: 1, col: 1, direction: 'down', color: '#06b6d4' },
       { id: '3-4', row: 2, col: 1, direction: 'left', color: '#10b981' },
-      { id: '3-5', row: 2, col: 0, direction: 'up', color: '#f59e0b' },
+      { id: '3-5', row: 2, col: 0, direction: 'down', color: '#f59e0b' },
       { id: '3-6', row: 0, col: 2, direction: 'right', color: '#ec4899' },
     ],
   },

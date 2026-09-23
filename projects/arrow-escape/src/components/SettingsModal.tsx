@@ -57,7 +57,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </div>
           <button
             onClick={onClose}
-            className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold transition-transform active:scale-95 ${
+            className={`w-11 h-11 rounded-full flex items-center justify-center text-base font-bold transition-transform active:scale-95 ${
               isDark
                 ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
@@ -89,7 +89,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
               <button
                 onClick={onToggleSound}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 ${
+                className={`px-3.5 py-2 min-h-[44px] min-w-[64px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 ${
                   !settings.soundMuted
                     ? 'bg-cyan-500 text-slate-950 shadow-sm shadow-cyan-500/30'
                     : isDark
@@ -114,7 +114,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
               <button
                 onClick={onToggleHaptics}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 ${
+                className={`px-3.5 py-2 min-h-[44px] min-w-[64px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 ${
                   settings.hapticsEnabled
                     ? 'bg-cyan-500 text-slate-950 shadow-sm shadow-cyan-500/30'
                     : isDark
@@ -139,7 +139,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
               <button
                 onClick={onToggleTheme}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 ${
+                className={`px-3.5 py-2 min-h-[44px] min-w-[64px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 ${
                   isDark
                     ? 'bg-slate-800 text-cyan-400 border border-cyan-500/30'
                     : 'bg-slate-200 text-sky-800 border border-sky-400/40'
@@ -162,7 +162,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               </div>
               <button
                 onClick={onToggleZenMode}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition-all active:scale-95 ${
+                className={`px-3.5 py-2 min-h-[44px] min-w-[70px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 ${
                   settings.zenMode
                     ? 'bg-emerald-500 text-slate-950 shadow-sm shadow-emerald-500/30'
                     : 'bg-rose-500 text-white shadow-sm shadow-rose-500/30'
@@ -194,7 +194,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onSelectLevel(lvl.id);
                       onClose();
                     }}
-                    className={`h-9 rounded-xl text-xs font-black flex flex-col items-center justify-center transition-all ${
+                    className={`min-h-[44px] rounded-xl text-xs font-black flex flex-col items-center justify-center transition-all ${
                       isCurrent
                         ? 'bg-cyan-500 text-slate-950 ring-2 ring-cyan-300 scale-105'
                         : isCompleted
@@ -226,7 +226,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               onRestart();
               onClose();
             }}
-            className={`flex-1 py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 ${
+            className={`flex-1 min-h-[44px] py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 ${
               isDark
                 ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300'
@@ -236,7 +236,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-950/40 transition-all active:scale-95"
+            className="flex-1 min-h-[44px] py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-950/40 flex items-center justify-center transition-all active:scale-95"
           >
             Resume ▶
           </button>

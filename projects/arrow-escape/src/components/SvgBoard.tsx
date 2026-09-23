@@ -4,7 +4,6 @@ import type { BoardModel } from '../engine/BoardModel';
 import type { ArrowModel } from '../engine/ArrowModel';
 import { SvgArrow } from './SvgArrow';
 import { ParticleOverlay } from './ParticleOverlay';
-import { particleController } from '../utils/particles';
 
 interface SvgBoardProps {
   board: BoardModel;
@@ -29,21 +28,6 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
 
   const isDark = theme === 'dark';
 
-  // Handle arrow tap and spawn directional particles
-  const handleArrowTapWithFX = (arrowId: string, headCenter: { x: number; y: number }) => {
-    const arrow = arrows.find((a) => a.id === arrowId);
-    if (arrow) {
-      // Trigger particles at the head's position
-      particleController.burstEscape(
-        headCenter.x + padding,
-        headCenter.y + padding,
-        arrow.color,
-        arrow.angle
-      );
-    }
-    onArrowTap(arrowId);
-  };
-
   // Pre-generate grid background cell slots
   const gridSlots = [];
   for (let r = 0; r < board.rows; r++) {
@@ -58,7 +42,10 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
   }
 
   return (
-    <div className="relative svg-board-container w-full max-w-[390px] mx-auto aspect-square flex items-center justify-center p-2 select-none">
+    <div
+      className="relative svg-board-container w-full max-w-[390px] mx-auto aspect-square flex items-center justify-center p-2 select-none"
+      style={{ touchAction: 'none' }}
+    >
       {/* Particle Canvas Overlay on top of SVG */}
       <ParticleOverlay width={viewBoxWidth} height={viewBoxHeight} />
 
@@ -121,7 +108,7 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
               boardRows={board.rows}
               boardCols={board.cols}
               theme={theme}
-              onTap={handleArrowTapWithFX}
+              onTap={onArrowTap}
             />
           ))}
         </g>
