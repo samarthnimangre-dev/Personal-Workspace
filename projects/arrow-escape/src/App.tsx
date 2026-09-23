@@ -12,9 +12,21 @@ export const App: React.FC = () => {
     maxLives,
     isGameOver,
     isSettingsOpen,
+    isHammerActive,
+    isBombActive,
+    isShopOpen,
+    canClaimDailyReward,
     allLevels,
     setIsSettingsOpen,
+    setIsShopOpen,
     handleArrowTap,
+    triggerHint,
+    triggerHammer,
+    triggerBomb,
+    cancelBoosterMode,
+    triggerUndo,
+    buyBooster,
+    claimDailyReward,
     restartCurrentLevel,
     advanceToNextLevel,
     selectLevel,
@@ -34,8 +46,21 @@ export const App: React.FC = () => {
       maxLives={maxLives}
       isGameOver={isGameOver}
       isSettingsOpen={isSettingsOpen}
+      isHammerActive={isHammerActive}
+      isBombActive={isBombActive}
+      isShopOpen={isShopOpen}
+      canClaimDailyReward={canClaimDailyReward}
       allLevels={allLevels}
       onArrowTap={handleArrowTap}
+      onTriggerHint={triggerHint}
+      onTriggerHammer={triggerHammer}
+      onTriggerBomb={triggerBomb}
+      onTriggerUndo={triggerUndo}
+      onCancelBooster={cancelBoosterMode}
+      onOpenShop={() => setIsShopOpen(true)}
+      onCloseShop={() => setIsShopOpen(false)}
+      onBuyBooster={buyBooster}
+      onClaimDailyReward={claimDailyReward}
       onRestart={restartCurrentLevel}
       onNextLevel={advanceToNextLevel}
       onSelectLevel={selectLevel}

@@ -218,6 +218,200 @@ class SoundEffectsManager {
       osc.stop(now + idx * 0.12 + 0.24);
     });
   }
+
+  /**
+   * Crisp crystalline snap when hitting/cracking ice
+   */
+  public playIceCrack(): void {
+    const ctx = this.initContext();
+    if (!ctx || this.isMuted) return;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const now = ctx.currentTime;
+
+    osc.type = 'triangle';
+    osc.frequency.setValueAtTime(1800, now);
+    osc.frequency.exponentialRampToValueAtTime(800, now + 0.08);
+
+    gain.gain.setValueAtTime(0.3, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain ?? ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.08);
+  }
+
+  /**
+   * Sparkling glassy shatter when ice block breaks completely
+   */
+  public playIceShatter(): void {
+    const ctx = this.initContext();
+    if (!ctx || this.isMuted) return;
+
+    const now = ctx.currentTime;
+    [2400, 3100, 4200].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + i * 0.03);
+      osc.frequency.exponentialRampToValueAtTime(freq * 0.5, now + i * 0.03 + 0.15);
+
+      gain.gain.setValueAtTime(0.25, now + i * 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.03 + 0.18);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain ?? ctx.destination);
+
+      osc.start(now + i * 0.03);
+      osc.stop(now + i * 0.03 + 0.2);
+    });
+  }
+
+  /**
+   * Fluid 90-degree rotational whoosh when pivot arrow turns
+   */
+  public playPivotRotate(): void {
+    const ctx = this.initContext();
+    if (!ctx || this.isMuted) return;
+
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    const filter = ctx.createBiquadFilter();
+    const now = ctx.currentTime;
+
+    osc.type = 'triangle';
+    filter.type = 'bandpass';
+    filter.frequency.setValueAtTime(600, now);
+    filter.frequency.exponentialRampToValueAtTime(1200, now + 0.12);
+
+    osc.frequency.setValueAtTime(320, now);
+    osc.frequency.exponentialRampToValueAtTime(640, now + 0.14);
+
+    gain.gain.setValueAtTime(0.28, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.16);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain ?? ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.16);
+  }
+
+  /**
+   * Low-frequency bass shockwave + detonation when bomb triggers
+   */
+  public playBombExplode(): void {
+    const ctx = this.initContext();
+    if (!ctx || this.isMuted) return;
+
+    const now = ctx.currentTime;
+
+    // Sub-bass thump
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sawtooth';
+    osc.frequency.setValueAtTime(110, now);
+    osc.frequency.exponentialRampToValueAtTime(25, now + 0.28);
+
+    gain.gain.setValueAtTime(0.5, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.32);
+
+    osc.connect(gain);
+    gain.connect(this.masterGain ?? ctx.destination);
+
+    osc.start(now);
+    osc.stop(now + 0.32);
+  }
+
+  /**
+   * Ascending pentatonic shimmer for booster activation
+   */
+  public playBoosterActivate(): void {
+    const ctx = this.initContext();
+    if (!ctx || this.isMuted) return;
+
+    const notes = [523.25, 659.25, 783.99, 987.77, 1318.5]; // C5, E5, G5, B5, E6
+    const now = ctx.currentTime;
+
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.04);
+
+      gain.gain.setValueAtTime(0.2, now + idx * 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.04 + 0.15);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain ?? ctx.destination);
+
+      osc.start(now + idx * 0.04);
+      osc.stop(now + idx * 0.04 + 0.16);
+    });
+  }
+
+  /**
+   * Gentle two-tone bell chime for hint suggestion
+   */
+  public playHint(): void {
+    const ctx = this.initContext();
+    if (!ctx || this.isMuted) return;
+
+    const notes = [659.25, 987.77]; // E5, B5
+    const now = ctx.currentTime;
+
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.08);
+
+      gain.gain.setValueAtTime(0.22, now + idx * 0.08);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.28);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain ?? ctx.destination);
+
+      osc.start(now + idx * 0.08);
+      osc.stop(now + idx * 0.08 + 0.3);
+    });
+  }
+
+  /**
+   * Bright resonant two-tone metallic chime for coin earn/spend
+   */
+  public playCoin(): void {
+    const ctx = this.initContext();
+    if (!ctx || this.isMuted) return;
+
+    const notes = [987.77, 1318.5]; // B5, E6
+    const now = ctx.currentTime;
+
+    notes.forEach((freq, idx) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now + idx * 0.07);
+
+      gain.gain.setValueAtTime(0.001, now + idx * 0.07);
+      gain.gain.linearRampToValueAtTime(0.25, now + idx * 0.07 + 0.015);
+      gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.07 + 0.22);
+
+      osc.connect(gain);
+      gain.connect(this.masterGain ?? ctx.destination);
+
+      osc.start(now + idx * 0.07);
+      osc.stop(now + idx * 0.07 + 0.24);
+    });
+  }
 }
 
 export const soundEffects = new SoundEffectsManager();

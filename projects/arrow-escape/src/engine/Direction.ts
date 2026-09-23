@@ -53,3 +53,43 @@ export function isOpposite(a: Direction, b: Direction): boolean {
   const deltaB = DIRECTION_DELTAS[b];
   return deltaA.dRow === -deltaB.dRow && deltaA.dCol === -deltaB.dCol;
 }
+
+export function rotateClockwise(direction: Direction): Direction {
+  switch (direction) {
+    case 'up': return 'right';
+    case 'right': return 'down';
+    case 'down': return 'left';
+    case 'left': return 'up';
+    case 'up-right': return 'down-right';
+    case 'down-right': return 'down-left';
+    case 'down-left': return 'up-left';
+    case 'up-left': return 'up-right';
+  }
+}
+
+export function rotateCounterClockwise(direction: Direction): Direction {
+  switch (direction) {
+    case 'up': return 'left';
+    case 'left': return 'down';
+    case 'down': return 'right';
+    case 'right': return 'up';
+    case 'up-right': return 'up-left';
+    case 'up-left': return 'down-left';
+    case 'down-left': return 'down-right';
+    case 'down-right': return 'up-right';
+  }
+}
+
+export function getOppositeDirection(direction: Direction): Direction {
+  switch (direction) {
+    case 'up': return 'down';
+    case 'down': return 'up';
+    case 'left': return 'right';
+    case 'right': return 'left';
+    case 'up-left': return 'down-right';
+    case 'down-right': return 'up-left';
+    case 'up-right': return 'down-left';
+    case 'down-left': return 'up-right';
+  }
+}
+

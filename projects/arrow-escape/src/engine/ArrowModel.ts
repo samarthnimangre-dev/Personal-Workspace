@@ -1,7 +1,7 @@
 // Arrow entity model representing a directed arrow puzzle piece
 // Each arrow has a direction, a head cell, and one or more occupied cells.
 import type { ArrowData, ArrowState, Direction, Position } from './types';
-import { getDirectionAngle } from './Direction';
+import { getDirectionAngle, rotateClockwise } from './Direction';
 
 export class ArrowModel {
   readonly id: string;
@@ -10,6 +10,11 @@ export class ArrowModel {
   readonly occupiedCells: readonly Position[];
   readonly state: ArrowState;
   readonly color: string;
+  readonly isFrozen: boolean;
+  readonly frozenHits: number;
+  readonly isPivot: boolean;
+  readonly isBomb: boolean;
+  readonly isHinted: boolean;
 
   constructor(
     id: string,
@@ -17,7 +22,12 @@ export class ArrowModel {
     head: Position,
     occupiedCells?: readonly Position[],
     state: ArrowState = 'idle',
-    color: string = '#06b6d4'
+    color: string = '#06b6d4',
+    isFrozen: boolean = false,
+    frozenHits: number = 0,
+    isPivot: boolean = false,
+    isBomb: boolean = false,
+    isHinted: boolean = false
   ) {
     if (!id) {
       throw new Error('Arrow id cannot be empty');
@@ -39,6 +49,11 @@ export class ArrowModel {
 
     this.state = state;
     this.color = color;
+    this.isFrozen = isFrozen;
+    this.frozenHits = frozenHits;
+    this.isPivot = isPivot;
+    this.isBomb = isBomb;
+    this.isHinted = isHinted;
   }
 
   get row(): number {
@@ -89,7 +104,80 @@ export class ArrowModel {
       this.head,
       this.occupiedCells,
       state,
-      this.color
+      this.color,
+      this.isFrozen,
+      this.frozenHits,
+      this.isPivot,
+      this.isBomb,
+      this.isHinted
+    );
+  }
+
+  withDirection(direction: Direction): ArrowModel {
+    if (this.direction === direction) return this;
+    return new ArrowModel(
+      this.id,
+      direction,
+      this.head,
+      this.occupiedCells,
+      this.state,
+      this.color,
+      this.isFrozen,
+      this.frozenHits,
+      this.isPivot,
+      this.isBomb,
+      this.isHinted
+    );
+  }
+
+  withIceHit(): ArrowModel {
+    const nextHits = Math.max(0, this.frozenHits - 1);
+    return new ArrowModel(
+      this.id,
+      this.direction,
+      this.head,
+      this.occupiedCells,
+      this.state,
+      this.color,
+      nextHits > 0,
+      nextHits,
+      this.isPivot,
+      this.isBomb,
+      this.isHinted
+    );
+  }
+
+  withPivotRotated(): ArrowModel {
+    const nextDir = rotateClockwise(this.direction);
+    return new ArrowModel(
+      this.id,
+      nextDir,
+      this.head,
+      this.occupiedCells,
+      this.state,
+      this.color,
+      this.isFrozen,
+      this.frozenHits,
+      this.isPivot,
+      this.isBomb,
+      this.isHinted
+    );
+  }
+
+  withHinted(isHinted: boolean): ArrowModel {
+    if (this.isHinted === isHinted) return this;
+    return new ArrowModel(
+      this.id,
+      this.direction,
+      this.head,
+      this.occupiedCells,
+      this.state,
+      this.color,
+      this.isFrozen,
+      this.frozenHits,
+      this.isPivot,
+      this.isBomb,
+      isHinted
     );
   }
 
@@ -102,13 +190,22 @@ export class ArrowModel {
             throw new Error(`Arrow ${data.id} must define a head cell or row/col coordinates.`);
           })());
 
+    const isFrozen = Boolean(data.isFrozen);
+    const frozenHits = data.frozenHits ?? (isFrozen ? 1 : 0);
+
     return new ArrowModel(
       data.id,
       data.direction,
       head,
       data.occupiedCells,
       'idle',
-      data.color ?? '#06b6d4'
+      data.color ?? '#06b6d4',
+      isFrozen,
+      frozenHits,
+      Boolean(data.isPivot),
+      Boolean(data.isBomb),
+      Boolean(data.isHinted)
     );
   }
 }
+

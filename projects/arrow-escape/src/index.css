@@ -137,8 +137,8 @@ html, body {
     transform: translate(0, 0) scale(1);
     opacity: 1;
   }
-  35% {
-    transform: translate(calc(var(--escape-x, 0px) * 0.25), calc(var(--escape-y, -300px) * 0.25)) scale(1.03);
+  38% {
+    transform: translate(var(--escape-mid-x, calc(var(--escape-x, 0px) * 0.35)), var(--escape-mid-y, calc(var(--escape-y, -300px) * 0.35))) scale(1.02);
     opacity: 1;
   }
   100% {

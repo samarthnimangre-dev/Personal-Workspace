@@ -1,10 +1,11 @@
-// Responsive mobile-first GameView container with top HUD, lives system, sound/haptic controls, and modals
+// Responsive mobile-first GameView container with top HUD, lives system, sound/haptic controls, booster toolbar, and modals
 import React from 'react';
 import type { GameEngineState } from '../engine/GameEngine';
-import type { UserProgress } from '../engine/types';
+import type { BoosterType, UserProgress } from '../engine/types';
 import type { GameSettings } from '../persistence/storage';
 import { SvgBoard } from './SvgBoard';
 import { SettingsModal } from './SettingsModal';
+import { ShopModal } from './ShopModal';
 
 interface GameViewProps {
   state: GameEngineState;
@@ -14,8 +15,21 @@ interface GameViewProps {
   maxLives: number;
   isGameOver: boolean;
   isSettingsOpen: boolean;
+  isHammerActive: boolean;
+  isBombActive: boolean;
+  isShopOpen: boolean;
+  canClaimDailyReward: boolean;
   allLevels: readonly { id: number; name: string; difficulty: string }[];
   onArrowTap: (arrowId: string) => void;
+  onTriggerHint: () => void;
+  onTriggerHammer: () => void;
+  onTriggerBomb: () => void;
+  onTriggerUndo: () => void;
+  onCancelBooster: () => void;
+  onOpenShop: () => void;
+  onCloseShop: () => void;
+  onBuyBooster: (type: BoosterType) => boolean;
+  onClaimDailyReward: () => void;
   onRestart: () => void;
   onNextLevel: () => void;
   onSelectLevel: (levelId: number) => void;
@@ -36,8 +50,21 @@ export const GameView: React.FC<GameViewProps> = ({
   maxLives,
   isGameOver,
   isSettingsOpen,
+  isHammerActive,
+  isBombActive,
+  isShopOpen,
+  canClaimDailyReward,
   allLevels,
   onArrowTap,
+  onTriggerHint,
+  onTriggerHammer,
+  onTriggerBomb,
+  onTriggerUndo,
+  onCancelBooster,
+  onOpenShop,
+  onCloseShop,
+  onBuyBooster,
+  onClaimDailyReward,
   onRestart,
   onNextLevel,
   onSelectLevel,
@@ -65,6 +92,8 @@ export const GameView: React.FC<GameViewProps> = ({
       : movesCount <= level.parMoves + 4
       ? 1
       : 0;
+
+  const rewardCoins = level.rewardCoins ?? 50 + starsEarned * 25;
 
   return (
     <div
@@ -105,19 +134,19 @@ export const GameView: React.FC<GameViewProps> = ({
           </span>
         </div>
 
-        {/* Center: Lives or Zen indicator */}
-        <div className="flex items-center gap-1">
+        {/* Center: Lives or Zen indicator + Coins */}
+        <div className="flex flex-col items-center gap-1">
           {settings.zenMode ? (
             <div
-              className={`flex items-center gap-1 px-2.5 py-1 rounded-xl text-xs font-black border ${
+              className={`flex items-center gap-1 px-2.5 py-0.5 rounded-xl text-xs font-black border ${
                 isDark
                   ? 'bg-emerald-950/60 border-emerald-500/40 text-emerald-400'
                   : 'bg-emerald-50 border-emerald-300 text-emerald-700'
               }`}
               title="Zen Mode: Unlimited Lives"
             >
-              <span className="text-sm">♾️</span>
-              <span className="text-[10px] uppercase tracking-wider">ZEN</span>
+              <span className="text-xs">♾️</span>
+              <span className="text-[9px] uppercase tracking-wider">ZEN</span>
             </div>
           ) : (
             <div className="flex items-center gap-1" title={`${lives} / ${maxLives} Lives Remaining`}>
@@ -138,6 +167,22 @@ export const GameView: React.FC<GameViewProps> = ({
               })}
             </div>
           )}
+
+          {/* Coins badge: Click to open Booster Vault */}
+          <button
+            onClick={onOpenShop}
+            className={`flex items-center gap-1 px-2.5 py-0.5 rounded-full border text-[10px] font-black transition-transform active:scale-95 cursor-pointer shadow-sm ${
+              isDark
+                ? 'bg-slate-800/90 border-amber-500/40 text-amber-400 hover:bg-slate-700'
+                : 'bg-amber-50 border-amber-300 text-amber-700 hover:bg-amber-100'
+            }`}
+            title="Open Booster Vault"
+            aria-label="Open Booster Store"
+          >
+            <span>🪙</span>
+            <span>{progress.coins ?? 100}</span>
+            <span className="text-[8px] opacity-75 font-bold">+</span>
+          </button>
         </div>
 
         {/* Right: Moves & Action Controls */}
@@ -158,7 +203,7 @@ export const GameView: React.FC<GameViewProps> = ({
           {/* Quick Sound Mute Button */}
           <button
             onClick={onToggleSound}
-            className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm transition-transform active:scale-95 border ${
+            className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm transition-transform active:scale-95 border ${
               isDark
                 ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700/80 text-slate-300'
                 : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -172,7 +217,7 @@ export const GameView: React.FC<GameViewProps> = ({
           {/* Quick Restart Button */}
           <button
             onClick={onRestart}
-            className={`w-11 h-11 rounded-xl flex items-center justify-center text-base font-bold transition-transform active:scale-95 border ${
+            className={`w-10 h-10 rounded-xl flex items-center justify-center text-base font-bold transition-transform active:scale-95 border ${
               isDark
                 ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700/80 text-slate-300'
                 : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -186,7 +231,7 @@ export const GameView: React.FC<GameViewProps> = ({
           {/* Settings / Pause Button */}
           <button
             onClick={onOpenSettings}
-            className={`w-11 h-11 rounded-xl flex items-center justify-center text-sm transition-transform active:scale-95 border ${
+            className={`w-10 h-10 rounded-xl flex items-center justify-center text-sm transition-transform active:scale-95 border ${
               isDark
                 ? 'bg-slate-800/80 hover:bg-slate-700 border-slate-700/80 text-slate-300'
                 : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -199,6 +244,41 @@ export const GameView: React.FC<GameViewProps> = ({
         </div>
       </header>
 
+      {/* Subtitle / Mechanic info banner */}
+      {level.subtitle && (
+        <div
+          className={`w-full text-center text-[11px] font-semibold tracking-tight py-1 px-3 truncate ${
+            isDark ? 'text-cyan-400' : 'text-cyan-700'
+          }`}
+        >
+          {level.subtitle}
+        </div>
+      )}
+
+      {/* Hammer Mode Active Banner */}
+      {isHammerActive && (
+        <div
+          onClick={onCancelBooster}
+          className="w-full bg-rose-600/95 hover:bg-rose-500 text-white text-[11px] font-black py-1.5 px-3 rounded-xl mb-1 text-center animate-pulse flex items-center justify-center gap-1.5 shadow-lg shadow-rose-950/40 cursor-pointer transition-colors"
+          title="Click to cancel"
+        >
+          <span>🔨</span>
+          <span>HAMMER ACTIVE: Tap any arrow to shatter it! (Tap to Cancel)</span>
+        </div>
+      )}
+
+      {/* Bomb Mode Active Banner */}
+      {isBombActive && (
+        <div
+          onClick={onCancelBooster}
+          className="w-full bg-orange-600/95 hover:bg-orange-500 text-white text-[11px] font-black py-1.5 px-3 rounded-xl mb-1 text-center animate-pulse flex items-center justify-center gap-1.5 shadow-lg shadow-orange-950/40 cursor-pointer transition-colors"
+          title="Click to cancel"
+        >
+          <span>💣</span>
+          <span>BOMB ACTIVE: Tap any arrow to trigger 3x3 blast! (Tap to Cancel)</span>
+        </div>
+      )}
+
       {/* =====================================================================
           Main Stage: SVG Board
           ===================================================================== */}
@@ -208,11 +288,117 @@ export const GameView: React.FC<GameViewProps> = ({
           arrows={arrowsList}
           theme={settings.theme}
           onArrowTap={onArrowTap}
+          onCancelBooster={onCancelBooster}
         />
       </main>
 
       {/* =====================================================================
-          Bottom Footer: Level Quick Switcher & Hint
+          Booster Toolbar (Hint, Hammer, Bomb, Undo)
+          ===================================================================== */}
+      <section className="w-full grid grid-cols-4 gap-1.5 sm:gap-2 my-1 px-1">
+        {/* Hint Booster */}
+        <button
+          onClick={(progress.inventory?.hint ?? 0) > 0 ? onTriggerHint : onOpenShop}
+          disabled={status === 'won' || isGameOver}
+          className={`py-2 px-1 sm:px-2 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 border font-bold text-xs transition-all active:scale-95 shadow-md cursor-pointer ${
+            (progress.inventory?.hint ?? 0) > 0
+              ? isDark
+                ? 'bg-slate-900/80 hover:bg-slate-800 border-amber-500/30 text-amber-300'
+                : 'bg-amber-50 hover:bg-amber-100 border-amber-200 text-amber-800'
+              : 'bg-slate-800/40 border-slate-700/50 text-slate-400 opacity-60'
+          }`}
+          title="Get a hint for the next unblocked arrow"
+          aria-label="Hint Booster"
+        >
+          <span className="text-sm select-none">💡</span>
+          <div className="flex flex-col items-center sm:items-start leading-none">
+            <span className="text-[9px] uppercase font-black tracking-wider">Hint</span>
+            <span className="text-[8px] font-semibold opacity-75">
+              {(progress.inventory?.hint ?? 0) > 0 ? `${progress.inventory?.hint} left` : 'Refill +'}
+            </span>
+          </div>
+        </button>
+
+        {/* Hammer Booster */}
+        <button
+          onClick={(progress.inventory?.hammer ?? 0) > 0 ? onTriggerHammer : onOpenShop}
+          disabled={status === 'won' || isGameOver}
+          className={`py-2 px-1 sm:px-2 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 border font-bold text-xs transition-all active:scale-95 shadow-md cursor-pointer ${
+            isHammerActive
+              ? 'bg-rose-600 border-rose-400 text-white animate-pulse shadow-rose-900/50'
+              : (progress.inventory?.hammer ?? 0) > 0
+              ? isDark
+                ? 'bg-slate-900/80 hover:bg-slate-800 border-rose-500/30 text-rose-300'
+                : 'bg-rose-50 hover:bg-rose-100 border-rose-200 text-rose-800'
+              : 'bg-slate-800/40 border-slate-700/50 text-slate-400 opacity-60'
+          }`}
+          title="Smash any arrow blocking your path"
+          aria-label="Hammer Booster"
+        >
+          <span className="text-sm select-none">🔨</span>
+          <div className="flex flex-col items-center sm:items-start leading-none">
+            <span className="text-[9px] uppercase font-black tracking-wider">
+              {isHammerActive ? 'Active' : 'Hammer'}
+            </span>
+            <span className="text-[8px] font-semibold opacity-75">
+              {(progress.inventory?.hammer ?? 0) > 0 ? `${progress.inventory?.hammer} left` : 'Refill +'}
+            </span>
+          </div>
+        </button>
+
+        {/* Bomb Booster */}
+        <button
+          onClick={(progress.inventory?.bomb ?? 0) > 0 ? onTriggerBomb : onOpenShop}
+          disabled={status === 'won' || isGameOver}
+          className={`py-2 px-1 sm:px-2 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 border font-bold text-xs transition-all active:scale-95 shadow-md cursor-pointer ${
+            isBombActive
+              ? 'bg-orange-600 border-orange-400 text-white animate-pulse shadow-orange-900/50'
+              : (progress.inventory?.bomb ?? 0) > 0
+              ? isDark
+                ? 'bg-slate-900/80 hover:bg-slate-800 border-orange-500/30 text-orange-300'
+                : 'bg-orange-50 hover:bg-orange-100 border-orange-200 text-orange-800'
+              : 'bg-slate-800/40 border-slate-700/50 text-slate-400 opacity-60'
+          }`}
+          title="Detonate 3x3 radius to clear dense clusters"
+          aria-label="Bomb Booster"
+        >
+          <span className="text-sm select-none">💣</span>
+          <div className="flex flex-col items-center sm:items-start leading-none">
+            <span className="text-[9px] uppercase font-black tracking-wider">
+              {isBombActive ? 'Active' : 'Bomb'}
+            </span>
+            <span className="text-[8px] font-semibold opacity-75">
+              {(progress.inventory?.bomb ?? 0) > 0 ? `${progress.inventory?.bomb} left` : 'Refill +'}
+            </span>
+          </div>
+        </button>
+
+        {/* Undo Booster */}
+        <button
+          onClick={(progress.inventory?.undo ?? 0) > 0 ? onTriggerUndo : onOpenShop}
+          disabled={status === 'won' || isGameOver}
+          className={`py-2 px-1 sm:px-2 rounded-2xl flex flex-col sm:flex-row items-center justify-center gap-1 sm:gap-1.5 border font-bold text-xs transition-all active:scale-95 shadow-md cursor-pointer ${
+            (progress.inventory?.undo ?? 0) > 0
+              ? isDark
+                ? 'bg-slate-900/80 hover:bg-slate-800 border-cyan-500/30 text-cyan-300'
+                : 'bg-cyan-50 hover:bg-cyan-100 border-cyan-200 text-cyan-800'
+              : 'bg-slate-800/40 border-slate-700/50 text-slate-400 opacity-60'
+          }`}
+          title="Undo previous move"
+          aria-label="Undo Booster"
+        >
+          <span className="text-sm select-none">↩️</span>
+          <div className="flex flex-col items-center sm:items-start leading-none">
+            <span className="text-[9px] uppercase font-black tracking-wider">Undo</span>
+            <span className="text-[8px] font-semibold opacity-75">
+              {(progress.inventory?.undo ?? 0) > 0 ? `${progress.inventory?.undo} left` : 'Refill +'}
+            </span>
+          </div>
+        </button>
+      </section>
+
+      {/* =====================================================================
+          Bottom Footer: Level Quick Switcher
           ===================================================================== */}
       <footer
         className={`w-full flex items-center justify-between rounded-2xl p-2 px-3 border backdrop-blur-md transition-colors ${
@@ -262,6 +448,25 @@ export const GameView: React.FC<GameViewProps> = ({
       />
 
       {/* =====================================================================
+          Shop & Booster Vault Modal
+          ===================================================================== */}
+      <ShopModal
+        isOpen={isShopOpen && status !== 'won' && !isGameOver}
+        coins={progress.coins ?? 100}
+        inventory={{
+          hint: progress.inventory?.hint ?? 3,
+          hammer: progress.inventory?.hammer ?? 2,
+          bomb: progress.inventory?.bomb ?? 2,
+          undo: progress.inventory?.undo ?? 3,
+        }}
+        isDark={isDark}
+        onClose={onCloseShop}
+        onBuyBooster={onBuyBooster}
+        onClaimDailyReward={onClaimDailyReward}
+        canClaimDailyReward={canClaimDailyReward}
+      />
+
+      {/* =====================================================================
           Victory Modal Overlay
           ===================================================================== */}
       {status === 'won' && (
@@ -291,21 +496,27 @@ export const GameView: React.FC<GameViewProps> = ({
             </div>
 
             <h2 className="text-xl font-black mb-1 tracking-tight">PUZZLE ESCAPED!</h2>
-            <p className={`text-xs mb-5 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+            <p className={`text-xs mb-2 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
               Cleared in <strong className="text-cyan-500">{movesCount} moves</strong> (Par:{' '}
               {level.parMoves})
             </p>
 
+            {/* Coins Reward */}
+            <div className="flex items-center gap-1.5 px-3 py-1 rounded-xl bg-amber-500/20 border border-amber-500/40 text-amber-400 font-bold text-xs mb-4">
+              <span>🪙</span>
+              <span>+{rewardCoins} Coins Earned!</span>
+            </div>
+
             <div className="w-full flex flex-col gap-2">
               <button
                 onClick={onNextLevel}
-                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-black text-sm shadow-lg shadow-cyan-950/50 transition-all active:scale-95"
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-cyan-500 to-indigo-600 hover:from-cyan-400 hover:to-indigo-500 text-slate-950 font-black text-sm shadow-lg shadow-cyan-950/50 transition-all active:scale-95 cursor-pointer"
               >
                 Next Level ➔
               </button>
               <button
                 onClick={onRestart}
-                className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition-all active:scale-95 border ${
+                className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition-all active:scale-95 border cursor-pointer ${
                   isDark
                     ? 'bg-slate-800 hover:bg-slate-700 text-slate-300 border-slate-700'
                     : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-300'
@@ -337,13 +548,13 @@ export const GameView: React.FC<GameViewProps> = ({
             <div className="w-full flex flex-col gap-2">
               <button
                 onClick={onRestart}
-                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-400 hover:to-amber-500 text-white font-black text-sm shadow-lg shadow-rose-950/50 transition-all active:scale-95"
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-rose-500 to-amber-600 hover:from-rose-400 hover:to-amber-500 text-white font-black text-sm shadow-lg shadow-rose-950/50 transition-all active:scale-95 cursor-pointer"
               >
                 Try Again ↻
               </button>
               <button
                 onClick={onContinueZen}
-                className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition-all active:scale-95 border flex items-center justify-center gap-1.5 ${
+                className={`w-full py-2.5 px-4 rounded-xl font-bold text-xs transition-all active:scale-95 border flex items-center justify-center gap-1.5 cursor-pointer ${
                   isDark
                     ? 'bg-slate-800 hover:bg-slate-700 text-emerald-400 border-emerald-500/30'
                     : 'bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border-emerald-300'

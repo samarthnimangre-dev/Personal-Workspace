@@ -51,10 +51,33 @@ export class OccupancyMap {
 
   // An arrow can escape only if every cell from its head toward the board edge is empty.
   traceEscape(arrow: ArrowModel, board: BoardModel): RaycastResult {
-    const path: Position[] = [];
-    let current = stepPosition(arrow.head, arrow.direction);
+    // If the arrow itself is frozen in ice, it cannot escape
+    if (arrow.isFrozen) {
+      return {
+        canEscape: false,
+        blockerId: arrow.id,
+        path: [],
+      };
+    }
 
-    while (board.isInside(current)) {
+    const path: Position[] = [];
+    let currentDir = arrow.direction;
+    let current = stepPosition(arrow.head, currentDir);
+    let deflectorEncountered = undefined;
+    const visited = new Set<string>();
+
+    while (board.isWithinBounds(current)) {
+      const stateKey = `${current.row},${current.col}:${currentDir}`;
+      if (visited.has(stateKey)) {
+        // Infinite cycle detected in deflectors
+        return {
+          canEscape: false,
+          blockerCell: current,
+          path,
+        };
+      }
+      visited.add(stateKey);
+
       path.push(current);
       const blocker = this.getArrowAt(current.row, current.col);
 
@@ -65,16 +88,25 @@ export class OccupancyMap {
           blockerId: blocker.id,
           blockerCell: current,
           path,
+          deflectorHit: deflectorEncountered,
         };
       }
 
-      current = stepPosition(current, arrow.direction);
+      // Check if cell has a deflector tile that redirects the flight vector
+      const deflector = board.getDeflectorAt(current.row, current.col);
+      if (deflector) {
+        currentDir = deflector.redirectDirection;
+        deflectorEncountered = deflector;
+      }
+
+      current = stepPosition(current, currentDir);
     }
 
     // Reached outside the board boundaries without encountering any blocker
     return {
       canEscape: true,
       path,
+      deflectorHit: deflectorEncountered,
     };
   }
 

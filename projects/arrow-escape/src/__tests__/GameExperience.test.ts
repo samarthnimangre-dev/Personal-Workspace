@@ -33,6 +33,7 @@ describe('Complete Game Experience Integration Suite', () => {
       expect(() => soundEffects.playLifeLost()).not.toThrow();
       expect(() => soundEffects.playWin()).not.toThrow();
       expect(() => soundEffects.playGameOver()).not.toThrow();
+      expect(() => soundEffects.playCoin()).not.toThrow();
     });
 
     it('manages haptic enablement and executes patterns safely', () => {
@@ -132,7 +133,13 @@ describe('Complete Game Experience Integration Suite', () => {
         const solverResult = ArrowEscapeSolver.solve(level);
         expect(solverResult.solvable).toBe(true);
         expect(solverResult.solutionMoves).toBeDefined();
-        expect(solverResult.solutionMoves!.length).toBe(level.arrows.length);
+
+        const hasObstacles = level.arrows.some((a) => a.isFrozen || a.isPivot || a.isBomb);
+        if (!hasObstacles) {
+          expect(solverResult.solutionMoves!.length).toBe(level.arrows.length);
+        } else {
+          expect(solverResult.solutionMoves!.length).toBeGreaterThanOrEqual(1);
+        }
       }
     });
   });

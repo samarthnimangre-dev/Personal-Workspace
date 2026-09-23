@@ -116,18 +116,18 @@ export class LevelGenerator {
     if (placedArrows && placedArrows.length > 0) {
       for (const arrow of placedArrows) {
         let scan = stepPosition(arrow.head!, arrow.direction);
-        while (board.isInside(scan)) {
+        while (board.isWithinBounds(scan)) {
           existingEscapeRays.add(`${scan.row},${scan.col}`);
           scan = stepPosition(scan, arrow.direction);
         }
       }
     }
 
-    // 2. Generate all available empty cells as potential heads
+    // 2. Generate all available empty cells as potential heads (must be inside active shape)
     const candidateHeads: Position[] = [];
     for (let r = 0; r < board.rows; r++) {
       for (let c = 0; c < board.cols; c++) {
-        if (!occupancy.isOccupied(r, c)) {
+        if (board.isInsideCoords(r, c) && !occupancy.isOccupied(r, c)) {
           candidateHeads.push({ row: r, col: c });
         }
       }
@@ -144,7 +144,7 @@ export class LevelGenerator {
         // 1. Verify that the escape path from head toward board edge is completely empty
         let escapePathClear = true;
         let scan = stepPosition(head, dir);
-        while (board.isInside(scan)) {
+        while (board.isWithinBounds(scan)) {
           if (occupancy.isOccupied(scan.row, scan.col)) {
             escapePathClear = false;
             break;
@@ -167,7 +167,7 @@ export class LevelGenerator {
             col: head.col - delta.dCol * step,
           };
 
-          if (!board.isInside(bodyCell) || occupancy.isOccupied(bodyCell.row, bodyCell.col)) {
+          if (!board.isInsideShape(bodyCell) || occupancy.isOccupied(bodyCell.row, bodyCell.col)) {
             bodyValid = false;
             break;
           }

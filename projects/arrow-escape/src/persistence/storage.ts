@@ -22,6 +22,14 @@ const DEFAULT_PROGRESS: UserProgress = {
   currentLevel: 1,
   completedLevels: [],
   bestMoves: {},
+  coins: 100,
+  inventory: {
+    hint: 3,
+    hammer: 2,
+    bomb: 2,
+    undo: 3,
+  },
+  stars: {},
 };
 
 // In-memory fallback map for Node test runners, SSR, or private browsing restrictions
@@ -82,6 +90,14 @@ export function loadProgress(): UserProgress {
       currentLevel: typeof parsed.currentLevel === 'number' ? parsed.currentLevel : 1,
       completedLevels: Array.isArray(parsed.completedLevels) ? parsed.completedLevels : [],
       bestMoves: typeof parsed.bestMoves === 'object' && parsed.bestMoves !== null ? parsed.bestMoves : {},
+      coins: typeof parsed.coins === 'number' ? parsed.coins : DEFAULT_PROGRESS.coins,
+      inventory: {
+        hint: parsed.inventory?.hint ?? DEFAULT_PROGRESS.inventory!.hint,
+        hammer: parsed.inventory?.hammer ?? DEFAULT_PROGRESS.inventory!.hammer,
+        bomb: parsed.inventory?.bomb ?? DEFAULT_PROGRESS.inventory!.bomb,
+        undo: parsed.inventory?.undo ?? DEFAULT_PROGRESS.inventory!.undo,
+      },
+      stars: typeof parsed.stars === 'object' && parsed.stars !== null ? parsed.stars : {},
     };
   } catch {
     return DEFAULT_PROGRESS;
@@ -99,7 +115,9 @@ export function saveProgress(progress: UserProgress): void {
 export function recordLevelCompletion(
   current: UserProgress,
   levelId: number,
-  moves: number
+  moves: number,
+  starsEarned: number = 3,
+  rewardCoins: number = 50
 ): UserProgress {
   const nextCompleted = Array.from(new Set([...current.completedLevels, levelId]));
   const currentBest = current.bestMoves[levelId];
@@ -108,12 +126,22 @@ export function recordLevelCompletion(
     [levelId]: currentBest !== undefined ? Math.min(currentBest, moves) : moves,
   };
 
+  const currentStars = current.stars?.[levelId] ?? 0;
+  const nextStars = {
+    ...(current.stars ?? {}),
+    [levelId]: Math.max(currentStars, starsEarned),
+  };
+
   const updated: UserProgress = {
     currentLevel: Math.max(current.currentLevel, levelId + 1),
     completedLevels: nextCompleted,
     bestMoves: nextBestMoves,
+    coins: (current.coins ?? 100) + rewardCoins,
+    inventory: current.inventory ?? DEFAULT_PROGRESS.inventory,
+    stars: nextStars,
   };
 
   saveProgress(updated);
   return updated;
 }
+

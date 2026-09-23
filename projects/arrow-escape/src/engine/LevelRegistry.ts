@@ -38,13 +38,14 @@ class LevelRegistryService {
     return generated;
   }
 
-  public getLevelMetadataList(): { id: number; name: string; difficulty: Difficulty }[] {
+  public getLevelMetadataList(): { id: number; name: string; difficulty: string }[] {
     const list = [];
     for (let id = 1; id <= TOTAL_CAMPAIGN_LEVELS; id++) {
+      const crafted = DEFAULT_LEVELS.find((l) => l.id === id);
       list.push({
         id,
-        name: `Level ${id}`,
-        difficulty: getDifficultyForLevel(id),
+        name: crafted ? `${crafted.name}` : `Level ${id}`,
+        difficulty: crafted?.difficulty ?? getDifficultyForLevel(id),
       });
     }
     return list;

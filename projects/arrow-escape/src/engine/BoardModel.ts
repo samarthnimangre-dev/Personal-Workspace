@@ -1,108 +1,125 @@
-// BoardModel defining grid dimensions, bounds checking, and campaign level configurations
-import type { LevelData, Position } from './types';
+// BoardModel defining grid dimensions, bounds checking, mask silhouettes, and campaign level configurations
+import type { DeflectorTile, LevelData, MaskShape, Position } from './types';
 import { isWithinBounds } from './Direction';
+import { CAMPAIGN_LEVELS } from './CampaignLevels';
 
 export class BoardModel {
   readonly rows: number;
   readonly cols: number;
+  readonly maskShape?: MaskShape;
+  readonly maskCells?: ReadonlySet<string>;
+  readonly deflectors: ReadonlyMap<string, DeflectorTile>;
 
-  constructor(rows: number, cols: number) {
+  constructor(
+    rows: number,
+    cols: number,
+    maskShape?: MaskShape,
+    mask?: readonly string[],
+    deflectors?: readonly DeflectorTile[]
+  ) {
     if (rows <= 0 || cols <= 0) {
       throw new Error(`Invalid board dimensions: ${rows}x${cols}`);
     }
     this.rows = rows;
     this.cols = cols;
+    this.maskShape = maskShape ?? 'square';
+
+    if (mask && mask.length > 0) {
+      this.maskCells = new Set(mask);
+    } else if (maskShape && maskShape !== 'square' && maskShape !== 'custom') {
+      this.maskCells = BoardModel.generateMask(maskShape, rows, cols);
+    }
+
+    const deflMap = new Map<string, DeflectorTile>();
+    if (deflectors) {
+      for (const d of deflectors) {
+        deflMap.set(`${d.row},${d.col}`, d);
+      }
+    }
+    this.deflectors = deflMap;
   }
 
-  isInside(position: Position): boolean {
+  isWithinBounds(position: Position): boolean {
     return isWithinBounds(position, this.rows, this.cols);
   }
 
+  isInsideShape(position: Position): boolean {
+    if (!this.isWithinBounds(position)) return false;
+    if (this.maskCells) {
+      return this.maskCells.has(`${position.row},${position.col}`);
+    }
+    return true;
+  }
+
+  isInside(position: Position): boolean {
+    return this.isInsideShape(position);
+  }
+
   isInsideCoords(row: number, col: number): boolean {
-    return row >= 0 && row < this.rows && col >= 0 && col < this.cols;
+    return this.isInsideShape({ row, col });
+  }
+
+  getDeflectorAt(row: number, col: number): DeflectorTile | undefined {
+    return this.deflectors.get(`${row},${col}`);
   }
 
   get totalCells(): number {
-    return this.rows * this.cols;
+    return this.maskCells ? this.maskCells.size : this.rows * this.cols;
+  }
+
+  static generateMask(shape: MaskShape, rows: number, cols: number): Set<string> {
+    const mask = new Set<string>();
+    const midR = Math.floor(rows / 2);
+    const midC = Math.floor(cols / 2);
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        switch (shape) {
+          case 'cross': {
+            if (r === midR || c === midC) {
+              mask.add(`${r},${c}`);
+            }
+            break;
+          }
+          case 'diamond': {
+            const dist = Math.abs(r - midR) + Math.abs(c - midC);
+            if (dist <= Math.min(midR, midC) + 1) {
+              mask.add(`${r},${c}`);
+            }
+            break;
+          }
+          case 'star': {
+            const dist = Math.abs(r - midR) + Math.abs(c - midC);
+            if (
+              r === midR ||
+              c === midC ||
+              dist <= 1 ||
+              (Math.abs(r - midR) === Math.abs(c - midC) && dist <= 3)
+            ) {
+              mask.add(`${r},${c}`);
+            }
+            break;
+          }
+          case 'heart': {
+            if (
+              (r === 1 && (c === 0 || c === 1 || c === 3 || c === 4)) ||
+              (r === 2 && c >= 0 && c <= 4) ||
+              (r === 3 && c >= 1 && c <= 3) ||
+              (r === 4 && c === 2)
+            ) {
+              mask.add(`${r},${c}`);
+            }
+            break;
+          }
+          default:
+            mask.add(`${r},${c}`);
+        }
+      }
+    }
+    return mask;
   }
 }
 
-// Initial Handcrafted Campaign Levels
-export const DEFAULT_LEVELS: readonly LevelData[] = [
-  {
-    id: 1,
-    name: 'First Steps',
-    rows: 3,
-    cols: 3,
-    parMoves: 3,
-    arrows: [
-      { id: '1-1', row: 1, col: 0, direction: 'left', color: '#06b6d4' },
-      { id: '1-2', row: 1, col: 1, direction: 'left', color: '#3b82f6' },
-      { id: '1-3', row: 1, col: 2, direction: 'left', color: '#6366f1' },
-    ],
-  },
-  {
-    id: 2,
-    name: 'Cross Traffic',
-    rows: 3,
-    cols: 3,
-    parMoves: 4,
-    arrows: [
-      { id: '2-1', row: 0, col: 1, direction: 'up', color: '#10b981' },
-      { id: '2-2', row: 1, col: 0, direction: 'left', color: '#06b6d4' },
-      { id: '2-3', row: 1, col: 2, direction: 'right', color: '#f59e0b' },
-      { id: '2-4', row: 2, col: 1, direction: 'down', color: '#ec4899' },
-    ],
-  },
-  {
-    id: 3,
-    name: 'Spiral Knot',
-    rows: 3,
-    cols: 3,
-    parMoves: 6,
-    arrows: [
-      { id: '3-1', row: 0, col: 0, direction: 'right', color: '#8b5cf6' },
-      { id: '3-2', row: 0, col: 1, direction: 'down', color: '#3b82f6' },
-      { id: '3-3', row: 1, col: 1, direction: 'down', color: '#06b6d4' },
-      { id: '3-4', row: 2, col: 1, direction: 'left', color: '#10b981' },
-      { id: '3-5', row: 2, col: 0, direction: 'down', color: '#f59e0b' },
-      { id: '3-6', row: 0, col: 2, direction: 'right', color: '#ec4899' },
-    ],
-  },
-  {
-    id: 4,
-    name: 'Diagonal Corridors',
-    rows: 4,
-    cols: 4,
-    parMoves: 8,
-    arrows: [
-      { id: '4-1', row: 0, col: 0, direction: 'up-left', color: '#06b6d4' },
-      { id: '4-2', row: 0, col: 3, direction: 'up-right', color: '#3b82f6' },
-      { id: '4-3', row: 3, col: 0, direction: 'down-left', color: '#ec4899' },
-      { id: '4-4', row: 3, col: 3, direction: 'down-right', color: '#f59e0b' },
-      { id: '4-5', row: 1, col: 1, direction: 'up', color: '#10b981' },
-      { id: '4-6', row: 1, col: 2, direction: 'right', color: '#8b5cf6' },
-      { id: '4-7', row: 2, col: 1, direction: 'left', color: '#06b6d4' },
-      { id: '4-8', row: 2, col: 2, direction: 'down', color: '#f43f5e' },
-    ],
-  },
-  {
-    id: 5,
-    name: 'Pinwheel Core',
-    rows: 4,
-    cols: 4,
-    parMoves: 10,
-    arrows: [
-      { id: '5-1', row: 0, col: 1, direction: 'right', color: '#06b6d4' },
-      { id: '5-2', row: 0, col: 2, direction: 'right', color: '#06b6d4' },
-      { id: '5-3', row: 1, col: 3, direction: 'down', color: '#3b82f6' },
-      { id: '5-4', row: 2, col: 3, direction: 'down', color: '#3b82f6' },
-      { id: '5-5', row: 3, col: 2, direction: 'left', color: '#10b981' },
-      { id: '5-6', row: 3, col: 1, direction: 'left', color: '#10b981' },
-      { id: '5-7', row: 2, col: 0, direction: 'up', color: '#f59e0b' },
-      { id: '5-8', row: 1, col: 0, direction: 'up', color: '#f59e0b' },
-      { id: '5-9', row: 1, col: 1, direction: 'up-left', color: '#ec4899' },
-      { id: '5-10', row: 2, col: 2, direction: 'down-right', color: '#8b5cf6' },
-    ],
-  },
-];
+// Initial Handcrafted Campaign Levels (re-exported for full backward compatibility)
+export const DEFAULT_LEVELS: readonly LevelData[] = CAMPAIGN_LEVELS;
+

@@ -1,7 +1,7 @@
-import React from 'react';
 import type { ArrowModel } from '../engine/ArrowModel';
 import type { Position } from '../engine/types';
-import { getDirectionDelta } from '../engine/Direction';
+import type { BoardModel } from '../engine/BoardModel';
+import { getDirectionDelta, stepPosition } from '../engine/Direction';
 
 interface SvgArrowProps {
   arrow: ArrowModel;
@@ -10,6 +10,7 @@ interface SvgArrowProps {
   boardCols: number;
   theme: 'dark' | 'light';
   onTap: (arrowId: string) => void;
+  board?: BoardModel;
 }
 
 export const SvgArrow: React.FC<SvgArrowProps> = ({
@@ -19,6 +20,7 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
   boardCols,
   theme,
   onTap,
+  board,
 }) => {
   if (arrow.isEscaped) return null;
 
@@ -37,8 +39,28 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
 
   // Calculate escape distance off the board bounds
   const escapeTravel = (Math.max(boardRows, boardCols) + 2) * cellSize;
-  const escapeX = delta.dCol * escapeTravel;
-  const escapeY = delta.dRow * escapeTravel;
+  let escapeMidX = delta.dCol * escapeTravel * 0.35;
+  let escapeMidY = delta.dRow * escapeTravel * 0.35;
+  let escapeX = delta.dCol * escapeTravel;
+  let escapeY = delta.dRow * escapeTravel;
+
+  if (board) {
+    let scan = stepPosition(arrow.head, arrow.direction);
+    while (board.isWithinBounds(scan)) {
+      const defl = board.getDeflectorAt(scan.row, scan.col);
+      if (defl) {
+        const midX = (defl.col - arrow.head.col) * cellSize;
+        const midY = (defl.row - arrow.head.row) * cellSize;
+        const redirDelta = getDirectionDelta(defl.redirectDirection);
+        escapeMidX = midX;
+        escapeMidY = midY;
+        escapeX = midX + redirDelta.dCol * escapeTravel;
+        escapeY = midY + redirDelta.dRow * escapeTravel;
+        break;
+      }
+      scan = stepPosition(scan, arrow.direction);
+    }
+  }
 
   // Calculate directional impact recoil
   const nudgeX = delta.dCol * 9;
@@ -54,15 +76,40 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
     onTap(arrow.id);
   };
 
-  // Color schemes based on state and theme
-  const accentColor = arrow.color || '#06b6d4';
-  const tileFill = isBlocked
+  // Color schemes based on archetype and theme
+  const isIce = arrow.isFrozen;
+  const isBomb = arrow.isBomb;
+  const isPivot = arrow.isPivot;
+  const isHinted = arrow.isHinted;
+
+  let accentColor = arrow.color || '#06b6d4';
+  if (isIce) accentColor = '#38bdf8';
+  else if (isBomb) accentColor = '#f43f5e';
+  else if (isPivot) accentColor = '#f59e0b';
+  else if (isHinted) accentColor = '#fbbf24';
+
+  let tileFill = isBlocked
     ? isDark ? '#450a0a' : '#fee2e2'
     : isDark ? 'url(#tileMetallicDark)' : 'url(#tileMetallicLight)';
 
-  const tileStroke = isBlocked
+  if (!isBlocked) {
+    if (isIce) {
+      tileFill = isDark ? 'url(#tileIceDark)' : 'url(#tileIceLight)';
+    } else if (isBomb) {
+      tileFill = isDark ? 'url(#tileBombDark)' : '#ffe4e6';
+    } else if (isPivot) {
+      tileFill = isDark ? 'url(#tilePivotDark)' : '#fef3c7';
+    }
+  }
+
+  let tileStroke = isBlocked
     ? '#f43f5e'
     : isDark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(0, 0, 0, 0.10)';
+
+  if (isIce) tileStroke = '#38bdf8';
+  else if (isBomb) tileStroke = '#f43f5e';
+  else if (isPivot) tileStroke = '#f59e0b';
+  else if (isHinted) tileStroke = '#fbbf24';
 
   // Find all adjacent pairs of cells in multi-segment arrows for seamless bridging
   const adjacentPairs: { key: string; cellA: Position; cellB: Position; isHorizontal: boolean }[] = [];
@@ -96,6 +143,8 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
           touchAction: 'manipulation',
           '--nudge-x': `${nudgeX}px`,
           '--nudge-y': `${nudgeY}px`,
+          '--escape-mid-x': `${escapeMidX}px`,
+          '--escape-mid-y': `${escapeMidY}px`,
           '--escape-x': `${escapeX}px`,
           '--escape-y': `${escapeY}px`,
         } as React.CSSProperties
@@ -465,6 +514,75 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
                   fill="#ffffff"
                 />
               </g>
+            )}
+
+            {/* =======================================================
+                LAYER 6: SPECIAL ARCHETYPE OVERLAYS (Ice, Pivot, Bomb, Hint)
+                ======================================================= */}
+            {isIce && (
+              <g pointerEvents="none">
+                {/* Frosted Glass Diamond Facet */}
+                <polygon
+                  points={`${center},${center - tileSize * 0.36} ${center + tileSize * 0.36},${center} ${center},${center + tileSize * 0.36} ${center - tileSize * 0.36},${center}`}
+                  fill="rgba(224, 242, 254, 0.25)"
+                  stroke="rgba(255, 255, 255, 0.75)"
+                  strokeWidth={1.5}
+                />
+                {/* Ice Fracture Lines */}
+                <polyline
+                  points={`${center - tileSize * 0.22},${center - tileSize * 0.12} ${center},${center} ${center + tileSize * 0.22},${center + tileSize * 0.12}`}
+                  fill="none"
+                  stroke="rgba(255, 255, 255, 0.9)"
+                  strokeWidth={1.5}
+                  strokeLinecap="round"
+                />
+                {arrow.frozenHits > 1 && (
+                  <text
+                    x={center + tileSize * 0.22}
+                    y={center + tileSize * 0.34}
+                    fill="#38bdf8"
+                    fontSize={11}
+                    fontWeight="900"
+                    filter="drop-shadow(0 0 3px #000)"
+                  >
+                    {arrow.frozenHits}
+                  </text>
+                )}
+              </g>
+            )}
+
+            {isPivot && isHead && (
+              <g pointerEvents="none" transform={`translate(${center}, ${center - tileSize * 0.24})`}>
+                <circle cx={0} cy={0} r={7} fill="rgba(245, 158, 11, 0.9)" />
+                <path
+                  d="M -3.5 -1 A 4.5 4.5 0 1 1 3.5 1"
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth={1.4}
+                  strokeLinecap="round"
+                />
+              </g>
+            )}
+
+            {isBomb && (
+              <g pointerEvents="none">
+                <circle cx={center} cy={center} r={tileSize * 0.16} fill="#f43f5e" />
+                <circle cx={center} cy={center} r={tileSize * 0.08} fill="#fef08a" />
+              </g>
+            )}
+
+            {isHinted && isHead && (
+              <circle
+                cx={center}
+                cy={center}
+                r={tileSize * 0.44}
+                fill="none"
+                stroke="#fbbf24"
+                strokeWidth={2.5}
+                opacity={0.8}
+                filter="drop-shadow(0 0 8px #fbbf24)"
+                pointerEvents="none"
+              />
             )}
 
             {/* Transparent Touch Hit Target */}

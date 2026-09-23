@@ -1,6 +1,8 @@
 // Arrow Escape Solver: Searches legal escape sequences and verifies level solvability
 import type { LevelData } from './types';
 import { ArrowEscapeEngine } from './ArrowEscapeEngine';
+import { BoardModel } from './BoardModel';
+import type { ArrowModel } from './ArrowModel';
 
 export interface SolverResult {
   readonly solvable: boolean;
@@ -68,6 +70,28 @@ export class ArrowEscapeSolver {
       }
     }
 
+    if (level.mask || (level.maskShape && level.maskShape !== 'square' && level.maskShape !== 'custom')) {
+      const maskSet = level.mask && level.mask.length > 0
+        ? new Set(level.mask)
+        : (level.maskShape ? BoardModel.generateMask(level.maskShape, level.rows, level.cols) : null);
+
+      if (maskSet) {
+        for (const arrow of level.arrows) {
+          const cells = arrow.occupiedCells && arrow.occupiedCells.length > 0
+            ? arrow.occupiedCells
+            : [arrow.head ?? { row: arrow.row ?? 0, col: arrow.col ?? 0 }];
+          for (const cell of cells) {
+            if (!maskSet.has(`${cell.row},${cell.col}`)) {
+              return {
+                valid: false,
+                error: `Arrow ${arrow.id} cell (${cell.row}, ${cell.col}) placed outside mask ${level.maskShape}.`,
+              };
+            }
+          }
+        }
+      }
+    }
+
     return { valid: true };
   }
 
@@ -97,13 +121,13 @@ export class ArrowEscapeSolver {
     const visitedStates = new Set<string>();
     let stepsExplored = 0;
 
-    // Helper state key: sorted comma-separated IDs of remaining arrows
+    // Helper state key: sorted arrow attributes
     const getStateKey = (): string => {
       return engine
         .getRemainingArrows()
-        .map((a) => a.id)
+        .map((a) => `${a.id}:${a.direction}:${a.frozenHits}`)
         .sort()
-        .join(',');
+        .join('|');
     };
 
     // Depth-First Search for valid topological escape order
@@ -123,28 +147,40 @@ export class ArrowEscapeSolver {
       }
       visitedStates.add(stateKey);
 
-      const available = engine.getAvailableArrows();
-      if (available.length === 0) {
+      const remaining = engine.getRemainingArrows();
+
+      // Prioritize unblocked escaping arrows first, then special arrows (bombs, frozen, pivots)
+      const unblocked: string[] = [];
+      const special: string[] = [];
+
+      for (const a of remaining) {
+        if (engine.canEscape(a.id)) {
+          unblocked.push(a.id);
+        } else if (a.isBomb || a.isFrozen || a.isPivot) {
+          special.push(a.id);
+        }
+      }
+
+      const candidates = unblocked.length > 0 ? unblocked : special;
+      if (candidates.length === 0) {
         // Deadlock reached: no arrow can escape from here
         return null;
       }
 
-      for (const arrow of available) {
-        // Clone or execute move in engine
-        const success = engine.removeArrow(arrow.id);
-        if (success) {
-          const solution = search([...movesSoFar, arrow.id]);
+      for (const arrowId of candidates) {
+        // Snapshot arrows before attempt
+        const snapshot = engine.getAllArrows().map((a) => a.withState(a.state));
+        const res = engine.attemptMove(arrowId);
+
+        if (res.success) {
+          const solution = search([...movesSoFar, arrowId]);
           if (solution !== null) {
             return solution;
           }
-
-          // Backtrack: reload current remaining state minus arrow
-          // For simplicity and exact accuracy in backtracking, reset and re-apply path
-          engine.reset();
-          for (const m of movesSoFar) {
-            engine.removeArrow(m);
-          }
         }
+
+        // Restore snapshot on backtrack
+        engine.restoreState(snapshot);
       }
 
       return null;
@@ -165,6 +201,44 @@ export class ArrowEscapeSolver {
       stepsExplored,
       error: 'Unsolvable level: no valid sequence of unblocked arrows reaches victory.',
     };
+  }
+
+  /**
+   * Solves from an arbitrary runtime board and active arrows state.
+   * Directly solves the remaining puzzle from the current player position.
+   */
+  public static solveFromState(
+    board: BoardModel,
+    arrows: readonly ArrowModel[],
+    maxSteps: number = 20000
+  ): SolverResult {
+    const unescaped = arrows.filter((a) => !a.isEscaped);
+    if (unescaped.length === 0) {
+      return { solvable: true, solutionMoves: [], stepsExplored: 0 };
+    }
+
+    const syntheticLevel: LevelData = {
+      id: 0,
+      name: 'Current State',
+      rows: board.rows,
+      cols: board.cols,
+      parMoves: unescaped.length,
+      maskShape: board.maskShape,
+      deflectors: Array.from(board.deflectors.values()),
+      arrows: unescaped.map((a) => ({
+        id: a.id,
+        direction: a.direction,
+        head: a.head,
+        occupiedCells: a.occupiedCells,
+        color: a.color,
+        isFrozen: a.isFrozen,
+        frozenHits: a.frozenHits,
+        isPivot: a.isPivot,
+        isBomb: a.isBomb,
+      })),
+    };
+
+    return this.solve(syntheticLevel, maxSteps);
   }
 
   /**

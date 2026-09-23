@@ -4,6 +4,7 @@ import type { BoardModel } from '../engine/BoardModel';
 import type { ArrowModel } from '../engine/ArrowModel';
 import { SvgArrow } from './SvgArrow';
 import { ParticleOverlay } from './ParticleOverlay';
+import { getDirectionAngle } from '../engine/Direction';
 
 interface SvgBoardProps {
   board: BoardModel;
@@ -11,6 +12,7 @@ interface SvgBoardProps {
   theme: 'dark' | 'light';
   cellSize?: number;
   onArrowTap: (arrowId: string) => void;
+  onCancelBooster?: () => void;
 }
 
 export const SvgBoard: React.FC<SvgBoardProps> = ({
@@ -19,6 +21,7 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
   theme,
   cellSize = 72,
   onArrowTap,
+  onCancelBooster,
 }) => {
   const boardWidth = board.cols * cellSize;
   const boardHeight = board.rows * cellSize;
@@ -28,10 +31,11 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
 
   const isDark = theme === 'dark';
 
-  // Pre-generate grid background cell slots
+  // Pre-generate grid background cell slots (filtered by mask shape)
   const gridSlots = [];
   for (let r = 0; r < board.rows; r++) {
     for (let c = 0; c < board.cols; c++) {
+      if (!board.isInsideCoords(r, c)) continue;
       gridSlots.push({
         key: `${r}-${c}`,
         x: c * cellSize + padding + 4,
@@ -40,6 +44,8 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
       });
     }
   }
+
+  const deflectorList = board.deflectors ? Array.from(board.deflectors.values()) : [];
 
   return (
     <div
@@ -54,6 +60,7 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
         className="w-full h-full max-w-full max-h-full drop-shadow-2xl overflow-visible"
         preserveAspectRatio="xMidYMid meet"
         style={{ touchAction: 'manipulation' }}
+        onClick={onCancelBooster}
       >
         <defs>
           {/* Cyan Rim Light Bloom Filter */}
@@ -108,6 +115,34 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
             <stop offset="0%" stopColor="#ffffff" />
             <stop offset="60%" stopColor="#f8fafc" />
             <stop offset="100%" stopColor="#edf2f7" />
+          </linearGradient>
+
+          {/* Ice Frost Tile Gradient (Dark Mode) */}
+          <linearGradient id="tileIceDark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#075985" />
+            <stop offset="50%" stopColor="#0369a1" />
+            <stop offset="100%" stopColor="#082f49" />
+          </linearGradient>
+
+          {/* Ice Frost Tile Gradient (Light Mode) */}
+          <linearGradient id="tileIceLight" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#f0f9ff" />
+            <stop offset="50%" stopColor="#e0f2fe" />
+            <stop offset="100%" stopColor="#bae6fd" />
+          </linearGradient>
+
+          {/* Bomb Hazard Tile Gradient */}
+          <linearGradient id="tileBombDark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#4c0519" />
+            <stop offset="50%" stopColor="#881337" />
+            <stop offset="100%" stopColor="#1f0208" />
+          </linearGradient>
+
+          {/* Pivot Rotator Tile Gradient */}
+          <linearGradient id="tilePivotDark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#78350f" />
+            <stop offset="50%" stopColor="#451a03" />
+            <stop offset="100%" stopColor="#1c0a02" />
           </linearGradient>
         </defs>
 
@@ -172,6 +207,39 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
           />
         ))}
 
+        {/* Deflector Redirect Runes */}
+        {deflectorList.map((d) => {
+          const x = d.col * cellSize + padding;
+          const y = d.row * cellSize + padding;
+          const center = cellSize / 2;
+          const angle = getDirectionAngle(d.redirectDirection);
+          return (
+            <g key={`deflector-${d.row}-${d.col}`} transform={`translate(${x}, ${y})`}>
+              <polygon
+                points={`${center},${center - cellSize * 0.32} ${center + cellSize * 0.32},${center} ${center},${center + cellSize * 0.32} ${center - cellSize * 0.32},${center}`}
+                fill={isDark ? 'rgba(6, 182, 212, 0.18)' : 'rgba(6, 182, 212, 0.12)'}
+                stroke="#06b6d4"
+                strokeWidth={1.8}
+                strokeDasharray="3 2"
+                filter="drop-shadow(0 0 6px rgba(6, 182, 212, 0.6))"
+              />
+              <circle cx={center} cy={center} r={cellSize * 0.14} fill="#0ea5e9" opacity={0.85} />
+              {/* Directional Chevron Pointer */}
+              <g transform={`rotate(${angle}, ${center}, ${center})`}>
+                <polyline
+                  points={`${center - 4},${center - 6} ${center + 5},${center} ${center - 4},${center + 6}`}
+                  fill="none"
+                  stroke="#ffffff"
+                  strokeWidth={2.2}
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  filter="drop-shadow(0 0 3px #000)"
+                />
+              </g>
+            </g>
+          );
+        })}
+
         {/* Active Arrows Group */}
         <g transform={`translate(${padding}, ${padding})`}>
           {arrows.map((arrow) => (
@@ -183,6 +251,7 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
               boardCols={board.cols}
               theme={theme}
               onTap={onArrowTap}
+              board={board}
             />
           ))}
         </g>
