@@ -25,6 +25,7 @@ dist-ssr
 
 # Android / Capacitor build artifacts
 *.apk
+!arrow-escape-debug.apk
 *.aab
 .gradle/
 build/
