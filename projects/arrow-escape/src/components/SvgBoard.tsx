@@ -62,10 +62,31 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
             <stop offset="100%" stopColor="#ffffff" stopOpacity="0.0" />
           </linearGradient>
 
+          {/* Board Plinth Rim Bevel with Cyber-Cyan Highlight */}
+          <linearGradient id="boardRimGlow" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.18)" />
+            <stop offset="50%" stopColor="rgba(6, 182, 212, 0.35)" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.06)" />
+          </linearGradient>
+
           {/* Board gradient backdrop */}
           <linearGradient id="boardBackdrop" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor={isDark ? '#0b1329' : '#ffffff'} />
             <stop offset="100%" stopColor={isDark ? '#030712' : '#e2e8f0'} />
+          </linearGradient>
+
+          {/* 3-Stop Metallic Obsidian Tile Surface (Dark Mode) */}
+          <linearGradient id="tileMetallicDark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#111827" />
+            <stop offset="60%" stopColor="#0b0f19" />
+            <stop offset="100%" stopColor="#030712" />
+          </linearGradient>
+
+          {/* Clean Ceramic Tile Surface (Light Mode) */}
+          <linearGradient id="tileMetallicLight" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#ffffff" />
+            <stop offset="60%" stopColor="#f8fafc" />
+            <stop offset="100%" stopColor="#edf2f7" />
           </linearGradient>
         </defs>
 
@@ -75,10 +96,10 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
           y={padding - 6}
           width={boardWidth + 12}
           height={boardHeight + 12}
-          rx={22}
-          ry={22}
+          rx={24}
+          ry={24}
           fill="url(#boardBackdrop)"
-          stroke={isDark ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)'}
+          stroke={isDark ? 'url(#boardRimGlow)' : 'rgba(0, 0, 0, 0.08)'}
           strokeWidth={1.5}
         />
 
