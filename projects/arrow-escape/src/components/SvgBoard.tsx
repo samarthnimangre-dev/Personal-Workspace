@@ -56,23 +56,44 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
         style={{ touchAction: 'manipulation' }}
       >
         <defs>
+          {/* Cyan Rim Light Bloom Filter */}
+          <filter id="cyanBevelBloom" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+
           {/* Specular gloss highlight gradient */}
           <linearGradient id="specularGloss" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%" stopColor="#ffffff" stopOpacity={isDark ? 0.22 : 0.45} />
             <stop offset="100%" stopColor="#ffffff" stopOpacity="0.0" />
           </linearGradient>
 
-          {/* Board Plinth Rim Bevel with Cyber-Cyan Highlight */}
+          {/* Board Plinth Rim Bevel with Vivid Cyber-Cyan Highlight */}
           <linearGradient id="boardRimGlow" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.18)" />
-            <stop offset="50%" stopColor="rgba(6, 182, 212, 0.35)" />
-            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.06)" />
+            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.28)" />
+            <stop offset="25%" stopColor="rgba(6, 182, 212, 0.70)" />
+            <stop offset="65%" stopColor="rgba(6, 182, 212, 0.30)" />
+            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.08)" />
           </linearGradient>
 
           {/* Board gradient backdrop */}
           <linearGradient id="boardBackdrop" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor={isDark ? '#0b1329' : '#ffffff'} />
             <stop offset="100%" stopColor={isDark ? '#030712' : '#e2e8f0'} />
+          </linearGradient>
+
+          {/* 3-Stop Inset Background Tile Gradient (Dark Obsidian Wells) */}
+          <linearGradient id="bgTileMetallicDark" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#020617" />
+            <stop offset="50%" stopColor="#070c1b" />
+            <stop offset="100%" stopColor="#0b1329" />
+          </linearGradient>
+
+          {/* 3-Stop Inset Background Tile Gradient (Light Mode) */}
+          <linearGradient id="bgTileMetallicLight" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor="#e2e8f0" />
+            <stop offset="50%" stopColor="#f1f5f9" />
+            <stop offset="100%" stopColor="#ffffff" />
           </linearGradient>
 
           {/* 3-Stop Metallic Obsidian Tile Surface (Dark Mode) */}
@@ -90,6 +111,23 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
           </linearGradient>
         </defs>
 
+        {/* Outer Cyan Rim Bloom Layer (Dark Mode) */}
+        {isDark && (
+          <rect
+            x={padding - 6}
+            y={padding - 6}
+            width={boardWidth + 12}
+            height={boardHeight + 12}
+            rx={24}
+            ry={24}
+            fill="none"
+            stroke="rgba(6, 182, 212, 0.45)"
+            strokeWidth={3}
+            filter="url(#cyanBevelBloom)"
+            opacity={0.8}
+          />
+        )}
+
         {/* Outer Board Slab Background */}
         <rect
           x={padding - 6}
@@ -100,10 +138,25 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
           ry={24}
           fill="url(#boardBackdrop)"
           stroke={isDark ? 'url(#boardRimGlow)' : 'rgba(0, 0, 0, 0.08)'}
-          strokeWidth={1.5}
+          strokeWidth={1.8}
         />
 
-        {/* Inset Grid Slots */}
+        {/* Inner Cyan Chamfer Line (Dark Mode) */}
+        {isDark && (
+          <rect
+            x={padding - 4}
+            y={padding - 4}
+            width={boardWidth + 8}
+            height={boardHeight + 8}
+            rx={22}
+            ry={22}
+            fill="none"
+            stroke="rgba(6, 182, 212, 0.20)"
+            strokeWidth={1}
+          />
+        )}
+
+        {/* Inset Grid Slots (3-Stop Metallic Obsidian Background Tiles) */}
         {gridSlots.map((slot) => (
           <rect
             key={slot.key}
@@ -113,8 +166,8 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
             height={slot.size}
             rx={14}
             ry={14}
-            fill={isDark ? '#030712' : '#f8fafc'}
-            stroke={isDark ? 'rgba(255, 255, 255, 0.04)' : 'rgba(0, 0, 0, 0.06)'}
+            fill={isDark ? 'url(#bgTileMetallicDark)' : 'url(#bgTileMetallicLight)'}
+            stroke={isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)'}
             strokeWidth={1}
           />
         ))}

@@ -84,62 +84,168 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
       tabIndex={0}
       aria-label={`Arrow pointing ${arrow.direction} at row ${arrow.row + 1}, column ${arrow.col + 1}`}
     >
-      {/* 1. Body Connectors: Seamlessly bridge adjacent cells in multi-cell arrows */}
+      {/* 1. Seamless Dark-Acrylic Body Bridges for Multi-Segment Arrows */}
       {arrow.occupiedCells.length > 1 &&
         arrow.occupiedCells.map((cellA, idx) => {
-          // Connect to subsequent cells in chain
           const cellB = arrow.occupiedCells[idx + 1];
           if (!cellB) return null;
+
+          const isHorizontal = cellA.row === cellB.row;
+          const isVertical = cellA.col === cellB.col;
+          if (!isHorizontal && !isVertical) return null;
 
           const ax = cellA.col * cellSize + center;
           const ay = cellA.row * cellSize + center;
           const bx = cellB.col * cellSize + center;
           const by = cellB.row * cellSize + center;
 
-          return (
-            <g key={`bridge-${cellA.row},${cellA.col}-${cellB.row},${cellB.col}`}>
-              {/* Connector shadow */}
-              <line
-                x1={ax}
-                y1={ay + 3}
-                x2={bx}
-                y2={by + 3}
-                stroke={isDark ? 'rgba(0, 0, 0, 0.55)' : 'rgba(15, 23, 42, 0.12)'}
-                strokeWidth={tileSize * 0.74}
-                strokeLinecap="round"
-              />
-              {/* Connector body fill */}
-              <line
-                x1={ax}
-                y1={ay}
-                x2={bx}
-                y2={by}
-                stroke={isBlocked ? (isDark ? '#450a0a' : '#fee2e2') : isDark ? '#0b0f19' : '#ffffff'}
-                strokeWidth={tileSize * 0.74}
-                strokeLinecap="round"
-              />
-              {/* Inner Glowing Laser Conduit */}
-              <line
-                x1={ax}
-                y1={ay}
-                x2={bx}
-                y2={by}
-                stroke={isBlocked ? '#f43f5e' : accentColor}
-                strokeWidth={outerStrokeWidth}
-                strokeLinecap="round"
-                opacity={0.85}
-              />
-              <line
-                x1={ax}
-                y1={ay}
-                x2={bx}
-                y2={by}
-                stroke="#ffffff"
-                strokeWidth={laserCoreWidth}
-                strokeLinecap="round"
-              />
-            </g>
-          );
+          if (isHorizontal) {
+            const minCol = Math.min(cellA.col, cellB.col);
+            const bridgeX = minCol * cellSize + center;
+            const bridgeY = cellA.row * cellSize + padding;
+            const bridgeW = cellSize;
+            const bridgeH = tileSize;
+
+            return (
+              <g key={`bridge-${cellA.row},${cellA.col}-${cellB.row},${cellB.col}`}>
+                {/* Seamless Bridge 3D Drop Shadow */}
+                <rect
+                  x={bridgeX}
+                  y={bridgeY + 3}
+                  width={bridgeW}
+                  height={bridgeH}
+                  fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
+                />
+                {/* Seamless Dark-Acrylic Bridge Body */}
+                <rect
+                  x={bridgeX}
+                  y={bridgeY}
+                  width={bridgeW}
+                  height={bridgeH}
+                  fill={tileFill}
+                />
+                {/* Seamless Specular Top Gloss Continuation */}
+                <rect
+                  x={bridgeX}
+                  y={bridgeY + 2}
+                  width={bridgeW}
+                  height={tileSize * 0.35}
+                  fill="url(#specularGloss)"
+                  pointerEvents="none"
+                />
+                {/* Seamless Top & Bottom Acrylic Edge Borders */}
+                <line
+                  x1={bridgeX}
+                  y1={bridgeY}
+                  x2={bridgeX + bridgeW}
+                  y2={bridgeY}
+                  stroke={tileStroke}
+                  strokeWidth={isBlocked ? 2.5 : 1.2}
+                />
+                <line
+                  x1={bridgeX}
+                  y1={bridgeY + bridgeH}
+                  x2={bridgeX + bridgeW}
+                  y2={bridgeY + bridgeH}
+                  stroke={tileStroke}
+                  strokeWidth={isBlocked ? 2.5 : 1.2}
+                />
+                {/* Two-Pass White-Hot Laser Conduit Spine */}
+                <line
+                  x1={ax}
+                  y1={ay}
+                  x2={bx}
+                  y2={by}
+                  stroke={isBlocked ? '#f43f5e' : accentColor}
+                  strokeWidth={outerStrokeWidth}
+                  strokeLinecap="round"
+                  style={{
+                    filter: isBlocked
+                      ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
+                      : `drop-shadow(0 0 6px ${accentColor})`,
+                  }}
+                />
+                <line
+                  x1={ax}
+                  y1={ay}
+                  x2={bx}
+                  y2={by}
+                  stroke="#ffffff"
+                  strokeWidth={laserCoreWidth}
+                  strokeLinecap="round"
+                />
+              </g>
+            );
+          } else {
+            // Vertical bridge
+            const minRow = Math.min(cellA.row, cellB.row);
+            const bridgeX = cellA.col * cellSize + padding;
+            const bridgeY = minRow * cellSize + center;
+            const bridgeW = tileSize;
+            const bridgeH = cellSize;
+
+            return (
+              <g key={`bridge-${cellA.row},${cellA.col}-${cellB.row},${cellB.col}`}>
+                {/* Seamless Bridge 3D Drop Shadow */}
+                <rect
+                  x={bridgeX}
+                  y={bridgeY + 3}
+                  width={bridgeW}
+                  height={bridgeH}
+                  fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
+                />
+                {/* Seamless Dark-Acrylic Bridge Body */}
+                <rect
+                  x={bridgeX}
+                  y={bridgeY}
+                  width={bridgeW}
+                  height={bridgeH}
+                  fill={tileFill}
+                />
+                {/* Seamless Left & Right Acrylic Edge Borders */}
+                <line
+                  x1={bridgeX}
+                  y1={bridgeY}
+                  x2={bridgeX}
+                  y2={bridgeY + bridgeH}
+                  stroke={tileStroke}
+                  strokeWidth={isBlocked ? 2.5 : 1.2}
+                />
+                <line
+                  x1={bridgeX + bridgeW}
+                  y1={bridgeY}
+                  x2={bridgeX + bridgeW}
+                  y2={bridgeY + bridgeH}
+                  stroke={tileStroke}
+                  strokeWidth={isBlocked ? 2.5 : 1.2}
+                />
+                {/* Two-Pass White-Hot Laser Conduit Spine */}
+                <line
+                  x1={ax}
+                  y1={ay}
+                  x2={bx}
+                  y2={by}
+                  stroke={isBlocked ? '#f43f5e' : accentColor}
+                  strokeWidth={outerStrokeWidth}
+                  strokeLinecap="round"
+                  style={{
+                    filter: isBlocked
+                      ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
+                      : `drop-shadow(0 0 6px ${accentColor})`,
+                  }}
+                />
+                <line
+                  x1={ax}
+                  y1={ay}
+                  x2={bx}
+                  y2={by}
+                  stroke="#ffffff"
+                  strokeWidth={laserCoreWidth}
+                  strokeLinecap="round"
+                />
+              </g>
+            );
+          }
         })}
 
       {/* 2. Cell Tiles: Head and Body Segments */}
@@ -150,7 +256,7 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
 
         return (
           <g key={`cell-${cell.row}-${cell.col}`} transform={`translate(${cellX}, ${cellY})`}>
-            {/* 3D Drop Shadow */}
+            {/* 3D Tile Drop Shadow */}
             <rect
               x={padding}
               y={padding + 3}
@@ -191,17 +297,17 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
               pointerEvents="none"
             />
 
-            {/* Head Glyph: Dual-Pass Laser Core | Tail Node: Glowing Conduit Node */}
+            {/* Head Glyph: Dual-Pass White-Hot Laser Core | Tail Node: Glowing Conduit Node */}
             {isHead ? (
               <g
                 transform={`rotate(${arrow.angle}, ${center}, ${center})`}
                 style={{
                   filter: isBlocked
-                    ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
-                    : `drop-shadow(0 0 6px ${accentColor})`,
+                    ? 'drop-shadow(0 0 10px rgba(244, 63, 94, 0.95))'
+                    : `drop-shadow(0 0 5px ${accentColor}) drop-shadow(0 0 12px ${accentColor}90)`,
                 }}
               >
-                {/* --- PASS 1: Outer Neon Aura --- */}
+                {/* --- PASS 1: Outer Neon Aura (Stem & Chevron) --- */}
                 <line
                   x1={center - arrowLength / 2}
                   y1={center}
@@ -224,7 +330,7 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
                   strokeLinejoin="round"
                 />
 
-                {/* --- PASS 2: Pure White Laser Core --- */}
+                {/* --- PASS 2: Pure White-Hot Laser Core (Stem & Chevron) --- */}
                 <line
                   x1={center - arrowLength / 2 + 1}
                   y1={center}
@@ -248,22 +354,26 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
                 />
               </g>
             ) : (
-              /* Sleek Tail Node Conduit */
+              /* Sleek Tail Node Conduit with Two-Pass White-Hot Core */
               <g
                 style={{
-                  filter: `drop-shadow(0 0 4px ${accentColor})`,
+                  filter: isBlocked
+                    ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
+                    : `drop-shadow(0 0 5px ${accentColor}) drop-shadow(0 0 10px ${accentColor}80)`,
                 }}
               >
+                {/* Pass 1: Outer Neon Aura Node */}
                 <circle
                   cx={center}
                   cy={center}
-                  r={tileSize * 0.16}
+                  r={tileSize * 0.17}
                   fill={isBlocked ? '#f43f5e' : accentColor}
                 />
+                {/* Pass 2: White-Hot Laser Core Dot */}
                 <circle
                   cx={center}
                   cy={center}
-                  r={tileSize * 0.08}
+                  r={tileSize * 0.085}
                   fill="#ffffff"
                 />
               </g>
