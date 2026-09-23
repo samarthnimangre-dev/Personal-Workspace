@@ -65,15 +65,52 @@ export const ArrowTileComponent: React.FC<ArrowTileProps> = ({
         }}
         className="flex items-center justify-center pointer-events-none"
       >
-        <ArrowRight
+        <svg
           style={{
-            width: `${cellSize * 0.52}px`,
-            height: `${cellSize * 0.52}px`,
-            color: arrow.color || theme.accentColor,
-            filter: `drop-shadow(0 0 6px ${arrow.color || theme.accentColor})`,
+            width: `${cellSize * 0.54}px`,
+            height: `${cellSize * 0.54}px`,
+            filter: `drop-shadow(0 0 5px ${arrow.color || theme.accentColor}) drop-shadow(0 0 10px ${arrow.color || theme.accentColor}80)`,
           }}
-          strokeWidth={3}
-        />
+          viewBox="0 0 40 40"
+          className="overflow-visible"
+        >
+          {/* Pass 1: Outer Neon Aura */}
+          <line
+            x1={4}
+            y1={20}
+            x2={32}
+            y2={20}
+            stroke={arrow.color || theme.accentColor}
+            strokeWidth={4.4}
+            strokeLinecap="round"
+          />
+          <polyline
+            points="24,10 34,20 24,30"
+            fill="none"
+            stroke={arrow.color || theme.accentColor}
+            strokeWidth={4.4}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+          {/* Pass 2: White-Hot Laser Core */}
+          <line
+            x1={5}
+            y1={20}
+            x2={32}
+            y2={20}
+            stroke="#ffffff"
+            strokeWidth={2}
+            strokeLinecap="round"
+          />
+          <polyline
+            points="24.5,11 33.5,20 24.5,29"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          />
+        </svg>
       </div>
 
       {/* Hammer overlay preview when hammer mode is active */}

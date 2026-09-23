@@ -1,6 +1,6 @@
-// Polished SVG Arrow component with multi-cell body unification, directional recoil, and escape follow
 import React from 'react';
 import type { ArrowModel } from '../engine/ArrowModel';
+import type { Position } from '../engine/types';
 import { getDirectionDelta } from '../engine/Direction';
 
 interface SvgArrowProps {
@@ -64,6 +64,27 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
     ? '#f43f5e'
     : isDark ? 'rgba(255, 255, 255, 0.14)' : 'rgba(0, 0, 0, 0.10)';
 
+  // Find all adjacent pairs of cells in multi-segment arrows for seamless bridging
+  const adjacentPairs: { key: string; cellA: Position; cellB: Position; isHorizontal: boolean }[] = [];
+  if (arrow.occupiedCells.length > 1) {
+    for (let i = 0; i < arrow.occupiedCells.length; i++) {
+      for (let j = i + 1; j < arrow.occupiedCells.length; j++) {
+        const cA = arrow.occupiedCells[i];
+        const cB = arrow.occupiedCells[j];
+        const dR = Math.abs(cA.row - cB.row);
+        const dC = Math.abs(cA.col - cB.col);
+        if (dR + dC === 1) {
+          adjacentPairs.push({
+            key: `pair-${cA.row},${cA.col}-${cB.row},${cB.col}`,
+            cellA: cA,
+            cellB: cB,
+            isHorizontal: cA.row === cB.row,
+          });
+        }
+      }
+    }
+  }
+
   return (
     <g
       className={`svg-arrow-group ${isBlocked ? 'arrow-blocked-recoil' : ''} ${
@@ -84,221 +105,288 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
       tabIndex={0}
       aria-label={`Arrow pointing ${arrow.direction} at row ${arrow.row + 1}, column ${arrow.col + 1}`}
     >
-      {/* 1. Seamless Dark-Acrylic Body Bridges for Multi-Segment Arrows */}
-      {arrow.occupiedCells.length > 1 &&
-        arrow.occupiedCells.map((cellA, idx) => {
-          const cellB = arrow.occupiedCells[idx + 1];
-          if (!cellB) return null;
+      {/* ===================================================================
+          LAYER 1: 3D DROP SHADOWS (Seamlessly fused cells & bridges)
+          =================================================================== */}
+      {/* Cell Tile Shadows */}
+      {arrow.occupiedCells.map((cell) => (
+        <rect
+          key={`shadow-${cell.row}-${cell.col}`}
+          x={cell.col * cellSize + padding}
+          y={cell.row * cellSize + padding + 3}
+          width={tileSize}
+          height={tileSize}
+          rx={radius}
+          ry={radius}
+          fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
+        />
+      ))}
 
-          const isHorizontal = cellA.row === cellB.row;
-          const isVertical = cellA.col === cellB.col;
-          if (!isHorizontal && !isVertical) return null;
+      {/* Seamless Bridge Shadows */}
+      {adjacentPairs.map(({ key, cellA, cellB, isHorizontal }) => {
+        if (isHorizontal) {
+          const minCol = Math.min(cellA.col, cellB.col);
+          return (
+            <rect
+              key={`bridge-shadow-${key}`}
+              x={minCol * cellSize + center}
+              y={cellA.row * cellSize + padding + 3}
+              width={cellSize}
+              height={tileSize}
+              fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
+            />
+          );
+        } else {
+          const minRow = Math.min(cellA.row, cellB.row);
+          return (
+            <rect
+              key={`bridge-shadow-${key}`}
+              x={cellA.col * cellSize + padding}
+              y={minRow * cellSize + center + 3}
+              width={tileSize}
+              height={cellSize}
+              fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
+            />
+          );
+        }
+      })}
 
-          const ax = cellA.col * cellSize + center;
-          const ay = cellA.row * cellSize + center;
-          const bx = cellB.col * cellSize + center;
-          const by = cellB.row * cellSize + center;
+      {/* ===================================================================
+          LAYER 2: SEAMLESS DARK-ACRYLIC TILE BODIES
+          =================================================================== */}
+      {/* Individual Cell Bodies */}
+      {arrow.occupiedCells.map((cell) => (
+        <rect
+          key={`body-${cell.row}-${cell.col}`}
+          x={cell.col * cellSize + padding}
+          y={cell.row * cellSize + padding}
+          width={tileSize}
+          height={tileSize}
+          rx={radius}
+          ry={radius}
+          fill={tileFill}
+        />
+      ))}
 
-          if (isHorizontal) {
-            const minCol = Math.min(cellA.col, cellB.col);
-            const bridgeX = minCol * cellSize + center;
-            const bridgeY = cellA.row * cellSize + padding;
-            const bridgeW = cellSize;
-            const bridgeH = tileSize;
+      {/* Seamless Acrylic Bridges (Seamlessly welds adjacent cells together into monolithic body) */}
+      {adjacentPairs.map(({ key, cellA, cellB, isHorizontal }) => {
+        if (isHorizontal) {
+          const minCol = Math.min(cellA.col, cellB.col);
+          return (
+            <rect
+              key={`bridge-body-${key}`}
+              x={minCol * cellSize + center}
+              y={cellA.row * cellSize + padding}
+              width={cellSize}
+              height={tileSize}
+              fill={tileFill}
+            />
+          );
+        } else {
+          const minRow = Math.min(cellA.row, cellB.row);
+          return (
+            <rect
+              key={`bridge-body-${key}`}
+              x={cellA.col * cellSize + padding}
+              y={minRow * cellSize + center}
+              width={tileSize}
+              height={cellSize}
+              fill={tileFill}
+            />
+          );
+        }
+      })}
 
-            return (
-              <g key={`bridge-${cellA.row},${cellA.col}-${cellB.row},${cellB.col}`}>
-                {/* Seamless Bridge 3D Drop Shadow */}
-                <rect
-                  x={bridgeX}
-                  y={bridgeY + 3}
-                  width={bridgeW}
-                  height={bridgeH}
-                  fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
-                />
-                {/* Seamless Dark-Acrylic Bridge Body */}
-                <rect
-                  x={bridgeX}
-                  y={bridgeY}
-                  width={bridgeW}
-                  height={bridgeH}
-                  fill={tileFill}
-                />
-                {/* Seamless Specular Top Gloss Continuation */}
-                <rect
-                  x={bridgeX}
-                  y={bridgeY + 2}
-                  width={bridgeW}
-                  height={tileSize * 0.35}
-                  fill="url(#specularGloss)"
-                  pointerEvents="none"
-                />
-                {/* Seamless Top & Bottom Acrylic Edge Borders */}
-                <line
-                  x1={bridgeX}
-                  y1={bridgeY}
-                  x2={bridgeX + bridgeW}
-                  y2={bridgeY}
-                  stroke={tileStroke}
-                  strokeWidth={isBlocked ? 2.5 : 1.2}
-                />
-                <line
-                  x1={bridgeX}
-                  y1={bridgeY + bridgeH}
-                  x2={bridgeX + bridgeW}
-                  y2={bridgeY + bridgeH}
-                  stroke={tileStroke}
-                  strokeWidth={isBlocked ? 2.5 : 1.2}
-                />
-                {/* Two-Pass White-Hot Laser Conduit Spine */}
-                <line
-                  x1={ax}
-                  y1={ay}
-                  x2={bx}
-                  y2={by}
-                  stroke={isBlocked ? '#f43f5e' : accentColor}
-                  strokeWidth={outerStrokeWidth}
-                  strokeLinecap="round"
-                  style={{
-                    filter: isBlocked
-                      ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
-                      : `drop-shadow(0 0 6px ${accentColor})`,
-                  }}
-                />
-                <line
-                  x1={ax}
-                  y1={ay}
-                  x2={bx}
-                  y2={by}
-                  stroke="#ffffff"
-                  strokeWidth={laserCoreWidth}
-                  strokeLinecap="round"
-                />
-              </g>
-            );
-          } else {
-            // Vertical bridge
-            const minRow = Math.min(cellA.row, cellB.row);
-            const bridgeX = cellA.col * cellSize + padding;
-            const bridgeY = minRow * cellSize + center;
-            const bridgeW = tileSize;
-            const bridgeH = cellSize;
+      {/* ===================================================================
+          LAYER 3: SEAMLESS SPECULAR TOP GLOSS HIGHLIGHTS
+          =================================================================== */}
+      {/* Cell Top Gloss Highlights */}
+      {arrow.occupiedCells.map((cell) => (
+        <rect
+          key={`gloss-${cell.row}-${cell.col}`}
+          x={cell.col * cellSize + padding + 2}
+          y={cell.row * cellSize + padding + 2}
+          width={tileSize - 4}
+          height={tileSize * 0.35}
+          rx={radius - 2}
+          ry={radius - 2}
+          fill="url(#specularGloss)"
+          pointerEvents="none"
+        />
+      ))}
 
-            return (
-              <g key={`bridge-${cellA.row},${cellA.col}-${cellB.row},${cellB.col}`}>
-                {/* Seamless Bridge 3D Drop Shadow */}
-                <rect
-                  x={bridgeX}
-                  y={bridgeY + 3}
-                  width={bridgeW}
-                  height={bridgeH}
-                  fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
-                />
-                {/* Seamless Dark-Acrylic Bridge Body */}
-                <rect
-                  x={bridgeX}
-                  y={bridgeY}
-                  width={bridgeW}
-                  height={bridgeH}
-                  fill={tileFill}
-                />
-                {/* Seamless Left & Right Acrylic Edge Borders */}
-                <line
-                  x1={bridgeX}
-                  y1={bridgeY}
-                  x2={bridgeX}
-                  y2={bridgeY + bridgeH}
-                  stroke={tileStroke}
-                  strokeWidth={isBlocked ? 2.5 : 1.2}
-                />
-                <line
-                  x1={bridgeX + bridgeW}
-                  y1={bridgeY}
-                  x2={bridgeX + bridgeW}
-                  y2={bridgeY + bridgeH}
-                  stroke={tileStroke}
-                  strokeWidth={isBlocked ? 2.5 : 1.2}
-                />
-                {/* Two-Pass White-Hot Laser Conduit Spine */}
-                <line
-                  x1={ax}
-                  y1={ay}
-                  x2={bx}
-                  y2={by}
-                  stroke={isBlocked ? '#f43f5e' : accentColor}
-                  strokeWidth={outerStrokeWidth}
-                  strokeLinecap="round"
-                  style={{
-                    filter: isBlocked
-                      ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
-                      : `drop-shadow(0 0 6px ${accentColor})`,
-                  }}
-                />
-                <line
-                  x1={ax}
-                  y1={ay}
-                  x2={bx}
-                  y2={by}
-                  stroke="#ffffff"
-                  strokeWidth={laserCoreWidth}
-                  strokeLinecap="round"
-                />
-              </g>
-            );
-          }
+      {/* Seamless Horizontal Bridge Top Gloss Continuation */}
+      {adjacentPairs
+        .filter((p) => p.isHorizontal)
+        .map(({ key, cellA, cellB }) => {
+          const minCol = Math.min(cellA.col, cellB.col);
+          return (
+            <rect
+              key={`bridge-gloss-${key}`}
+              x={minCol * cellSize + center}
+              y={cellA.row * cellSize + padding + 2}
+              width={cellSize}
+              height={tileSize * 0.35}
+              fill="url(#specularGloss)"
+              pointerEvents="none"
+            />
+          );
         })}
 
-      {/* 2. Cell Tiles: Head and Body Segments */}
+      {/* ===================================================================
+          LAYER 4: SEAMLESS PERIMETER ACRYLIC EDGES & BORDERS
+          =================================================================== */}
+      {/* Outer Border for Cells */}
+      {arrow.occupiedCells.map((cell) => (
+        <rect
+          key={`border-${cell.row}-${cell.col}`}
+          x={cell.col * cellSize + padding}
+          y={cell.row * cellSize + padding}
+          width={tileSize}
+          height={tileSize}
+          rx={radius}
+          ry={radius}
+          fill="none"
+          stroke={tileStroke}
+          strokeWidth={isBlocked ? 2.5 : 1.2}
+          filter={
+            isBlocked
+              ? 'drop-shadow(0 0 10px rgba(244, 63, 94, 0.75))'
+              : undefined
+          }
+        />
+      ))}
+
+      {/* Seamless Outer Boundary Lines for Bridges (covers internal borders) */}
+      {adjacentPairs.map(({ key, cellA, cellB, isHorizontal }) => {
+        if (isHorizontal) {
+          const minCol = Math.min(cellA.col, cellB.col);
+          const x1 = minCol * cellSize + center;
+          const x2 = x1 + cellSize;
+          const yTop = cellA.row * cellSize + padding;
+          const yBottom = yTop + tileSize;
+
+          return (
+            <g key={`bridge-edges-${key}`}>
+              {/* Internal seam cover rect (ensures no corner curves show inside) */}
+              <rect
+                x={x1 - 1}
+                y={yTop + 1}
+                width={cellSize + 2}
+                height={tileSize - 2}
+                fill={tileFill}
+              />
+              {/* Top border line */}
+              <line
+                x1={x1}
+                y1={yTop}
+                x2={x2}
+                y2={yTop}
+                stroke={tileStroke}
+                strokeWidth={isBlocked ? 2.5 : 1.2}
+              />
+              {/* Bottom border line */}
+              <line
+                x1={x1}
+                y1={yBottom}
+                x2={x2}
+                y2={yBottom}
+                stroke={tileStroke}
+                strokeWidth={isBlocked ? 2.5 : 1.2}
+              />
+            </g>
+          );
+        } else {
+          const minRow = Math.min(cellA.row, cellB.row);
+          const y1 = minRow * cellSize + center;
+          const y2 = y1 + cellSize;
+          const xLeft = cellA.col * cellSize + padding;
+          const xRight = xLeft + tileSize;
+
+          return (
+            <g key={`bridge-edges-${key}`}>
+              {/* Internal seam cover rect */}
+              <rect
+                x={xLeft + 1}
+                y={y1 - 1}
+                width={tileSize - 2}
+                height={cellSize + 2}
+                fill={tileFill}
+              />
+              {/* Left border line */}
+              <line
+                x1={xLeft}
+                y1={y1}
+                x2={xLeft}
+                y2={y2}
+                stroke={tileStroke}
+                strokeWidth={isBlocked ? 2.5 : 1.2}
+              />
+              {/* Right border line */}
+              <line
+                x1={xRight}
+                y1={y1}
+                x2={xRight}
+                y2={y2}
+                stroke={tileStroke}
+                strokeWidth={isBlocked ? 2.5 : 1.2}
+              />
+            </g>
+          );
+        }
+      })}
+
+      {/* ===================================================================
+          LAYER 5: TWO-PASS "WHITE-HOT LASER CORE" CONDUITS & GLYPHS
+          =================================================================== */}
+      {/* 5A: Multi-Segment Laser Conduit Spine Lines */}
+      {adjacentPairs.map(({ key, cellA, cellB }) => {
+        const ax = cellA.col * cellSize + center;
+        const ay = cellA.row * cellSize + center;
+        const bx = cellB.col * cellSize + center;
+        const by = cellB.row * cellSize + center;
+
+        return (
+          <g key={`conduit-${key}`}>
+            {/* Pass 1: Outer Saturated Neon Conduit */}
+            <line
+              x1={ax}
+              y1={ay}
+              x2={bx}
+              y2={by}
+              stroke={isBlocked ? '#f43f5e' : accentColor}
+              strokeWidth={outerStrokeWidth}
+              strokeLinecap="round"
+              style={{
+                filter: isBlocked
+                  ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
+                  : `drop-shadow(0 0 6px ${accentColor}) drop-shadow(0 0 10px ${accentColor}80)`,
+              }}
+            />
+            {/* Pass 2: White-Hot Laser Core Centerline */}
+            <line
+              x1={ax}
+              y1={ay}
+              x2={bx}
+              y2={by}
+              stroke="#ffffff"
+              strokeWidth={laserCoreWidth}
+              strokeLinecap="round"
+            />
+          </g>
+        );
+      })}
+
+      {/* 5B: Cell Glyphs (Head Chevron & Body Conduit Nodes) */}
       {arrow.occupiedCells.map((cell) => {
         const isHead = cell.row === arrow.head.row && cell.col === arrow.head.col;
         const cellX = cell.col * cellSize;
         const cellY = cell.row * cellSize;
 
         return (
-          <g key={`cell-${cell.row}-${cell.col}`} transform={`translate(${cellX}, ${cellY})`}>
-            {/* 3D Tile Drop Shadow */}
-            <rect
-              x={padding}
-              y={padding + 3}
-              width={tileSize}
-              height={tileSize}
-              rx={radius}
-              ry={radius}
-              fill={isDark ? 'rgba(0, 0, 0, 0.60)' : 'rgba(15, 23, 42, 0.14)'}
-            />
-
-            {/* Tactile Metallic Tile Body */}
-            <rect
-              x={padding}
-              y={padding}
-              width={tileSize}
-              height={tileSize}
-              rx={radius}
-              ry={radius}
-              fill={tileFill}
-              stroke={tileStroke}
-              strokeWidth={isBlocked ? 2.5 : 1.2}
-              filter={
-                isBlocked
-                  ? 'drop-shadow(0 0 10px rgba(244, 63, 94, 0.75))'
-                  : undefined
-              }
-            />
-
-            {/* Specular Top Gloss Highlight */}
-            <rect
-              x={padding + 2}
-              y={padding + 2}
-              width={tileSize - 4}
-              height={tileSize * 0.35}
-              rx={radius - 2}
-              ry={radius - 2}
-              fill="url(#specularGloss)"
-              pointerEvents="none"
-            />
-
-            {/* Head Glyph: Dual-Pass White-Hot Laser Core | Tail Node: Glowing Conduit Node */}
+          <g key={`glyph-${cell.row}-${cell.col}`} transform={`translate(${cellX}, ${cellY})`}>
             {isHead ? (
+              /* Head Arrow Glyph: Two-Pass White-Hot Laser Core */
               <g
                 transform={`rotate(${arrow.angle}, ${center}, ${center})`}
                 style={{
@@ -354,7 +442,7 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
                 />
               </g>
             ) : (
-              /* Sleek Tail Node Conduit with Two-Pass White-Hot Core */
+              /* Non-Head Tail/Body Node: Two-Pass White-Hot Laser Node */
               <g
                 style={{
                   filter: isBlocked

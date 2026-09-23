@@ -640,15 +640,16 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
 
       ctx.beginPath();
       ctx.roundRect(startX - pad, startY - pad, boardWidth + pad * 2, boardHeight + pad * 2, 24);
-      ctx.lineWidth = 1.5;
+      ctx.lineWidth = 1.8;
       const borderGrad = ctx.createLinearGradient(startX, startY, startX + boardWidth, startY + boardHeight);
-      borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
-      borderGrad.addColorStop(0.5, 'rgba(6, 182, 212, 0.35)');
-      borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.06)');
+      borderGrad.addColorStop(0, 'rgba(255, 255, 255, 0.28)');
+      borderGrad.addColorStop(0.25, 'rgba(6, 182, 212, 0.70)');
+      borderGrad.addColorStop(0.65, 'rgba(6, 182, 212, 0.30)');
+      borderGrad.addColorStop(1, 'rgba(255, 255, 255, 0.08)');
       ctx.strokeStyle = borderGrad;
       ctx.stroke();
 
-      // Draw Grid Slots
+      // Draw Grid Slots with 3-Stop Metallic Obsidian Gradient
       for (let r = 0; r < level.rows; r++) {
         for (let c = 0; c < level.cols; c++) {
           const gx = startX + c * cellSize;
@@ -657,11 +658,15 @@ export const ArrowGameCanvas: React.FC<ArrowGameCanvasProps> = ({
 
           ctx.beginPath();
           ctx.roundRect(gx + inset, gy + inset, cellSize - inset * 2, cellSize - inset * 2, 12);
-          ctx.fillStyle = 'rgba(2, 6, 23, 0.65)';
+          const slotGrad = ctx.createLinearGradient(gx, gy + inset, gx, gy + cellSize - inset);
+          slotGrad.addColorStop(0, '#020617');
+          slotGrad.addColorStop(0.45, '#070e22');
+          slotGrad.addColorStop(1, '#0f172a');
+          ctx.fillStyle = slotGrad;
           ctx.fill();
 
           ctx.lineWidth = 1;
-          ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.05)';
           ctx.stroke();
         }
       }
