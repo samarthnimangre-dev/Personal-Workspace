@@ -1,0 +1,165 @@
+{
+  "id": 33,
+  "title": "Medusa's Nest",
+  "subtitle": "Triple bended serpents entangled with frozen guardians",
+  "difficulty": "master",
+  "rows": 6,
+  "cols": 6,
+  "parMoves": 9,
+  "rewardCoins": 1000,
+  "rewardGems": 100,
+  "arrows": [
+    {
+      "id": "33-s1",
+      "row": 0,
+      "col": 1,
+      "direction": "left",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 1
+        },
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "33-s2",
+      "row": 5,
+      "col": 4,
+      "direction": "right",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 4
+        },
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "33-s3",
+      "row": 1,
+      "col": 0,
+      "direction": "up",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 0
+        },
+        {
+          "row": 2,
+          "col": 0
+        },
+        {
+          "row": 2,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "33-ice",
+      "row": 3,
+      "col": 3,
+      "direction": "up",
+      "color": "#38bdf8",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 3
+        }
+      ],
+      "isFrozen": true,
+      "frozenHits": 2,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "33-p1",
+      "row": 2,
+      "col": 4,
+      "direction": "down",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
+      "isBomb": false
+    },
+    {
+      "id": "33-1",
+      "row": 4,
+      "col": 5,
+      "direction": "down",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "33-2",
+      "row": 3,
+      "col": 0,
+      "direction": "left",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    }
+  ],
+  "deflectors": []
+}

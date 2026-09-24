@@ -1,28 +1,32 @@
 {
-  "id": 7,
-  "title": "L-Turn Alley",
-  "subtitle": "Snake arrows can wrap around orthogonal corners",
-  "difficulty": "medium",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 6,
-  "rewardCoins": 125,
-  "rewardGems": 12,
+  "id": 28,
+  "title": "U-Turn Alley",
+  "subtitle": "Interlocking U-shaped hooks that must be unclipped in sequence",
+  "difficulty": "hard",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 7,
+  "rewardCoins": 750,
+  "rewardGems": 75,
   "arrows": [
     {
-      "id": "7-1",
-      "row": 0,
+      "id": "28-u1",
+      "row": 1,
       "col": 0,
       "direction": "up",
       "color": "#3b82f6",
       "occupiedCells": [
         {
-          "row": 0,
+          "row": 1,
           "col": 0
         },
         {
-          "row": 1,
+          "row": 2,
           "col": 0
+        },
+        {
+          "row": 2,
+          "col": 1
         },
         {
           "row": 1,
@@ -35,57 +39,27 @@
       "isBomb": false
     },
     {
-      "id": "7-2",
+      "id": "28-u2",
       "row": 3,
-      "col": 3,
+      "col": 4,
       "direction": "down",
-      "color": "#10b981",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 3
-        },
-        {
-          "row": 2,
-          "col": 3
-        },
-        {
-          "row": 2,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "7-3",
-      "row": 0,
-      "col": 2,
-      "direction": "right",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "7-4",
-      "row": 3,
-      "col": 1,
-      "direction": "left",
       "color": "#ec4899",
       "occupiedCells": [
         {
           "row": 3,
-          "col": 1
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 3
         }
       ],
       "isFrozen": false,
@@ -94,15 +68,15 @@
       "isBomb": false
     },
     {
-      "id": "7-5",
+      "id": "28-1",
       "row": 0,
-      "col": 3,
+      "col": 2,
       "direction": "up",
       "color": "#06b6d4",
       "occupiedCells": [
         {
           "row": 0,
-          "col": 3
+          "col": 2
         }
       ],
       "isFrozen": false,
@@ -111,20 +85,71 @@
       "isBomb": false
     },
     {
-      "id": "7-6",
-      "row": 3,
-      "col": 0,
+      "id": "28-2",
+      "row": 4,
+      "col": 2,
       "direction": "down",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "28-3",
+      "row": 0,
+      "col": 4,
+      "direction": "right",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "28-4",
+      "row": 4,
+      "col": 0,
+      "direction": "left",
       "color": "#8b5cf6",
       "occupiedCells": [
         {
-          "row": 3,
+          "row": 4,
           "col": 0
         }
       ],
       "isFrozen": false,
       "frozenHits": 0,
       "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "28-5",
+      "row": 2,
+      "col": 2,
+      "direction": "left",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
       "isBomb": false
     }
   ],

@@ -16,6 +16,7 @@ namespace ArrowFlow.Core
         public bool vipUnlocked = false;
         public int highestCompletedLevel = 1;
         public bool soundEnabled = true;
+        public string currentTheme = "CyberDark";
     }
 
     public static class SaveSystem

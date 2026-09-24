@@ -1,24 +1,24 @@
 {
-  "id": 4,
-  "title": "Diagonal Corridors",
-  "subtitle": "Angles slip through diagonal grid channels",
-  "difficulty": "easy",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 8,
-  "rewardCoins": 90,
-  "rewardGems": 10,
+  "id": 18,
+  "title": "Star Fortress",
+  "subtitle": "Star silhouette harboring frozen core guardians",
+  "difficulty": "hard",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 9,
+  "rewardCoins": 320,
+  "rewardGems": 32,
   "arrows": [
     {
-      "id": "4-1",
+      "id": "18-1",
       "row": 0,
-      "col": 0,
-      "direction": "up-left",
+      "col": 2,
+      "direction": "up",
       "color": "#06b6d4",
       "occupiedCells": [
         {
           "row": 0,
-          "col": 0
+          "col": 2
         }
       ],
       "isFrozen": false,
@@ -27,15 +27,15 @@
       "isBomb": false
     },
     {
-      "id": "4-2",
-      "row": 0,
-      "col": 3,
-      "direction": "up-right",
+      "id": "18-2",
+      "row": 4,
+      "col": 2,
+      "direction": "down",
       "color": "#3b82f6",
       "occupiedCells": [
         {
-          "row": 0,
-          "col": 3
+          "row": 4,
+          "col": 2
         }
       ],
       "isFrozen": false,
@@ -44,14 +44,14 @@
       "isBomb": false
     },
     {
-      "id": "4-3",
-      "row": 3,
+      "id": "18-3",
+      "row": 2,
       "col": 0,
-      "direction": "down-left",
-      "color": "#ec4899",
+      "direction": "left",
+      "color": "#10b981",
       "occupiedCells": [
         {
-          "row": 3,
+          "row": 2,
           "col": 0
         }
       ],
@@ -61,44 +61,44 @@
       "isBomb": false
     },
     {
-      "id": "4-4",
-      "row": 3,
-      "col": 3,
-      "direction": "down-right",
+      "id": "18-4",
+      "row": 2,
+      "col": 4,
+      "direction": "right",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "18-5",
+      "row": 2,
+      "col": 2,
+      "direction": "up",
       "color": "#f59e0b",
       "occupiedCells": [
         {
-          "row": 3,
-          "col": 3
+          "row": 2,
+          "col": 2
         }
       ],
-      "isFrozen": false,
-      "frozenHits": 0,
+      "isFrozen": true,
+      "frozenHits": 1,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "4-5",
-      "row": 1,
-      "col": 1,
-      "direction": "up",
-      "color": "#10b981",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-6",
+      "id": "18-6",
       "row": 1,
       "col": 2,
-      "direction": "right",
+      "direction": "up",
       "color": "#8b5cf6",
       "occupiedCells": [
         {
@@ -112,11 +112,28 @@
       "isBomb": false
     },
     {
-      "id": "4-7",
+      "id": "18-7",
+      "row": 3,
+      "col": 2,
+      "direction": "down",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "18-8",
       "row": 2,
       "col": 1,
       "direction": "left",
-      "color": "#06b6d4",
+      "color": "#3b82f6",
       "occupiedCells": [
         {
           "row": 2,
@@ -129,15 +146,15 @@
       "isBomb": false
     },
     {
-      "id": "4-8",
+      "id": "18-9",
       "row": 2,
-      "col": 2,
-      "direction": "down",
-      "color": "#f43f5e",
+      "col": 3,
+      "direction": "right",
+      "color": "#10b981",
       "occupiedCells": [
         {
           "row": 2,
-          "col": 2
+          "col": 3
         }
       ],
       "isFrozen": false,

@@ -1,57 +1,125 @@
 {
-  "id": 9,
-  "title": "Double Frost",
-  "subtitle": "Multiple ice barriers lock adjacent flight corridors",
-  "difficulty": "medium",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 7,
-  "rewardCoins": 150,
-  "rewardGems": 15,
+  "id": 16,
+  "title": "The Crossway",
+  "subtitle": "Plus-shaped grid: arrows outside cross wings escape instantly",
+  "difficulty": "hard",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 8,
+  "rewardCoins": 280,
+  "rewardGems": 28,
   "arrows": [
     {
-      "id": "9-1",
+      "id": "16-1",
       "row": 0,
-      "col": 1,
+      "col": 2,
       "direction": "up",
       "color": "#06b6d4",
       "occupiedCells": [
         {
           "row": 0,
-          "col": 1
+          "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
+      "isFrozen": false,
+      "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-2",
-      "row": 3,
+      "id": "16-2",
+      "row": 4,
       "col": 2,
       "direction": "down",
       "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "16-3",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "16-4",
+      "row": 2,
+      "col": 4,
+      "direction": "right",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "16-5",
+      "row": 1,
+      "col": 2,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "16-6",
+      "row": 3,
+      "col": 2,
+      "direction": "down",
+      "color": "#8b5cf6",
       "occupiedCells": [
         {
           "row": 3,
           "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
+      "isFrozen": false,
+      "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-3",
-      "row": 1,
+      "id": "16-7",
+      "row": 2,
       "col": 1,
-      "direction": "up",
-      "color": "#10b981",
+      "direction": "left",
+      "color": "#06b6d4",
       "occupiedCells": [
         {
-          "row": 1,
+          "row": 2,
           "col": 1
         }
       ],
@@ -61,66 +129,15 @@
       "isBomb": false
     },
     {
-      "id": "9-4",
-      "row": 2,
-      "col": 2,
-      "direction": "down",
-      "color": "#ec4899",
-      "occupiedCells": [
-        {
-          "row": 2,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-5",
-      "row": 1,
-      "col": 0,
-      "direction": "left",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 0
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-6",
+      "id": "16-8",
       "row": 2,
       "col": 3,
       "direction": "right",
-      "color": "#8b5cf6",
+      "color": "#3b82f6",
       "occupiedCells": [
         {
           "row": 2,
           "col": 3
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-7",
-      "row": 0,
-      "col": 0,
-      "direction": "left",
-      "color": "#06b6d4",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 0
         }
       ],
       "isFrozen": false,

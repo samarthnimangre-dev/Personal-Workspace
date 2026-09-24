@@ -1,0 +1,160 @@
+{
+  "id": 31,
+  "title": "Prism Vipers",
+  "subtitle": "Bended snakes ricocheting through deflector crystals",
+  "difficulty": "expert",
+  "rows": 6,
+  "cols": 6,
+  "parMoves": 7,
+  "rewardCoins": 900,
+  "rewardGems": 90,
+  "arrows": [
+    {
+      "id": "31-v1",
+      "row": 0,
+      "col": 2,
+      "direction": "right",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 2,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "31-v2",
+      "row": 5,
+      "col": 3,
+      "direction": "left",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "31-1",
+      "row": 1,
+      "col": 0,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "31-2",
+      "row": 4,
+      "col": 5,
+      "direction": "right",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "31-3",
+      "row": 2,
+      "col": 5,
+      "direction": "right",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "31-4",
+      "row": 3,
+      "col": 0,
+      "direction": "left",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "31-5",
+      "row": 1,
+      "col": 4,
+      "direction": "down",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": true
+    }
+  ],
+  "deflectors": [
+    {
+      "row": 0,
+      "col": 4,
+      "redirectDirection": "down"
+    },
+    {
+      "row": 5,
+      "col": 1,
+      "redirectDirection": "up"
+    }
+  ]
+}

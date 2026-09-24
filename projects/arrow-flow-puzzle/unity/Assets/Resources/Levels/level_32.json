@@ -1,125 +1,81 @@
 {
-  "id": 4,
-  "title": "Diagonal Corridors",
-  "subtitle": "Angles slip through diagonal grid channels",
-  "difficulty": "easy",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 8,
-  "rewardCoins": 90,
-  "rewardGems": 10,
+  "id": 32,
+  "title": "Matrix Anacondas",
+  "subtitle": "Quadruple 3-segment serpents guarding the outer perimeters",
+  "difficulty": "master",
+  "rows": 6,
+  "cols": 6,
+  "parMoves": 10,
+  "rewardCoins": 950,
+  "rewardGems": 95,
   "arrows": [
     {
-      "id": "4-1",
+      "id": "32-n",
       "row": 0,
-      "col": 0,
-      "direction": "up-left",
-      "color": "#06b6d4",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 0
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-2",
-      "row": 0,
-      "col": 3,
-      "direction": "up-right",
-      "color": "#3b82f6",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 3
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-3",
-      "row": 3,
-      "col": 0,
-      "direction": "down-left",
-      "color": "#ec4899",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 0
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-4",
-      "row": 3,
-      "col": 3,
-      "direction": "down-right",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 3
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-5",
-      "row": 1,
-      "col": 1,
-      "direction": "up",
-      "color": "#10b981",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-6",
-      "row": 1,
-      "col": 2,
-      "direction": "right",
-      "color": "#8b5cf6",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-7",
-      "row": 2,
       "col": 1,
       "direction": "left",
       "color": "#06b6d4",
       "occupiedCells": [
         {
-          "row": 2,
+          "row": 0,
+          "col": 1
+        },
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "32-s",
+      "row": 5,
+      "col": 4,
+      "direction": "right",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 4
+        },
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "32-w",
+      "row": 4,
+      "col": 0,
+      "direction": "down",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 0
+        },
+        {
+          "row": 3,
+          "col": 0
+        },
+        {
+          "row": 3,
           "col": 1
         }
       ],
@@ -129,15 +85,91 @@
       "isBomb": false
     },
     {
-      "id": "4-8",
+      "id": "32-e",
+      "row": 1,
+      "col": 5,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 5
+        },
+        {
+          "row": 2,
+          "col": 5
+        },
+        {
+          "row": 2,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "32-c1",
       "row": 2,
       "col": 2,
-      "direction": "down",
-      "color": "#f43f5e",
+      "direction": "up",
+      "color": "#8b5cf6",
       "occupiedCells": [
         {
           "row": 2,
           "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
+      "isBomb": false
+    },
+    {
+      "id": "32-c2",
+      "row": 2,
+      "col": 3,
+      "direction": "right",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "32-c3",
+      "row": 3,
+      "col": 2,
+      "direction": "left",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "32-c4",
+      "row": 3,
+      "col": 3,
+      "direction": "down",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 3
         }
       ],
       "isFrozen": false,

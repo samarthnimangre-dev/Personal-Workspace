@@ -1,92 +1,109 @@
 {
-  "id": 9,
-  "title": "Double Frost",
-  "subtitle": "Multiple ice barriers lock adjacent flight corridors",
-  "difficulty": "medium",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 7,
-  "rewardCoins": 150,
-  "rewardGems": 15,
+  "id": 20,
+  "title": "Glacial Pivot",
+  "subtitle": "Shatter ice and rotate pivots in synchronized order",
+  "difficulty": "expert",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 10,
+  "rewardCoins": 380,
+  "rewardGems": 38,
   "arrows": [
     {
-      "id": "9-1",
+      "id": "20-1",
+      "row": 1,
+      "col": 1,
+      "direction": "right",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 1
+        }
+      ],
+      "isFrozen": true,
+      "frozenHits": 1,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "20-2",
+      "row": 1,
+      "col": 3,
+      "direction": "down",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
+      "isBomb": false
+    },
+    {
+      "id": "20-3",
+      "row": 3,
+      "col": 3,
+      "direction": "left",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 3
+        }
+      ],
+      "isFrozen": true,
+      "frozenHits": 1,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "20-4",
+      "row": 3,
+      "col": 1,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
+      "isBomb": false
+    },
+    {
+      "id": "20-5",
       "row": 0,
       "col": 1,
       "direction": "up",
-      "color": "#06b6d4",
+      "color": "#10b981",
       "occupiedCells": [
         {
           "row": 0,
           "col": 1
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-2",
-      "row": 3,
-      "col": 2,
-      "direction": "down",
-      "color": "#3b82f6",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 2
-        }
-      ],
-      "isFrozen": true,
-      "frozenHits": 1,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-3",
-      "row": 1,
-      "col": 1,
-      "direction": "up",
-      "color": "#10b981",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 1
-        }
-      ],
       "isFrozen": false,
       "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-4",
-      "row": 2,
-      "col": 2,
-      "direction": "down",
+      "id": "20-6",
+      "row": 1,
+      "col": 4,
+      "direction": "right",
       "color": "#ec4899",
       "occupiedCells": [
         {
-          "row": 2,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-5",
-      "row": 1,
-      "col": 0,
-      "direction": "left",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
           "row": 1,
-          "col": 0
+          "col": 4
         }
       ],
       "isFrozen": false,
@@ -95,14 +112,14 @@
       "isBomb": false
     },
     {
-      "id": "9-6",
-      "row": 2,
+      "id": "20-7",
+      "row": 4,
       "col": 3,
-      "direction": "right",
+      "direction": "down",
       "color": "#8b5cf6",
       "occupiedCells": [
         {
-          "row": 2,
+          "row": 4,
           "col": 3
         }
       ],
@@ -112,14 +129,14 @@
       "isBomb": false
     },
     {
-      "id": "9-7",
-      "row": 0,
+      "id": "20-8",
+      "row": 3,
       "col": 0,
       "direction": "left",
       "color": "#06b6d4",
       "occupiedCells": [
         {
-          "row": 0,
+          "row": 3,
           "col": 0
         }
       ],

@@ -1,50 +1,66 @@
 {
-  "id": 9,
-  "title": "Double Frost",
-  "subtitle": "Multiple ice barriers lock adjacent flight corridors",
-  "difficulty": "medium",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 7,
-  "rewardCoins": 150,
-  "rewardGems": 15,
+  "id": 26,
+  "title": "Cobra Coil",
+  "subtitle": "Interlocking L-snakes wrapping around the central corridor",
+  "difficulty": "hard",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 6,
+  "rewardCoins": 650,
+  "rewardGems": 65,
   "arrows": [
     {
-      "id": "9-1",
+      "id": "26-s1",
       "row": 0,
       "col": 1,
-      "direction": "up",
+      "direction": "left",
       "color": "#06b6d4",
       "occupiedCells": [
         {
           "row": 0,
           "col": 1
+        },
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
+      "isFrozen": false,
+      "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-2",
-      "row": 3,
-      "col": 2,
-      "direction": "down",
-      "color": "#3b82f6",
+      "id": "26-s2",
+      "row": 4,
+      "col": 3,
+      "direction": "right",
+      "color": "#ec4899",
       "occupiedCells": [
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 2
+        },
         {
           "row": 3,
           "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
+      "isFrozen": false,
+      "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-3",
+      "id": "26-s3",
       "row": 1,
       "col": 1,
       "direction": "up",
@@ -53,23 +69,14 @@
         {
           "row": 1,
           "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-4",
-      "row": 2,
-      "col": 2,
-      "direction": "down",
-      "color": "#ec4899",
-      "occupiedCells": [
+        },
         {
           "row": 2,
-          "col": 2
+          "col": 1
+        },
+        {
+          "row": 3,
+          "col": 1
         }
       ],
       "isFrozen": false,
@@ -78,31 +85,22 @@
       "isBomb": false
     },
     {
-      "id": "9-5",
-      "row": 1,
-      "col": 0,
-      "direction": "left",
+      "id": "26-s4",
+      "row": 3,
+      "col": 3,
+      "direction": "down",
       "color": "#f59e0b",
       "occupiedCells": [
         {
-          "row": 1,
-          "col": 0
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-6",
-      "row": 2,
-      "col": 3,
-      "direction": "right",
-      "color": "#8b5cf6",
-      "occupiedCells": [
+          "row": 3,
+          "col": 3
+        },
         {
           "row": 2,
+          "col": 3
+        },
+        {
+          "row": 1,
           "col": 3
         }
       ],
@@ -112,15 +110,32 @@
       "isBomb": false
     },
     {
-      "id": "9-7",
-      "row": 0,
+      "id": "26-1",
+      "row": 2,
       "col": 0,
       "direction": "left",
-      "color": "#06b6d4",
+      "color": "#8b5cf6",
       "occupiedCells": [
         {
-          "row": 0,
+          "row": 2,
           "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "26-2",
+      "row": 2,
+      "col": 4,
+      "direction": "right",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 4
         }
       ],
       "isFrozen": false,

@@ -1,57 +1,23 @@
 {
-  "id": 4,
-  "title": "Diagonal Corridors",
-  "subtitle": "Angles slip through diagonal grid channels",
-  "difficulty": "easy",
-  "rows": 4,
-  "cols": 4,
+  "id": 19,
+  "title": "Heart of Arrows",
+  "subtitle": "Curved heart board silhouette with pivot arrows",
+  "difficulty": "expert",
+  "rows": 5,
+  "cols": 5,
   "parMoves": 8,
-  "rewardCoins": 90,
-  "rewardGems": 10,
+  "rewardCoins": 350,
+  "rewardGems": 35,
   "arrows": [
     {
-      "id": "4-1",
-      "row": 0,
+      "id": "19-1",
+      "row": 1,
       "col": 0,
-      "direction": "up-left",
-      "color": "#06b6d4",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 0
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-2",
-      "row": 0,
-      "col": 3,
-      "direction": "up-right",
-      "color": "#3b82f6",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 3
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-3",
-      "row": 3,
-      "col": 0,
-      "direction": "down-left",
+      "direction": "left",
       "color": "#ec4899",
       "occupiedCells": [
         {
-          "row": 3,
+          "row": 1,
           "col": 0
         }
       ],
@@ -61,49 +27,15 @@
       "isBomb": false
     },
     {
-      "id": "4-4",
-      "row": 3,
-      "col": 3,
-      "direction": "down-right",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 3
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-5",
+      "id": "19-2",
       "row": 1,
-      "col": 1,
-      "direction": "up",
-      "color": "#10b981",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-6",
-      "row": 1,
-      "col": 2,
+      "col": 4,
       "direction": "right",
-      "color": "#8b5cf6",
+      "color": "#ec4899",
       "occupiedCells": [
         {
           "row": 1,
-          "col": 2
+          "col": 4
         }
       ],
       "isFrozen": false,
@@ -112,32 +44,100 @@
       "isBomb": false
     },
     {
-      "id": "4-7",
-      "row": 2,
-      "col": 1,
-      "direction": "left",
-      "color": "#06b6d4",
-      "occupiedCells": [
-        {
-          "row": 2,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-8",
-      "row": 2,
+      "id": "19-3",
+      "row": 4,
       "col": 2,
       "direction": "down",
       "color": "#f43f5e",
       "occupiedCells": [
         {
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "19-4",
+      "row": 2,
+      "col": 2,
+      "direction": "down",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
           "row": 2,
           "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
+      "isBomb": false
+    },
+    {
+      "id": "19-5",
+      "row": 1,
+      "col": 1,
+      "direction": "up",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "19-6",
+      "row": 1,
+      "col": 3,
+      "direction": "up",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "19-7",
+      "row": 3,
+      "col": 1,
+      "direction": "down-left",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "19-8",
+      "row": 3,
+      "col": 3,
+      "direction": "down-right",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 3
         }
       ],
       "isFrozen": false,

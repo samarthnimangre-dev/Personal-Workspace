@@ -1,57 +1,73 @@
 {
-  "id": 9,
-  "title": "Double Frost",
-  "subtitle": "Multiple ice barriers lock adjacent flight corridors",
-  "difficulty": "medium",
-  "rows": 4,
-  "cols": 4,
+  "id": 29,
+  "title": "Dragon's Spine",
+  "subtitle": "A massive 5-segment serpent winding through the matrix",
+  "difficulty": "expert",
+  "rows": 5,
+  "cols": 5,
   "parMoves": 7,
-  "rewardCoins": 150,
-  "rewardGems": 15,
+  "rewardCoins": 800,
+  "rewardGems": 80,
   "arrows": [
     {
-      "id": "9-1",
+      "id": "29-dragon",
       "row": 0,
-      "col": 1,
-      "direction": "up",
-      "color": "#06b6d4",
+      "col": 4,
+      "direction": "right",
+      "color": "#f59e0b",
       "occupiedCells": [
         {
           "row": 0,
-          "col": 1
+          "col": 4
+        },
+        {
+          "row": 0,
+          "col": 3
+        },
+        {
+          "row": 1,
+          "col": 3
+        },
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 2,
+          "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
+      "isFrozen": false,
+      "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-2",
+      "id": "29-p1",
       "row": 3,
       "col": 2,
-      "direction": "down",
-      "color": "#3b82f6",
+      "direction": "left",
+      "color": "#8b5cf6",
       "occupiedCells": [
         {
           "row": 3,
           "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
-      "isPivot": false,
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
       "isBomb": false
     },
     {
-      "id": "9-3",
-      "row": 1,
+      "id": "29-1",
+      "row": 0,
       "col": 1,
       "direction": "up",
-      "color": "#10b981",
+      "color": "#06b6d4",
       "occupiedCells": [
         {
-          "row": 1,
+          "row": 0,
           "col": 1
         }
       ],
@@ -61,14 +77,14 @@
       "isBomb": false
     },
     {
-      "id": "9-4",
-      "row": 2,
+      "id": "29-2",
+      "row": 4,
       "col": 2,
       "direction": "down",
-      "color": "#ec4899",
+      "color": "#10b981",
       "occupiedCells": [
         {
-          "row": 2,
+          "row": 4,
           "col": 2
         }
       ],
@@ -78,32 +94,15 @@
       "isBomb": false
     },
     {
-      "id": "9-5",
-      "row": 1,
-      "col": 0,
-      "direction": "left",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 0
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-6",
+      "id": "29-3",
       "row": 2,
-      "col": 3,
+      "col": 4,
       "direction": "right",
-      "color": "#8b5cf6",
+      "color": "#ec4899",
       "occupiedCells": [
         {
           "row": 2,
-          "col": 3
+          "col": 4
         }
       ],
       "isFrozen": false,
@@ -112,15 +111,32 @@
       "isBomb": false
     },
     {
-      "id": "9-7",
-      "row": 0,
+      "id": "29-4",
+      "row": 2,
       "col": 0,
       "direction": "left",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "29-5",
+      "row": 4,
+      "col": 4,
+      "direction": "down",
       "color": "#06b6d4",
       "occupiedCells": [
         {
-          "row": 0,
-          "col": 0
+          "row": 4,
+          "col": 4
         }
       ],
       "isFrozen": false,

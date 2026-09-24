@@ -1,25 +1,21 @@
 {
-  "id": 6,
-  "title": "Twin Serpents",
-  "subtitle": "Elongated arrows pull their entire body along",
-  "difficulty": "easy",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 5,
-  "rewardCoins": 110,
-  "rewardGems": 11,
+  "id": 15,
+  "title": "Prism Deflector",
+  "subtitle": "Deflector runes turn exit rays 90° mid-flight",
+  "difficulty": "hard",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 7,
+  "rewardCoins": 260,
+  "rewardGems": 26,
   "arrows": [
     {
-      "id": "6-1",
-      "row": 0,
+      "id": "15-1",
+      "row": 1,
       "col": 1,
-      "direction": "up",
+      "direction": "right",
       "color": "#06b6d4",
       "occupiedCells": [
-        {
-          "row": 0,
-          "col": 1
-        },
         {
           "row": 1,
           "col": 1
@@ -31,19 +27,15 @@
       "isBomb": false
     },
     {
-      "id": "6-2",
+      "id": "15-2",
       "row": 3,
-      "col": 2,
-      "direction": "down",
+      "col": 3,
+      "direction": "left",
       "color": "#ec4899",
       "occupiedCells": [
         {
           "row": 3,
-          "col": 2
-        },
-        {
-          "row": 2,
-          "col": 2
+          "col": 3
         }
       ],
       "isFrozen": false,
@@ -52,7 +44,7 @@
       "isBomb": false
     },
     {
-      "id": "6-3",
+      "id": "15-3",
       "row": 0,
       "col": 0,
       "direction": "left",
@@ -69,15 +61,15 @@
       "isBomb": false
     },
     {
-      "id": "6-4",
-      "row": 3,
-      "col": 3,
+      "id": "15-4",
+      "row": 4,
+      "col": 4,
       "direction": "right",
       "color": "#f59e0b",
       "occupiedCells": [
         {
-          "row": 3,
-          "col": 3
+          "row": 4,
+          "col": 4
         }
       ],
       "isFrozen": false,
@@ -86,15 +78,15 @@
       "isBomb": false
     },
     {
-      "id": "6-5",
-      "row": 1,
-      "col": 3,
+      "id": "15-5",
+      "row": 2,
+      "col": 2,
       "direction": "up",
       "color": "#8b5cf6",
       "occupiedCells": [
         {
-          "row": 1,
-          "col": 3
+          "row": 2,
+          "col": 2
         }
       ],
       "isFrozen": false,
@@ -103,5 +95,16 @@
       "isBomb": false
     }
   ],
-  "deflectors": []
+  "deflectors": [
+    {
+      "row": 1,
+      "col": 3,
+      "redirectDirection": "up"
+    },
+    {
+      "row": 3,
+      "col": 1,
+      "redirectDirection": "down"
+    }
+  ]
 }

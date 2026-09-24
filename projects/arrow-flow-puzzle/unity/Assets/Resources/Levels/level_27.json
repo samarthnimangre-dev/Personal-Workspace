@@ -1,107 +1,98 @@
 {
-  "id": 7,
-  "title": "L-Turn Alley",
-  "subtitle": "Snake arrows can wrap around orthogonal corners",
-  "difficulty": "medium",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 6,
-  "rewardCoins": 125,
-  "rewardGems": 12,
+  "id": 27,
+  "title": "Serpentine S-Bends",
+  "subtitle": "Elongated 4-cell snakes with double 90-degree elbows",
+  "difficulty": "hard",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 7,
+  "rewardCoins": 700,
+  "rewardGems": 70,
   "arrows": [
     {
-      "id": "7-1",
+      "id": "27-s1",
       "row": 0,
       "col": 0,
-      "direction": "up",
-      "color": "#3b82f6",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 0
-        },
-        {
-          "row": 1,
-          "col": 0
-        },
-        {
-          "row": 1,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "7-2",
-      "row": 3,
-      "col": 3,
-      "direction": "down",
-      "color": "#10b981",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 3
-        },
-        {
-          "row": 2,
-          "col": 3
-        },
-        {
-          "row": 2,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "7-3",
-      "row": 0,
-      "col": 2,
-      "direction": "right",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "7-4",
-      "row": 3,
-      "col": 1,
       "direction": "left",
-      "color": "#ec4899",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "7-5",
-      "row": 0,
-      "col": 3,
-      "direction": "up",
       "color": "#06b6d4",
       "occupiedCells": [
         {
           "row": 0,
+          "col": 0
+        },
+        {
+          "row": 0,
+          "col": 1
+        },
+        {
+          "row": 1,
+          "col": 1
+        },
+        {
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "27-s2",
+      "row": 4,
+      "col": 4,
+      "direction": "right",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 4
+        },
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "27-ice",
+      "row": 2,
+      "col": 2,
+      "direction": "up",
+      "color": "#38bdf8",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 2
+        }
+      ],
+      "isFrozen": true,
+      "frozenHits": 1,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "27-1",
+      "row": 0,
+      "col": 3,
+      "direction": "up",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 0,
           "col": 3
         }
       ],
@@ -111,14 +102,31 @@
       "isBomb": false
     },
     {
-      "id": "7-6",
-      "row": 3,
-      "col": 0,
+      "id": "27-2",
+      "row": 4,
+      "col": 1,
       "direction": "down",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "27-3",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
       "color": "#8b5cf6",
       "occupiedCells": [
         {
-          "row": 3,
+          "row": 2,
           "col": 0
         }
       ],

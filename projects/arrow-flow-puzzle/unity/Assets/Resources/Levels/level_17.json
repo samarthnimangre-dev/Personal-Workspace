@@ -1,91 +1,57 @@
 {
-  "id": 9,
-  "title": "Double Frost",
-  "subtitle": "Multiple ice barriers lock adjacent flight corridors",
-  "difficulty": "medium",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 7,
-  "rewardCoins": 150,
-  "rewardGems": 15,
+  "id": 17,
+  "title": "The Diamond Vault",
+  "subtitle": "Diamond silhouette with multi-cell snakes along diagonals",
+  "difficulty": "hard",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 8,
+  "rewardCoins": 300,
+  "rewardGems": 30,
   "arrows": [
     {
-      "id": "9-1",
+      "id": "17-1",
       "row": 0,
-      "col": 1,
+      "col": 2,
       "direction": "up",
       "color": "#06b6d4",
       "occupiedCells": [
         {
           "row": 0,
-          "col": 1
+          "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
+      "isFrozen": false,
+      "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-2",
-      "row": 3,
+      "id": "17-2",
+      "row": 4,
       "col": 2,
       "direction": "down",
       "color": "#3b82f6",
       "occupiedCells": [
         {
-          "row": 3,
+          "row": 4,
           "col": 2
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
+      "isFrozen": false,
+      "frozenHits": 0,
       "isPivot": false,
       "isBomb": false
     },
     {
-      "id": "9-3",
-      "row": 1,
-      "col": 1,
-      "direction": "up",
+      "id": "17-3",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
       "color": "#10b981",
       "occupiedCells": [
         {
-          "row": 1,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-4",
-      "row": 2,
-      "col": 2,
-      "direction": "down",
-      "color": "#ec4899",
-      "occupiedCells": [
-        {
           "row": 2,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "9-5",
-      "row": 1,
-      "col": 0,
-      "direction": "left",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 1,
           "col": 0
         }
       ],
@@ -95,14 +61,48 @@
       "isBomb": false
     },
     {
-      "id": "9-6",
+      "id": "17-4",
       "row": 2,
-      "col": 3,
+      "col": 4,
       "direction": "right",
-      "color": "#8b5cf6",
+      "color": "#ec4899",
       "occupiedCells": [
         {
           "row": 2,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "17-5",
+      "row": 1,
+      "col": 1,
+      "direction": "up-left",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "17-6",
+      "row": 1,
+      "col": 3,
+      "direction": "up-right",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 1,
           "col": 3
         }
       ],
@@ -112,15 +112,32 @@
       "isBomb": false
     },
     {
-      "id": "9-7",
-      "row": 0,
-      "col": 0,
-      "direction": "left",
+      "id": "17-7",
+      "row": 3,
+      "col": 1,
+      "direction": "down-left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "17-8",
+      "row": 3,
+      "col": 3,
+      "direction": "down-right",
       "color": "#06b6d4",
       "occupiedCells": [
         {
-          "row": 0,
-          "col": 0
+          "row": 3,
+          "col": 3
         }
       ],
       "isFrozen": false,

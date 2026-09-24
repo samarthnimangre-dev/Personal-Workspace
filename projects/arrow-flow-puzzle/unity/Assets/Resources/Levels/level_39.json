@@ -1,0 +1,210 @@
+{
+  "id": 39,
+  "title": "The Dog",
+  "subtitle": "Mans loyal best friend outlined in playful serpents (inspired by Amaze GO! Lvl 40)",
+  "difficulty": "master",
+  "rows": 7,
+  "cols": 7,
+  "parMoves": 8,
+  "rewardCoins": 1350,
+  "rewardGems": 135,
+  "arrows": [
+    {
+      "id": "dog-tail",
+      "row": 0,
+      "col": 6,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 6
+        },
+        {
+          "row": 1,
+          "col": 6
+        },
+        {
+          "row": 2,
+          "col": 6
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "dog-ears",
+      "row": 0,
+      "col": 2,
+      "direction": "up",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 0,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "dog-snout",
+      "row": 1,
+      "col": 0,
+      "direction": "left",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 0
+        },
+        {
+          "row": 1,
+          "col": 1
+        },
+        {
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "dog-spine",
+      "row": 2,
+      "col": 5,
+      "direction": "right",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 5
+        },
+        {
+          "row": 2,
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "dog-chest",
+      "row": 2,
+      "col": 1,
+      "direction": "left",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 1
+        },
+        {
+          "row": 2,
+          "col": 2
+        },
+        {
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "dog-belly",
+      "row": 3,
+      "col": 4,
+      "direction": "right",
+      "color": "#eab308",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 4
+        },
+        {
+          "row": 3,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "dog-leg-front",
+      "row": 6,
+      "col": 2,
+      "direction": "down",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 6,
+          "col": 2
+        },
+        {
+          "row": 5,
+          "col": 2
+        },
+        {
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "dog-leg-back",
+      "row": 6,
+      "col": 5,
+      "direction": "down",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 6,
+          "col": 5
+        },
+        {
+          "row": 5,
+          "col": 5
+        },
+        {
+          "row": 4,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    }
+  ],
+  "deflectors": []
+}

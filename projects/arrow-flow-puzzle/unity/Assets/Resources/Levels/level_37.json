@@ -1,0 +1,247 @@
+{
+  "id": 37,
+  "title": "The Trophy",
+  "subtitle": "The golden chalice of champions (inspired by Amaze GO! Lvl 10)",
+  "difficulty": "master",
+  "rows": 7,
+  "cols": 7,
+  "parMoves": 9,
+  "rewardCoins": 1250,
+  "rewardGems": 125,
+  "arrows": [
+    {
+      "id": "tro-h-l",
+      "row": 1,
+      "col": 0,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 0
+        },
+        {
+          "row": 2,
+          "col": 0
+        },
+        {
+          "row": 3,
+          "col": 0
+        },
+        {
+          "row": 3,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-h-r",
+      "row": 1,
+      "col": 6,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 6
+        },
+        {
+          "row": 2,
+          "col": 6
+        },
+        {
+          "row": 3,
+          "col": 6
+        },
+        {
+          "row": 3,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-rim",
+      "row": 0,
+      "col": 2,
+      "direction": "left",
+      "color": "#eab308",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 0,
+          "col": 3
+        },
+        {
+          "row": 0,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-flank-l",
+      "row": 1,
+      "col": 2,
+      "direction": "left",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 2,
+          "col": 2
+        },
+        {
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-flank-r",
+      "row": 1,
+      "col": 4,
+      "direction": "right",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 4
+        },
+        {
+          "row": 3,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-stem",
+      "row": 1,
+      "col": 3,
+      "direction": "up",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 3
+        },
+        {
+          "row": 2,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-base-top",
+      "row": 5,
+      "col": 2,
+      "direction": "left",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 2
+        },
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 5,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-base-l",
+      "row": 6,
+      "col": 1,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 6,
+          "col": 1
+        },
+        {
+          "row": 6,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "tro-base-r",
+      "row": 6,
+      "col": 5,
+      "direction": "right",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 6,
+          "col": 5
+        },
+        {
+          "row": 6,
+          "col": 4
+        },
+        {
+          "row": 6,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    }
+  ],
+  "deflectors": []
+}

@@ -1,0 +1,226 @@
+{
+  "id": 25,
+  "title": "Grandmaster Escape",
+  "subtitle": "The ultimate synthesis: snakes, ice, pivots, and bombs!",
+  "difficulty": "master",
+  "rows": 6,
+  "cols": 6,
+  "parMoves": 12,
+  "rewardCoins": 600,
+  "rewardGems": 60,
+  "arrows": [
+    {
+      "id": "25-bomb",
+      "row": 2,
+      "col": 2,
+      "direction": "up",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": true
+    },
+    {
+      "id": "25-pivot",
+      "row": 3,
+      "col": 3,
+      "direction": "left",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
+      "isBomb": false
+    },
+    {
+      "id": "25-ice1",
+      "row": 1,
+      "col": 2,
+      "direction": "up",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "isFrozen": true,
+      "frozenHits": 1,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-ice2",
+      "row": 4,
+      "col": 3,
+      "direction": "down",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "isFrozen": true,
+      "frozenHits": 1,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-snake1",
+      "row": 0,
+      "col": 0,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 0
+        },
+        {
+          "row": 0,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-snake2",
+      "row": 5,
+      "col": 5,
+      "direction": "right",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 5
+        },
+        {
+          "row": 5,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-1",
+      "row": 0,
+      "col": 4,
+      "direction": "up",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-2",
+      "row": 5,
+      "col": 1,
+      "direction": "down",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-3",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-4",
+      "row": 3,
+      "col": 5,
+      "direction": "right",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-5",
+      "row": 1,
+      "col": 4,
+      "direction": "right",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "25-6",
+      "row": 4,
+      "col": 1,
+      "direction": "left",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    }
+  ],
+  "deflectors": []
+}

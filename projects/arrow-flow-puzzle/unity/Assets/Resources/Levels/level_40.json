@@ -1,0 +1,230 @@
+{
+  "id": 40,
+  "title": "The Heart",
+  "subtitle": "Winding serpentine love knot intertwined without breaks",
+  "difficulty": "master",
+  "rows": 7,
+  "cols": 7,
+  "parMoves": 8,
+  "rewardCoins": 1400,
+  "rewardGems": 140,
+  "arrows": [
+    {
+      "id": "hrt-lobe-l",
+      "row": 0,
+      "col": 1,
+      "direction": "left",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 1
+        },
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "hrt-lobe-r",
+      "row": 0,
+      "col": 5,
+      "direction": "right",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 5
+        },
+        {
+          "row": 0,
+          "col": 4
+        },
+        {
+          "row": 1,
+          "col": 4
+        },
+        {
+          "row": 1,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "hrt-spine",
+      "row": 1,
+      "col": 3,
+      "direction": "up",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 3
+        },
+        {
+          "row": 2,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "hrt-flank-l",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 0
+        },
+        {
+          "row": 2,
+          "col": 1
+        },
+        {
+          "row": 2,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "hrt-flank-r",
+      "row": 2,
+      "col": 6,
+      "direction": "right",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 6
+        },
+        {
+          "row": 2,
+          "col": 5
+        },
+        {
+          "row": 2,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "hrt-sweep-l",
+      "row": 3,
+      "col": 1,
+      "direction": "left",
+      "color": "#e11d48",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 1
+        },
+        {
+          "row": 3,
+          "col": 2
+        },
+        {
+          "row": 4,
+          "col": 2
+        },
+        {
+          "row": 5,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "hrt-sweep-r",
+      "row": 3,
+      "col": 5,
+      "direction": "right",
+      "color": "#e11d48",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 5
+        },
+        {
+          "row": 3,
+          "col": 4
+        },
+        {
+          "row": 4,
+          "col": 4
+        },
+        {
+          "row": 5,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "hrt-apex",
+      "row": 6,
+      "col": 3,
+      "direction": "down",
+      "color": "#be123c",
+      "occupiedCells": [
+        {
+          "row": 6,
+          "col": 3
+        },
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    }
+  ],
+  "deflectors": []
+}

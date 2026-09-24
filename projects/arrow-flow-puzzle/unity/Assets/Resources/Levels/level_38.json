@@ -1,0 +1,222 @@
+{
+  "id": 38,
+  "title": "The Chess Knight",
+  "subtitle": "The noble steed of the grandmaster board (inspired by Arrows - Puzzle Escape)",
+  "difficulty": "master",
+  "rows": 7,
+  "cols": 7,
+  "parMoves": 8,
+  "rewardCoins": 1300,
+  "rewardGems": 130,
+  "arrows": [
+    {
+      "id": "kni-snout",
+      "row": 1,
+      "col": 1,
+      "direction": "left",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 1
+        },
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "kni-ears",
+      "row": 0,
+      "col": 3,
+      "direction": "up",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 3
+        },
+        {
+          "row": 0,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "kni-jaw",
+      "row": 2,
+      "col": 1,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 1
+        },
+        {
+          "row": 2,
+          "col": 2
+        },
+        {
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "kni-mane-top",
+      "row": 1,
+      "col": 4,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 1,
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 5
+        },
+        {
+          "row": 3,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "kni-neck-back",
+      "row": 4,
+      "col": 5,
+      "direction": "right",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 5
+        },
+        {
+          "row": 4,
+          "col": 4
+        },
+        {
+          "row": 3,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "kni-chest",
+      "row": 4,
+      "col": 2,
+      "direction": "left",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 2
+        },
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "kni-base-mid",
+      "row": 5,
+      "col": 2,
+      "direction": "left",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 2
+        },
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 5,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "kni-base-foot",
+      "row": 6,
+      "col": 1,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 6,
+          "col": 1
+        },
+        {
+          "row": 6,
+          "col": 2
+        },
+        {
+          "row": 6,
+          "col": 3
+        },
+        {
+          "row": 6,
+          "col": 4
+        },
+        {
+          "row": 6,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    }
+  ],
+  "deflectors": []
+}

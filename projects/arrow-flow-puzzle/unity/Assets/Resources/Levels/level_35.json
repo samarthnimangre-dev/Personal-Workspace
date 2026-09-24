@@ -1,0 +1,189 @@
+{
+  "id": 35,
+  "title": "Grand Leviathan",
+  "subtitle": "The supreme 5-segment dragon crowned with ice, prisms, and detonators",
+  "difficulty": "master",
+  "rows": 6,
+  "cols": 6,
+  "parMoves": 10,
+  "rewardCoins": 1500,
+  "rewardGems": 150,
+  "arrows": [
+    {
+      "id": "35-leviathan",
+      "row": 0,
+      "col": 1,
+      "direction": "left",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 1
+        },
+        {
+          "row": 0,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 2
+        },
+        {
+          "row": 1,
+          "col": 3
+        },
+        {
+          "row": 2,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "35-frost",
+      "row": 5,
+      "col": 4,
+      "direction": "right",
+      "color": "#38bdf8",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 4
+        },
+        {
+          "row": 5,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 4,
+          "col": 2
+        }
+      ],
+      "isFrozen": true,
+      "frozenHits": 2,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "35-bomb",
+      "row": 2,
+      "col": 1,
+      "direction": "down",
+      "color": "#f43f5e",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": true
+    },
+    {
+      "id": "35-pivot",
+      "row": 3,
+      "col": 4,
+      "direction": "up",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
+      "isBomb": false
+    },
+    {
+      "id": "35-1",
+      "row": 0,
+      "col": 4,
+      "direction": "right",
+      "color": "#8b5cf6",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 4
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "35-2",
+      "row": 5,
+      "col": 1,
+      "direction": "left",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 5,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "35-3",
+      "row": 3,
+      "col": 0,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 3,
+          "col": 0
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "35-4",
+      "row": 2,
+      "col": 5,
+      "direction": "right",
+      "color": "#3b82f6",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 5
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    }
+  ],
+  "deflectors": [
+    {
+      "row": 0,
+      "col": 5,
+      "redirectDirection": "down"
+    },
+    {
+      "row": 5,
+      "col": 0,
+      "redirectDirection": "up"
+    }
+  ]
+}

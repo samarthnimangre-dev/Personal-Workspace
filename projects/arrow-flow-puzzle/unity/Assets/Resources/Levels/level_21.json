@@ -1,20 +1,112 @@
 {
-  "id": 4,
-  "title": "Diagonal Corridors",
-  "subtitle": "Angles slip through diagonal grid channels",
-  "difficulty": "easy",
-  "rows": 4,
-  "cols": 4,
-  "parMoves": 8,
-  "rewardCoins": 90,
-  "rewardGems": 10,
+  "id": 21,
+  "title": "Serpent Labyrinth",
+  "subtitle": "Multi-segment snake polylines winding around each other",
+  "difficulty": "expert",
+  "rows": 5,
+  "cols": 5,
+  "parMoves": 9,
+  "rewardCoins": 420,
+  "rewardGems": 42,
   "arrows": [
     {
-      "id": "4-1",
+      "id": "21-1",
+      "row": 0,
+      "col": 1,
+      "direction": "up",
+      "color": "#06b6d4",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 1
+        },
+        {
+          "row": 1,
+          "col": 1
+        },
+        {
+          "row": 1,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "21-2",
+      "row": 4,
+      "col": 3,
+      "direction": "down",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 4,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 3
+        },
+        {
+          "row": 3,
+          "col": 2
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "21-3",
+      "row": 2,
+      "col": 0,
+      "direction": "left",
+      "color": "#10b981",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 0
+        },
+        {
+          "row": 2,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "21-4",
+      "row": 2,
+      "col": 4,
+      "direction": "right",
+      "color": "#f59e0b",
+      "occupiedCells": [
+        {
+          "row": 2,
+          "col": 4
+        },
+        {
+          "row": 2,
+          "col": 3
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "21-5",
       "row": 0,
       "col": 0,
-      "direction": "up-left",
-      "color": "#06b6d4",
+      "direction": "left",
+      "color": "#8b5cf6",
       "occupiedCells": [
         {
           "row": 0,
@@ -27,15 +119,15 @@
       "isBomb": false
     },
     {
-      "id": "4-2",
+      "id": "21-6",
       "row": 0,
-      "col": 3,
-      "direction": "up-right",
+      "col": 4,
+      "direction": "right",
       "color": "#3b82f6",
       "occupiedCells": [
         {
           "row": 0,
-          "col": 3
+          "col": 4
         }
       ],
       "isFrozen": false,
@@ -44,14 +136,14 @@
       "isBomb": false
     },
     {
-      "id": "4-3",
-      "row": 3,
+      "id": "21-7",
+      "row": 4,
       "col": 0,
-      "direction": "down-left",
-      "color": "#ec4899",
+      "direction": "left",
+      "color": "#06b6d4",
       "occupiedCells": [
         {
-          "row": 3,
+          "row": 4,
           "col": 0
         }
       ],
@@ -61,83 +153,15 @@
       "isBomb": false
     },
     {
-      "id": "4-4",
-      "row": 3,
-      "col": 3,
-      "direction": "down-right",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 3,
-          "col": 3
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-5",
-      "row": 1,
-      "col": 1,
-      "direction": "up",
+      "id": "21-8",
+      "row": 4,
+      "col": 4,
+      "direction": "right",
       "color": "#10b981",
       "occupiedCells": [
         {
-          "row": 1,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-6",
-      "row": 1,
-      "col": 2,
-      "direction": "right",
-      "color": "#8b5cf6",
-      "occupiedCells": [
-        {
-          "row": 1,
-          "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-7",
-      "row": 2,
-      "col": 1,
-      "direction": "left",
-      "color": "#06b6d4",
-      "occupiedCells": [
-        {
-          "row": 2,
-          "col": 1
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "4-8",
-      "row": 2,
-      "col": 2,
-      "direction": "down",
-      "color": "#f43f5e",
-      "occupiedCells": [
-        {
-          "row": 2,
-          "col": 2
+          "row": 4,
+          "col": 4
         }
       ],
       "isFrozen": false,

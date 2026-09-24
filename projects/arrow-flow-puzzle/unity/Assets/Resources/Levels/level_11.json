@@ -1,37 +1,37 @@
 {
-  "id": 8,
-  "title": "Frozen Citadel",
-  "subtitle": "Tap the frozen arrow to shatter its ice shell",
+  "id": 11,
+  "title": "The Compass Pivot",
+  "subtitle": "Pivot arrows turn 90° clockwise on tap to find an open escape",
   "difficulty": "medium",
   "rows": 4,
   "cols": 4,
   "parMoves": 6,
-  "rewardCoins": 140,
-  "rewardGems": 14,
+  "rewardCoins": 185,
+  "rewardGems": 18,
   "arrows": [
     {
-      "id": "8-1",
+      "id": "11-1",
       "row": 1,
       "col": 1,
-      "direction": "up",
-      "color": "#06b6d4",
+      "direction": "down",
+      "color": "#f59e0b",
       "occupiedCells": [
         {
           "row": 1,
           "col": 1
         }
       ],
-      "isFrozen": true,
-      "frozenHits": 1,
-      "isPivot": false,
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": true,
       "isBomb": false
     },
     {
-      "id": "8-2",
+      "id": "11-2",
       "row": 2,
       "col": 1,
-      "direction": "up",
-      "color": "#3b82f6",
+      "direction": "down",
+      "color": "#06b6d4",
       "occupiedCells": [
         {
           "row": 2,
@@ -44,15 +44,15 @@
       "isBomb": false
     },
     {
-      "id": "8-3",
+      "id": "11-3",
       "row": 1,
-      "col": 2,
-      "direction": "right",
+      "col": 0,
+      "direction": "left",
       "color": "#10b981",
       "occupiedCells": [
         {
           "row": 1,
-          "col": 2
+          "col": 0
         }
       ],
       "isFrozen": false,
@@ -61,32 +61,32 @@
       "isBomb": false
     },
     {
-      "id": "8-4",
+      "id": "11-4",
+      "row": 0,
+      "col": 1,
+      "direction": "up",
+      "color": "#ec4899",
+      "occupiedCells": [
+        {
+          "row": 0,
+          "col": 1
+        }
+      ],
+      "isFrozen": false,
+      "frozenHits": 0,
+      "isPivot": false,
+      "isBomb": false
+    },
+    {
+      "id": "11-5",
       "row": 2,
       "col": 2,
-      "direction": "down",
-      "color": "#ec4899",
+      "direction": "right",
+      "color": "#8b5cf6",
       "occupiedCells": [
         {
           "row": 2,
           "col": 2
-        }
-      ],
-      "isFrozen": false,
-      "frozenHits": 0,
-      "isPivot": false,
-      "isBomb": false
-    },
-    {
-      "id": "8-5",
-      "row": 0,
-      "col": 3,
-      "direction": "right",
-      "color": "#f59e0b",
-      "occupiedCells": [
-        {
-          "row": 0,
-          "col": 3
         }
       ],
       "isFrozen": false,
