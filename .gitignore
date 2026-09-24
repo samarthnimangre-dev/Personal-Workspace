@@ -47,3 +47,5 @@ designs/
 *token*.json
 projects/VaniEdge-Voice-Platform/
 ArrowFlow-v1.0.0.apk
+*.log
+reddit_inbox*.txt
