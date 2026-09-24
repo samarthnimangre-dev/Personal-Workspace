@@ -67,4 +67,9 @@ async function checkInbox() {
   });
 }
 
-checkInbox();
+checkInbox()
+  .then(() => process.exit(0))
+  .catch((err) => {
+    console.error("Error in checkInbox:", err);
+    process.exit(1);
+  });

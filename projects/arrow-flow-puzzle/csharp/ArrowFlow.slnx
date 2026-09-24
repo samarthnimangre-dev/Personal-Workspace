@@ -1,0 +1,4 @@
+<Solution>
+  <Project Path="ArrowFlow.Core/ArrowFlow.Core.csproj" />
+  <Project Path="ArrowFlow.Tests/ArrowFlow.Tests.csproj" />
+</Solution>
