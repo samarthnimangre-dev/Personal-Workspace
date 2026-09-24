@@ -43,7 +43,7 @@ adb shell am start -n com.samarthbuilds.arrowescape/.MainActivity
 # Install dependencies
 pnpm install
 
-# Run unit tests (54 passing tests)
+# Run unit tests (75 passing tests across 5 suites)
 pnpm test
 
 # Run code linter
@@ -56,3 +56,30 @@ pnpm run build
 npx cap sync android
 cd android && ./gradlew assembleDebug
 ```
+
+---
+
+## Unity CLI & UnityHub Setup
+
+The environment includes both the official **Unity CLI** and **Unity Hub (with headless support)**:
+
+1. **Unity CLI (`unity`):**
+   - Version: `1.0.0-beta.11`
+   - Location: `/usr/local/bin/unity` (`~/.local/bin/unity`)
+   - Non-interactive usage:
+     ```bash
+     unity --version
+     unity editors list --non-interactive
+     unity --help
+     ```
+
+2. **Unity Hub (`unityhub` & `unityhub-headless`):**
+   - Installed via official Unity Debian APT repository (`https://hub.unity3d.com/linux/repos/deb`).
+   - Binary: `/usr/bin/unityhub`
+   - Headless runner (virtual framebuffer via Xvfb with filtered IPC logs): `/usr/local/bin/unityhub-headless`
+   - Usage:
+     ```bash
+     unityhub-headless help
+     unityhub-headless editors -i
+     ```
+

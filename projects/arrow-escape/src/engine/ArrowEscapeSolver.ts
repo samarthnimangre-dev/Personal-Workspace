@@ -212,7 +212,7 @@ export class ArrowEscapeSolver {
     arrows: readonly ArrowModel[],
     maxSteps: number = 20000
   ): SolverResult {
-    const unescaped = arrows.filter((a) => !a.isEscaped);
+    const unescaped = arrows.filter((a) => !a.isEscaped && !a.isEscaping);
     if (unescaped.length === 0) {
       return { solvable: true, solutionMoves: [], stepsExplored: 0 };
     }

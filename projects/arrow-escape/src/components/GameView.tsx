@@ -1,5 +1,5 @@
 // Responsive mobile-first GameView container with top HUD, lives system, sound/haptic controls, booster toolbar, and modals
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { GameEngineState } from '../engine/GameEngine';
 import type { BoosterType, UserProgress } from '../engine/types';
 import type { GameSettings } from '../persistence/storage';
@@ -79,8 +79,8 @@ export const GameView: React.FC<GameViewProps> = ({
   onCloseSettings,
 }) => {
   const { level, board, arrows, movesCount, status } = state;
-  const arrowsList = Array.from(arrows.values());
-  const activeCount = arrowsList.filter((a) => !a.isEscaped).length;
+  const arrowsList = useMemo(() => Array.from(arrows.values()), [arrows]);
+  const activeCount = useMemo(() => arrowsList.filter((a) => !a.isEscaped).length, [arrowsList]);
   const totalCount = level.arrows.length;
 
   const isDark = settings.theme === 'dark';
@@ -88,16 +88,26 @@ export const GameView: React.FC<GameViewProps> = ({
   const isMinimalWhite = settings.theme === 'minimal-white' || settings.theme === 'light';
 
   // Star rating calculation based on moves vs par
-  const starsEarned =
-    movesCount <= level.parMoves
+  const starsEarned = useMemo(() => {
+    return movesCount <= level.parMoves
       ? 3
       : movesCount <= level.parMoves + 2
       ? 2
       : movesCount <= level.parMoves + 4
       ? 1
       : 0;
+  }, [movesCount, level.parMoves]);
 
-  const rewardCoins = level.rewardCoins ?? 50 + starsEarned * 25;
+  const rewardCoins = useMemo(() => {
+    return level.rewardCoins ?? 50 + starsEarned * 25;
+  }, [level.rewardCoins, starsEarned]);
+
+  const shopInventory = useMemo(() => ({
+    hint: progress.inventory?.hint ?? 3,
+    hammer: progress.inventory?.hammer ?? 2,
+    bomb: progress.inventory?.bomb ?? 2,
+    undo: progress.inventory?.undo ?? 3,
+  }), [progress.inventory]);
 
   return (
     <div
@@ -191,7 +201,7 @@ export const GameView: React.FC<GameViewProps> = ({
                       className={`text-base transition-all duration-300 select-none ${
                         isAlive
                           ? 'drop-shadow-[0_0_6px_rgba(56,189,248,0.7)] scale-100 opacity-100'
-                          : 'scale-85 opacity-25 grayscale'
+                          : 'scale-[0.85] opacity-25 grayscale'
                       }`}
                     >
                       💧
@@ -650,12 +660,7 @@ export const GameView: React.FC<GameViewProps> = ({
       <ShopModal
         isOpen={isShopOpen && status !== 'won' && !isGameOver}
         coins={progress.coins ?? 100}
-        inventory={{
-          hint: progress.inventory?.hint ?? 3,
-          hammer: progress.inventory?.hammer ?? 2,
-          bomb: progress.inventory?.bomb ?? 2,
-          undo: progress.inventory?.undo ?? 3,
-        }}
+        inventory={shopInventory}
         isDark={isDark}
         theme={settings.theme}
         onClose={onCloseShop}

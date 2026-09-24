@@ -216,7 +216,6 @@ export function useGameState(initialLevelId: number = 1) {
         const headX = arrow.head.col * cellSize + cellSize / 2 + padding;
         const headY = arrow.head.row * cellSize + cellSize / 2 + padding;
         particleController.burstEscape(headX, headY, '#f43f5e', 0);
-        particleController.burstWin(currentState.board.cols * cellSize, currentState.board.rows * cellSize);
 
         const { nextState } = GameEngine.executeBomb(currentState, arrowId);
         gameStateRef.current = nextState;
@@ -305,7 +304,6 @@ export function useGameState(initialLevelId: number = 1) {
         const headX = arrow.head.col * cellSize + cellSize / 2 + padding;
         const headY = arrow.head.row * cellSize + cellSize / 2 + padding;
         particleController.burstEscape(headX, headY, '#f43f5e', 0);
-        particleController.burstWin(currentState.board.cols * cellSize, currentState.board.rows * cellSize);
 
         gameStateRef.current = nextState;
         setGameState(nextState);
@@ -313,6 +311,9 @@ export function useGameState(initialLevelId: number = 1) {
         if (nextState.status === 'won') {
           soundEffects.playWin();
           haptics.win();
+          const boardW = currentState.board.cols * cellSize + padding * 2;
+          const boardH = currentState.board.rows * cellSize + padding * 2;
+          particleController.burstWin(boardW, boardH);
           const starsEarned =
             nextState.movesCount <= currentState.level.parMoves
               ? 3

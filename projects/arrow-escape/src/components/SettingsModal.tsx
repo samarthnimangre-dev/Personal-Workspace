@@ -1,5 +1,5 @@
 // Settings and Pause Modal with audio, haptics, theme, game-mode, and level selector
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { GameSettings } from '../persistence/storage';
 import type { UserProgress } from '../engine/types';
 
@@ -18,7 +18,7 @@ interface SettingsModalProps {
   onToggleZenMode: () => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({
+export const SettingsModal: React.FC<SettingsModalProps> = React.memo(({
   isOpen,
   settings,
   progress,
@@ -32,6 +32,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   onToggleTheme,
   onToggleZenMode,
 }) => {
+  const completedSet = useMemo(
+    () => new Set(progress.completedLevels),
+    [progress.completedLevels]
+  );
+
   if (!isOpen) return null;
 
   const isDark = settings.theme === 'dark';
@@ -212,7 +217,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             <div className="grid grid-cols-5 gap-1.5 max-h-40 overflow-y-auto p-1">
               {allLevels.map((lvl) => {
                 const isCurrent = lvl.id === currentLevelId;
-                const isCompleted = progress.completedLevels.includes(lvl.id);
+                const isCompleted = completedSet.has(lvl.id);
                 const isUnlocked = lvl.id <= Math.max(progress.currentLevel, 1) || isCompleted;
 
                 return (
@@ -281,4 +286,6 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
       </div>
     </div>
   );
-};
+});
+
+SettingsModal.displayName = 'SettingsModal';

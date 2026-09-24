@@ -15,7 +15,7 @@ interface SvgArrowProps {
   board?: BoardModel;
 }
 
-export const SvgArrow: React.FC<SvgArrowProps> = ({
+export const SvgArrow: React.FC<SvgArrowProps> = React.memo(({
   arrow,
   cellSize,
   boardRows,
@@ -47,32 +47,39 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
 
   const delta = getDirectionDelta(arrow.direction);
 
-  // Directional recoil nudge on collision
-  const nudgeX = delta.dCol * 9;
-  const nudgeY = delta.dRow * 9;
+  // Directional recoil nudge on collision (computed only when blocked)
+  const nudgeX = isBlocked ? delta.dCol * 9 : 0;
+  const nudgeY = isBlocked ? delta.dRow * 9 : 0;
 
-  // Calculate escape flight trajectory
-  const escapeTravel = (Math.max(boardRows, boardCols) + 2) * cellSize;
-  let escapeMidX = delta.dCol * escapeTravel * 0.35;
-  let escapeMidY = delta.dRow * escapeTravel * 0.35;
-  let escapeX = delta.dCol * escapeTravel;
-  let escapeY = delta.dRow * escapeTravel;
+  // Calculate escape flight trajectory only during active escape animation
+  let escapeMidX = 0;
+  let escapeMidY = 0;
+  let escapeX = 0;
+  let escapeY = 0;
 
-  if (board) {
-    let scan = stepPosition(arrow.head, arrow.direction);
-    while (board.isWithinBounds(scan)) {
-      const defl = board.getDeflectorAt(scan.row, scan.col);
-      if (defl) {
-        const midX = (defl.col - arrow.head.col) * cellSize;
-        const midY = (defl.row - arrow.head.row) * cellSize;
-        const redirDelta = getDirectionDelta(defl.redirectDirection);
-        escapeMidX = midX;
-        escapeMidY = midY;
-        escapeX = midX + redirDelta.dCol * escapeTravel;
-        escapeY = midY + redirDelta.dRow * escapeTravel;
-        break;
+  if (isEscaping) {
+    const escapeTravel = (Math.max(boardRows, boardCols) + 2) * cellSize;
+    escapeMidX = delta.dCol * escapeTravel * 0.35;
+    escapeMidY = delta.dRow * escapeTravel * 0.35;
+    escapeX = delta.dCol * escapeTravel;
+    escapeY = delta.dRow * escapeTravel;
+
+    if (board) {
+      let scan = stepPosition(arrow.head, arrow.direction);
+      while (board.isWithinBounds(scan)) {
+        const defl = board.getDeflectorAt(scan.row, scan.col);
+        if (defl) {
+          const midX = (defl.col - arrow.head.col) * cellSize;
+          const midY = (defl.row - arrow.head.row) * cellSize;
+          const redirDelta = getDirectionDelta(defl.redirectDirection);
+          escapeMidX = midX;
+          escapeMidY = midY;
+          escapeX = midX + redirDelta.dCol * escapeTravel;
+          escapeY = midY + redirDelta.dRow * escapeTravel;
+          break;
+        }
+        scan = stepPosition(scan, arrow.direction);
       }
-      scan = stepPosition(scan, arrow.direction);
     }
   }
 
@@ -105,16 +112,17 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
 
   const isSerpent = arrow.occupiedCells.length > 1;
 
-  // Ensure orderedCells starts from head cell so spine joins seamlessly at Layer 3
-  const isHeadFirst =
-    arrow.occupiedCells[0].row === arrow.head.row &&
-    arrow.occupiedCells[0].col === arrow.head.col;
-  const orderedCells = isHeadFirst ? arrow.occupiedCells : [...arrow.occupiedCells].reverse();
-
-  // Continuous spine coordinates along serpentine body
-  const spinePoints = orderedCells
-    .map((c) => `${c.col * cellSize + center},${c.row * cellSize + center}`)
-    .join(' ');
+  // Continuous spine coordinates along serpentine body (only computed for multi-cell arrows)
+  let spinePoints = '';
+  if (isSerpent) {
+    const isHeadFirst =
+      arrow.occupiedCells[0].row === arrow.head.row &&
+      arrow.occupiedCells[0].col === arrow.head.col;
+    const orderedCells = isHeadFirst ? arrow.occupiedCells : [...arrow.occupiedCells].reverse();
+    spinePoints = orderedCells
+      .map((c) => `${c.col * cellSize + center},${c.row * cellSize + center}`)
+      .join(' ');
+  }
 
   // Drop shadow color for floating depth
   const shadowColor = isDark
@@ -399,4 +407,6 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
       )}
     </g>
   );
-};
+});
+
+SvgArrow.displayName = 'SvgArrow';

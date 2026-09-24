@@ -4,6 +4,8 @@ import { haptics } from '../utils/haptics';
 import { loadSettings, saveSettings, loadProgress, recordLevelCompletion } from '../persistence/storage';
 import { levelRegistry, getDifficultyForLevel, TOTAL_CAMPAIGN_LEVELS } from '../engine/LevelRegistry';
 import { ArrowEscapeSolver } from '../engine/ArrowEscapeSolver';
+import { BoardModel } from '../engine/BoardModel';
+import { ArrowModel } from '../engine/ArrowModel';
 
 describe('Complete Game Experience Integration Suite', () => {
   beforeEach(() => {
@@ -324,6 +326,20 @@ describe('Complete Game Experience Integration Suite', () => {
         expect(solution.solvable).toBe(true);
         expect(solution.solutionMoves).toBeDefined();
         expect(solution.solutionMoves!.length).toBe(level.arrows.length);
+      });
+    });
+
+    describe('Runtime In-Flight State & Solver Resilience', () => {
+      it('correctly ignores in-flight escaping arrows during solveFromState hint calculations', () => {
+        const board = new BoardModel(3, 3);
+        // Arrow 1 escapes to the right, Arrow 2 is behind it
+        const arrow1 = new ArrowModel('a1', 'right', { row: 1, col: 1 }, [{ row: 1, col: 1 }], 'escaping');
+        const arrow2 = new ArrowModel('a2', 'right', { row: 1, col: 0 }, [{ row: 1, col: 0 }], 'idle');
+
+        // Since a1 is in mid-flight ('escaping'), a2 must be recognized as eligible to escape
+        const result = ArrowEscapeSolver.solveFromState(board, [arrow1, arrow2]);
+        expect(result.solvable).toBe(true);
+        expect(result.solutionMoves).toEqual(['a2']);
       });
     });
   });

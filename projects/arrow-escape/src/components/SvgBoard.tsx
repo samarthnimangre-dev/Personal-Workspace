@@ -1,5 +1,5 @@
 // Scalable, theme-aware SVG Board rendering a clean, box-free minimalist canvas with subtle guide dots and active arrows
-import React from 'react';
+import React, { useMemo } from 'react';
 import type { BoardModel } from '../engine/BoardModel';
 import type { ArrowModel } from '../engine/ArrowModel';
 import type { GameTheme } from '../engine/types';
@@ -17,7 +17,7 @@ interface SvgBoardProps {
   onCancelBooster?: () => void;
 }
 
-export const SvgBoard: React.FC<SvgBoardProps> = ({
+export const SvgBoard: React.FC<SvgBoardProps> = React.memo(({
   board,
   arrows,
   theme,
@@ -36,21 +36,26 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
   const isEyeComfort = theme === 'eye-comfort';
 
   // Minimalist grid guidance dots at cell centers (zero square boxes/blocks)
-  const gridDots = [];
-  if (showGridDots) {
+  const gridDots = useMemo(() => {
+    if (!showGridDots) return [];
+    const dots: { key: string; cx: number; cy: number }[] = [];
     for (let r = 0; r < board.rows; r++) {
       for (let c = 0; c < board.cols; c++) {
         if (!board.isInsideCoords(r, c)) continue;
-        gridDots.push({
+        dots.push({
           key: `${r}-${c}`,
           cx: c * cellSize + padding + cellSize / 2,
           cy: r * cellSize + padding + cellSize / 2,
         });
       }
     }
-  }
+    return dots;
+  }, [board, cellSize, padding, showGridDots]);
 
-  const deflectorList = board.deflectors ? Array.from(board.deflectors.values()) : [];
+  const deflectorList = useMemo(() => {
+    return board.deflectors ? Array.from(board.deflectors.values()) : [];
+  }, [board.deflectors]);
+
   const dotFill = isDark
     ? 'rgba(255, 255, 255, 0.15)'
     : isEyeComfort
@@ -72,14 +77,6 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
         style={{ touchAction: 'manipulation' }}
         onClick={onCancelBooster}
       >
-        <defs>
-          {/* Cyan Rim Light Bloom Filter */}
-          <filter id="cyanBevelBloom" x="-20%" y="-20%" width="140%" height="140%">
-            <feGaussianBlur stdDeviation="3.5" result="blur" />
-            <feComposite in="SourceGraphic" in2="blur" operator="over" />
-          </filter>
-        </defs>
-
         {/* Minimalist Grid Guide Dots (NO square blocks, boxes or plinths) */}
         {gridDots.map((dot) => (
           <circle
@@ -143,4 +140,6 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
       </svg>
     </div>
   );
-};
+});
+
+SvgBoard.displayName = 'SvgBoard';

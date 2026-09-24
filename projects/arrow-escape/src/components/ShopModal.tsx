@@ -73,7 +73,7 @@ const BOOSTER_PACKS: readonly BoosterPackConfig[] = [
   },
 ];
 
-export const ShopModal: React.FC<ShopModalProps> = ({
+export const ShopModal: React.FC<ShopModalProps> = React.memo(({
   isOpen,
   coins,
   inventory,
@@ -219,7 +219,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
                     <div className="flex items-center gap-1.5">
                       <span className="text-xs font-black tracking-tight">{pack.name}</span>
                       <span
-                        className={`text-[10px] font-extrabold px-1.5 py-0.2 rounded-full border ${pack.colorBorder} ${pack.colorText}`}
+                        className={`text-[10px] font-extrabold px-1.5 py-0.5 rounded-full border ${pack.colorBorder} ${pack.colorText}`}
                       >
                         +{pack.count}
                       </span>
@@ -309,4 +309,6 @@ export const ShopModal: React.FC<ShopModalProps> = ({
       </div>
     </div>
   );
-};
+});
+
+ShopModal.displayName = 'ShopModal';

@@ -11,30 +11,10 @@
   -moz-osx-font-smoothing: grayscale;
   -webkit-tap-highlight-color: transparent;
 
-  /* Cyber-Neon Jewel Palette Tokens */
-  --neon-cyan: #06b6d4;
-  --neon-cyan-glow: rgba(6, 182, 212, 0.45);
-  --neon-rose: #f43f5e;
-  --neon-rose-glow: rgba(244, 63, 94, 0.60);
-  --neon-amber: #f59e0b;
-  --neon-amber-glow: rgba(245, 158, 11, 0.50);
-  --neon-purple: #a855f7;
-  --neon-purple-glow: rgba(168, 85, 247, 0.45);
-  --neon-emerald: #10b981;
-  --neon-emerald-glow: rgba(16, 185, 129, 0.45);
-
-  /* Theme tokens - Cyber Dark Obsidian Mode (Default) */
+  /* Theme background tokens - Cyber Dark Obsidian Mode (Default) */
   --bg-app: #090d16;
   --bg-gradient-start: #0f172a;
   --bg-gradient-end: #090d16;
-  --bg-card: rgba(15, 23, 42, 0.90);
-  --border-card: rgba(51, 65, 85, 0.65);
-  --text-primary: #f8fafc;
-  --text-secondary: #94a3b8;
-  --text-muted: #64748b;
-  --arrow-stroke: #06b6d4;
-  --accent-cyan: #06b6d4;
-  --accent-glow: rgba(6, 182, 212, 0.4);
 }
 
 .theme-minimal-white,
@@ -42,28 +22,12 @@
   --bg-app: #ffffff;
   --bg-gradient-start: #ffffff;
   --bg-gradient-end: #f8fafc;
-  --bg-card: rgba(255, 255, 255, 0.95);
-  --border-card: rgba(226, 232, 240, 0.9);
-  --text-primary: #0f172a;
-  --text-secondary: #475569;
-  --text-muted: #94a3b8;
-  --arrow-stroke: #0f172a;
-  --accent-cyan: #0284c7;
-  --accent-glow: rgba(2, 132, 199, 0.3);
 }
 
 .theme-eye-comfort {
   --bg-app: #faf5ed;
   --bg-gradient-start: #faf5ed;
   --bg-gradient-end: #f5f0e6;
-  --bg-card: rgba(250, 245, 237, 0.95);
-  --border-card: rgba(214, 204, 190, 0.75);
-  --text-primary: #4a3525;
-  --text-secondary: #785e49;
-  --text-muted: #a6907c;
-  --arrow-stroke: #4a3525;
-  --accent-cyan: #38bdf8;
-  --accent-glow: rgba(56, 189, 248, 0.35);
 }
 
 
@@ -228,32 +192,17 @@ html, body {
   animation: modalScaleIn 260ms cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* =========================================================================
-   Neon Glow Utilities & Pulsing Micro-Interactions
-   ========================================================================= */
-.shadow-neon-cyan {
-  box-shadow: 0 0 15px var(--neon-cyan-glow);
-}
-.shadow-neon-rose {
-  box-shadow: 0 0 16px var(--neon-rose-glow);
-}
-.shadow-neon-amber {
-  box-shadow: 0 0 18px var(--neon-amber-glow);
-}
-
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 0.85;
-    transform: scale(1);
+@keyframes fadeIn {
+  from {
+    opacity: 0;
   }
-  50% {
+  to {
     opacity: 1;
-    transform: scale(1.04);
   }
 }
 
-.animate-pulse-glow {
-  animation: pulseGlow 2s infinite ease-in-out;
+.animate-fade-in {
+  animation: fadeIn 220ms ease-out both;
 }
 
 @keyframes hintedGlowPulse {
