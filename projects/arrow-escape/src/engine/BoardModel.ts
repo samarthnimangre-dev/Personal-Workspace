@@ -120,6 +120,366 @@ export class BoardModel {
   }
 }
 
-// Initial Handcrafted Campaign Levels (re-exported for full backward compatibility)
-export const DEFAULT_LEVELS: readonly LevelData[] = CAMPAIGN_LEVELS;
+// Master-Crafted Silhouette Levels inspired by Amaze GO! and Arrows - Puzzle Escape
+export const SILHOUETTE_LEVELS: readonly LevelData[] = [
+  // ── Level 36: The Anchor (inspired by Level 27 in Amaze GO!) ─────────────
+  {
+    id: 36,
+    name: 'The Anchor',
+    subtitle: 'The maritime silhouette of winding serpents (inspired by Amaze GO! Lvl 27)',
+    difficulty: 'master',
+    rows: 7,
+    cols: 7,
+    parMoves: 8,
+    rewardCoins: 1200,
+    arrows: [
+      {
+        id: 'anc-cross-l',
+        direction: 'left',
+        head: { row: 2, col: 1 },
+        occupiedCells: [{ row: 2, col: 1 }, { row: 2, col: 2 }, { row: 1, col: 2 }],
+        color: '#06b6d4',
+      },
+      {
+        id: 'anc-cross-r',
+        direction: 'right',
+        head: { row: 2, col: 5 },
+        occupiedCells: [{ row: 2, col: 5 }, { row: 2, col: 4 }, { row: 1, col: 4 }],
+        color: '#06b6d4',
+      },
+      {
+        id: 'anc-ring',
+        direction: 'left',
+        head: { row: 0, col: 2 },
+        occupiedCells: [{ row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 }],
+        color: '#3b82f6',
+      },
+      {
+        id: 'anc-shank',
+        direction: 'up',
+        head: { row: 1, col: 3 },
+        occupiedCells: [{ row: 1, col: 3 }, { row: 2, col: 3 }, { row: 3, col: 3 }],
+        color: '#8b5cf6',
+      },
+      {
+        id: 'anc-fluke-l',
+        direction: 'up',
+        head: { row: 4, col: 1 },
+        occupiedCells: [{ row: 4, col: 1 }, { row: 5, col: 1 }, { row: 6, col: 1 }, { row: 6, col: 2 }],
+        color: '#10b981',
+      },
+      {
+        id: 'anc-fluke-r',
+        direction: 'up',
+        head: { row: 4, col: 5 },
+        occupiedCells: [{ row: 4, col: 5 }, { row: 5, col: 5 }, { row: 6, col: 5 }, { row: 6, col: 4 }],
+        color: '#10b981',
+      },
+      {
+        id: 'anc-crown',
+        direction: 'down',
+        head: { row: 6, col: 3 },
+        occupiedCells: [{ row: 6, col: 3 }, { row: 5, col: 3 }, { row: 4, col: 3 }],
+        color: '#ec4899',
+      },
+    ],
+  },
+
+  // ── Level 37: The Trophy (inspired by Level 10 in Amaze GO!) ─────────────
+  {
+    id: 37,
+    name: 'The Trophy',
+    subtitle: 'The golden chalice of champions (inspired by Amaze GO! Lvl 10)',
+    difficulty: 'master',
+    rows: 7,
+    cols: 7,
+    parMoves: 9,
+    rewardCoins: 1250,
+    arrows: [
+      {
+        id: 'tro-h-l',
+        direction: 'up',
+        head: { row: 1, col: 0 },
+        occupiedCells: [{ row: 1, col: 0 }, { row: 2, col: 0 }, { row: 3, col: 0 }, { row: 3, col: 1 }],
+        color: '#f59e0b',
+      },
+      {
+        id: 'tro-h-r',
+        direction: 'up',
+        head: { row: 1, col: 6 },
+        occupiedCells: [{ row: 1, col: 6 }, { row: 2, col: 6 }, { row: 3, col: 6 }, { row: 3, col: 5 }],
+        color: '#f59e0b',
+      },
+      {
+        id: 'tro-rim',
+        direction: 'left',
+        head: { row: 0, col: 2 },
+        occupiedCells: [{ row: 0, col: 2 }, { row: 0, col: 3 }, { row: 0, col: 4 }],
+        color: '#eab308',
+      },
+      {
+        id: 'tro-flank-l',
+        direction: 'left',
+        head: { row: 1, col: 2 },
+        occupiedCells: [{ row: 1, col: 2 }, { row: 2, col: 2 }, { row: 3, col: 2 }],
+        color: '#06b6d4',
+      },
+      {
+        id: 'tro-flank-r',
+        direction: 'right',
+        head: { row: 1, col: 4 },
+        occupiedCells: [{ row: 1, col: 4 }, { row: 2, col: 4 }, { row: 3, col: 4 }],
+        color: '#06b6d4',
+      },
+      {
+        id: 'tro-stem',
+        direction: 'up',
+        head: { row: 1, col: 3 },
+        occupiedCells: [{ row: 1, col: 3 }, { row: 2, col: 3 }, { row: 3, col: 3 }, { row: 4, col: 3 }],
+        color: '#3b82f6',
+      },
+      {
+        id: 'tro-base-top',
+        direction: 'left',
+        head: { row: 5, col: 2 },
+        occupiedCells: [{ row: 5, col: 2 }, { row: 5, col: 3 }, { row: 5, col: 4 }],
+        color: '#ec4899',
+      },
+      {
+        id: 'tro-base-l',
+        direction: 'left',
+        head: { row: 6, col: 1 },
+        occupiedCells: [{ row: 6, col: 1 }, { row: 6, col: 2 }],
+        color: '#10b981',
+      },
+      {
+        id: 'tro-base-r',
+        direction: 'right',
+        head: { row: 6, col: 5 },
+        occupiedCells: [{ row: 6, col: 5 }, { row: 6, col: 4 }, { row: 6, col: 3 }],
+        color: '#10b981',
+      },
+    ],
+  },
+
+  // ── Level 38: The Chess Knight (inspired by Arrows - Puzzle Escape) ───────
+  {
+    id: 38,
+    name: 'The Chess Knight',
+    subtitle: 'The noble steed of the grandmaster board (inspired by Arrows - Puzzle Escape)',
+    difficulty: 'master',
+    rows: 7,
+    cols: 7,
+    parMoves: 8,
+    rewardCoins: 1300,
+    arrows: [
+      {
+        id: 'kni-snout',
+        direction: 'left',
+        head: { row: 1, col: 1 },
+        occupiedCells: [{ row: 1, col: 1 }, { row: 1, col: 2 }, { row: 1, col: 3 }],
+        color: '#06b6d4',
+      },
+      {
+        id: 'kni-ears',
+        direction: 'up',
+        head: { row: 0, col: 3 },
+        occupiedCells: [{ row: 0, col: 3 }, { row: 0, col: 4 }],
+        color: '#3b82f6',
+      },
+      {
+        id: 'kni-jaw',
+        direction: 'left',
+        head: { row: 2, col: 1 },
+        occupiedCells: [{ row: 2, col: 1 }, { row: 2, col: 2 }, { row: 3, col: 2 }],
+        color: '#10b981',
+      },
+      {
+        id: 'kni-mane-top',
+        direction: 'up',
+        head: { row: 1, col: 4 },
+        occupiedCells: [{ row: 1, col: 4 }, { row: 2, col: 4 }, { row: 2, col: 5 }, { row: 3, col: 5 }],
+        color: '#f59e0b',
+      },
+      {
+        id: 'kni-neck-back',
+        direction: 'right',
+        head: { row: 4, col: 5 },
+        occupiedCells: [{ row: 4, col: 5 }, { row: 4, col: 4 }, { row: 3, col: 4 }],
+        color: '#8b5cf6',
+      },
+      {
+        id: 'kni-chest',
+        direction: 'left',
+        head: { row: 4, col: 2 },
+        occupiedCells: [{ row: 4, col: 2 }, { row: 4, col: 3 }, { row: 3, col: 3 }],
+        color: '#ec4899',
+      },
+      {
+        id: 'kni-base-mid',
+        direction: 'left',
+        head: { row: 5, col: 2 },
+        occupiedCells: [{ row: 5, col: 2 }, { row: 5, col: 3 }, { row: 5, col: 4 }],
+        color: '#06b6d4',
+      },
+      {
+        id: 'kni-base-foot',
+        direction: 'left',
+        head: { row: 6, col: 1 },
+        occupiedCells: [
+          { row: 6, col: 1 },
+          { row: 6, col: 2 },
+          { row: 6, col: 3 },
+          { row: 6, col: 4 },
+          { row: 6, col: 5 },
+        ],
+        color: '#10b981',
+      },
+    ],
+  },
+
+  // ── Level 39: The Dog (inspired by Level 40 in Amaze GO!) ─────────────────
+  {
+    id: 39,
+    name: 'The Dog',
+    subtitle: 'Mans loyal best friend outlined in playful serpents (inspired by Amaze GO! Lvl 40)',
+    difficulty: 'master',
+    rows: 7,
+    cols: 7,
+    parMoves: 8,
+    rewardCoins: 1350,
+    arrows: [
+      {
+        id: 'dog-tail',
+        direction: 'up',
+        head: { row: 0, col: 6 },
+        occupiedCells: [{ row: 0, col: 6 }, { row: 1, col: 6 }, { row: 2, col: 6 }],
+        color: '#f59e0b',
+      },
+      {
+        id: 'dog-ears',
+        direction: 'up',
+        head: { row: 0, col: 2 },
+        occupiedCells: [{ row: 0, col: 2 }, { row: 0, col: 3 }],
+        color: '#3b82f6',
+      },
+      {
+        id: 'dog-snout',
+        direction: 'left',
+        head: { row: 1, col: 0 },
+        occupiedCells: [{ row: 1, col: 0 }, { row: 1, col: 1 }, { row: 1, col: 2 }],
+        color: '#06b6d4',
+      },
+      {
+        id: 'dog-spine',
+        direction: 'right',
+        head: { row: 2, col: 5 },
+        occupiedCells: [{ row: 2, col: 5 }, { row: 2, col: 4 }, { row: 2, col: 3 }],
+        color: '#8b5cf6',
+      },
+      {
+        id: 'dog-chest',
+        direction: 'left',
+        head: { row: 2, col: 1 },
+        occupiedCells: [{ row: 2, col: 1 }, { row: 2, col: 2 }, { row: 3, col: 2 }],
+        color: '#ec4899',
+      },
+      {
+        id: 'dog-belly',
+        direction: 'right',
+        head: { row: 3, col: 4 },
+        occupiedCells: [{ row: 3, col: 4 }, { row: 3, col: 3 }, { row: 4, col: 3 }],
+        color: '#eab308',
+      },
+      {
+        id: 'dog-leg-front',
+        direction: 'down',
+        head: { row: 6, col: 2 },
+        occupiedCells: [{ row: 6, col: 2 }, { row: 5, col: 2 }, { row: 4, col: 2 }],
+        color: '#10b981',
+      },
+      {
+        id: 'dog-leg-back',
+        direction: 'down',
+        head: { row: 6, col: 5 },
+        occupiedCells: [{ row: 6, col: 5 }, { row: 5, col: 5 }, { row: 4, col: 5 }],
+        color: '#10b981',
+      },
+    ],
+  },
+
+  // ── Level 40: The Heart ───────────────────────────────────────────────────
+  {
+    id: 40,
+    name: 'The Heart',
+    subtitle: 'Winding serpentine love knot intertwined without breaks',
+    difficulty: 'master',
+    rows: 7,
+    cols: 7,
+    parMoves: 8,
+    rewardCoins: 1400,
+    arrows: [
+      {
+        id: 'hrt-lobe-l',
+        direction: 'left',
+        head: { row: 0, col: 1 },
+        occupiedCells: [{ row: 0, col: 1 }, { row: 0, col: 2 }, { row: 1, col: 2 }, { row: 1, col: 1 }],
+        color: '#f43f5e',
+      },
+      {
+        id: 'hrt-lobe-r',
+        direction: 'right',
+        head: { row: 0, col: 5 },
+        occupiedCells: [{ row: 0, col: 5 }, { row: 0, col: 4 }, { row: 1, col: 4 }, { row: 1, col: 5 }],
+        color: '#f43f5e',
+      },
+      {
+        id: 'hrt-spine',
+        direction: 'up',
+        head: { row: 1, col: 3 },
+        occupiedCells: [{ row: 1, col: 3 }, { row: 2, col: 3 }, { row: 3, col: 3 }],
+        color: '#ec4899',
+      },
+      {
+        id: 'hrt-flank-l',
+        direction: 'left',
+        head: { row: 2, col: 0 },
+        occupiedCells: [{ row: 2, col: 0 }, { row: 2, col: 1 }, { row: 2, col: 2 }],
+        color: '#f43f5e',
+      },
+      {
+        id: 'hrt-flank-r',
+        direction: 'right',
+        head: { row: 2, col: 6 },
+        occupiedCells: [{ row: 2, col: 6 }, { row: 2, col: 5 }, { row: 2, col: 4 }],
+        color: '#f43f5e',
+      },
+      {
+        id: 'hrt-sweep-l',
+        direction: 'left',
+        head: { row: 3, col: 1 },
+        occupiedCells: [{ row: 3, col: 1 }, { row: 3, col: 2 }, { row: 4, col: 2 }, { row: 5, col: 2 }],
+        color: '#e11d48',
+      },
+      {
+        id: 'hrt-sweep-r',
+        direction: 'right',
+        head: { row: 3, col: 5 },
+        occupiedCells: [{ row: 3, col: 5 }, { row: 3, col: 4 }, { row: 4, col: 4 }, { row: 5, col: 4 }],
+        color: '#e11d48',
+      },
+      {
+        id: 'hrt-apex',
+        direction: 'down',
+        head: { row: 6, col: 3 },
+        occupiedCells: [{ row: 6, col: 3 }, { row: 5, col: 3 }, { row: 4, col: 3 }],
+        color: '#be123c',
+      },
+    ],
+  },
+];
+
+// Complete Handcrafted Campaign Levels (including Master Silhouette levels)
+export const DEFAULT_LEVELS: readonly LevelData[] = [...CAMPAIGN_LEVELS, ...SILHOUETTE_LEVELS];
+
 

@@ -1,7 +1,10 @@
 // Level Registry providing campaign levels across four escalating difficulty tiers
 import type { LevelData } from './types';
 import { LevelGenerator, type Difficulty } from './LevelGenerator';
-import { DEFAULT_LEVELS } from './BoardModel';
+import { DEFAULT_LEVELS, SILHOUETTE_LEVELS } from './BoardModel';
+
+export { SILHOUETTE_LEVELS, DEFAULT_LEVELS };
+
 
 export const TOTAL_CAMPAIGN_LEVELS = 50;
 

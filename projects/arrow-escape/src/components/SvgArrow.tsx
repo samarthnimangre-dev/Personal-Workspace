@@ -1,7 +1,8 @@
-// Box-Free Pure Vector Arrow & Serpentine Snake component with two-pass White-Hot Laser Core
+// Pure Vector Arrow & Multi-Cell Serpentine Component matching Arrows - Puzzle Escape and Amaze GO!
 import React from 'react';
 import type { ArrowModel } from '../engine/ArrowModel';
 import type { BoardModel } from '../engine/BoardModel';
+import type { GameTheme } from '../engine/types';
 import { getDirectionDelta, stepPosition } from '../engine/Direction';
 
 interface SvgArrowProps {
@@ -9,7 +10,7 @@ interface SvgArrowProps {
   cellSize: number;
   boardRows: number;
   boardCols: number;
-  theme: 'dark' | 'light';
+  theme: GameTheme;
   onTap: (arrowId: string) => void;
   board?: BoardModel;
 }
@@ -26,21 +27,31 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
   if (arrow.isEscaped) return null;
 
   const center = cellSize / 2;
+  const isDark = theme === 'dark';
+  const isEyeComfort = theme === 'eye-comfort';
+  const isMinimalWhite = theme === 'minimal-white' || theme === 'light';
 
-  // Single-cell arrow dimensions
+  const isBlocked = arrow.isBlocked;
+  const isEscaping = arrow.isEscaping;
+  const isHinted = arrow.isHinted;
+
+  const isIce = arrow.isFrozen;
+  const isBomb = arrow.isBomb;
+  const isPivot = arrow.isPivot;
+
+  // Arrow line sizing
   const arrowLength = cellSize * 0.58;
-  const headSize = cellSize * 0.26;
-  const stemStrokeWidth = Math.max(5.5, cellSize * 0.088);
-  const stemLaserCoreWidth = Math.max(2.2, stemStrokeWidth * 0.38);
-
-  // Multi-cell serpentine tube dimensions
-  const tubeWidth = Math.max(18, cellSize * 0.28);
-  const tubeStrokeWidth = Math.max(6.0, tubeWidth * 0.36);
-  const tubeCoreWidth = Math.max(2.4, tubeStrokeWidth * 0.38);
+  const headSize = cellSize * 0.24;
+  const strokeWidth = Math.max(8.5, cellSize * 0.135);
+  const laserCoreWidth = Math.max(2.8, strokeWidth * 0.36);
 
   const delta = getDirectionDelta(arrow.direction);
 
-  // Calculate escape distance off the board bounds
+  // Directional recoil nudge on collision
+  const nudgeX = delta.dCol * 9;
+  const nudgeY = delta.dRow * 9;
+
+  // Calculate escape flight trajectory
   const escapeTravel = (Math.max(boardRows, boardCols) + 2) * cellSize;
   let escapeMidX = delta.dCol * escapeTravel * 0.35;
   let escapeMidY = delta.dRow * escapeTravel * 0.35;
@@ -65,48 +76,58 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
     }
   }
 
-  // Calculate directional impact recoil
-  const nudgeX = delta.dCol * 9;
-  const nudgeY = delta.dRow * 9;
-
-  const isBlocked = arrow.isBlocked;
-  const isEscaping = arrow.isEscaping;
-  const isDark = theme === 'dark';
-
   const handleClick = (e: React.MouseEvent | React.TouchEvent) => {
     e.stopPropagation();
     if (!arrow.isIdle) return;
     onTap(arrow.id);
   };
 
-  // Color schemes based on archetype and theme
-  const isIce = arrow.isFrozen;
-  const isBomb = arrow.isBomb;
-  const isPivot = arrow.isPivot;
-  const isHinted = arrow.isHinted;
+  // ── Spine Color Mapping ───────────────────────────────────────────────────
+  let spineColor: string;
+  if (isBlocked) {
+    spineColor = '#ef4444'; // Warning red on blocked
+  } else if (isHinted) {
+    spineColor = isMinimalWhite ? '#0284c7' : '#38bdf8'; // Bright sky-blue / cyan on hint
+  } else if (isIce) {
+    spineColor = '#38bdf8';
+  } else if (isBomb) {
+    spineColor = '#f43f5e';
+  } else if (isPivot) {
+    spineColor = '#f59e0b';
+  } else if (isMinimalWhite) {
+    spineColor = '#0f172a'; // Midnight charcoal/navy
+  } else if (isEyeComfort) {
+    spineColor = '#4a3525'; // Rich espresso/coffee mocha
+  } else {
+    // Cyber Dark mode
+    spineColor = arrow.color || '#06b6d4';
+  }
 
-  let accentColor = arrow.color || '#06b6d4';
-  if (isIce) accentColor = '#38bdf8';
-  else if (isBomb) accentColor = '#f43f5e';
-  else if (isPivot) accentColor = '#f59e0b';
-  else if (isHinted) accentColor = '#fbbf24';
+  const isSerpent = arrow.occupiedCells.length > 1;
 
-  const tubeBodyBg = isBlocked
-    ? '#450a0a'
-    : isDark ? 'rgba(15, 23, 42, 0.95)' : 'rgba(255, 255, 255, 0.95)';
+  // Ensure orderedCells starts from head cell so spine joins seamlessly at Layer 3
+  const isHeadFirst =
+    arrow.occupiedCells[0].row === arrow.head.row &&
+    arrow.occupiedCells[0].col === arrow.head.col;
+  const orderedCells = isHeadFirst ? arrow.occupiedCells : [...arrow.occupiedCells].reverse();
 
   // Continuous spine coordinates along serpentine body
-  const spinePoints = arrow.occupiedCells
+  const spinePoints = orderedCells
     .map((c) => `${c.col * cellSize + center},${c.row * cellSize + center}`)
     .join(' ');
 
-  const isSerpent = arrow.occupiedCells.length > 1;
+  // Drop shadow color for floating depth
+  const shadowColor = isDark
+    ? 'rgba(0, 0, 0, 0.70)'
+    : isEyeComfort
+    ? 'rgba(74, 53, 37, 0.15)'
+    : 'rgba(15, 23, 42, 0.12)';
 
   return (
     <g
       className={`svg-arrow-group ${isBlocked ? 'arrow-blocked-recoil' : ''} ${
         isEscaping ? 'arrow-escaping-fly' : ''
-      }`}
+      } ${isHinted ? 'arrow-hinted-pulse' : ''}`}
       style={
         {
           cursor: arrow.isIdle ? 'pointer' : 'default',
@@ -144,132 +165,80 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
           LAYER 2: MULTI-CELL SERPENTINE SNAKE BODY (No blocks, continuous pipe)
           =================================================================== */}
       {isSerpent && (
-        <g key="serpent-body-pipeline">
-          {/* 2A: Deep Soft Drop Shadow */}
+        <g key="serpent-body-spine">
+          {/* 2A: Soft Floating Drop Shadow */}
           <polyline
             points={spinePoints}
             fill="none"
-            stroke="rgba(0, 0, 0, 0.65)"
-            strokeWidth={tubeWidth + 6}
+            stroke={shadowColor}
+            strokeWidth={strokeWidth + 4}
             strokeLinecap="round"
             strokeLinejoin="round"
-            style={{ filter: 'blur(3.5px)' }}
+            style={{ filter: 'blur(2.5px)' }}
           />
 
-          {/* 2B: Tactile Neon Acrylic Tube Outer Glow */}
+          {/* 2B: Full-Spine Continuous Body Line */}
           <polyline
             points={spinePoints}
             fill="none"
-            stroke={isBlocked ? '#f43f5e' : accentColor}
-            strokeWidth={tubeWidth + 2}
+            stroke={spineColor}
+            strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
-            opacity={isDark ? 0.45 : 0.3}
-            style={{ filter: `drop-shadow(0 0 8px ${accentColor}80)` }}
+            style={
+              isBlocked
+                ? { filter: 'drop-shadow(0 0 8px rgba(239, 68, 68, 0.85))' }
+                : isHinted
+                ? { filter: `drop-shadow(0 0 10px ${spineColor})` }
+                : isDark
+                ? { filter: `drop-shadow(0 0 6px ${spineColor}99)` }
+                : undefined
+            }
           />
 
-          {/* 2C: Solid Tactile Tube Body */}
-          <polyline
-            points={spinePoints}
-            fill="none"
-            stroke={tubeBodyBg}
-            strokeWidth={tubeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          {/* 2D: Top Specular Gloss Highlight Rib */}
-          <polyline
-            points={spinePoints}
-            fill="none"
-            stroke="rgba(255, 255, 255, 0.28)"
-            strokeWidth={tubeWidth * 0.36}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            pointerEvents="none"
-          />
-
-          {/* 2E: Two-Pass White-Hot Laser Conduit Spine */}
-          {/* Pass 1: Outer Neon Conduit */}
-          <polyline
-            points={spinePoints}
-            fill="none"
-            stroke={isBlocked ? '#f43f5e' : accentColor}
-            strokeWidth={tubeStrokeWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            style={{
-              filter: isBlocked
-                ? 'drop-shadow(0 0 8px rgba(244, 63, 94, 0.9))'
-                : `drop-shadow(0 0 6px ${accentColor}) drop-shadow(0 0 12px ${accentColor}90)`,
-            }}
-          />
-          {/* Pass 2: White-Hot Laser Core Centerline */}
-          <polyline
-            points={spinePoints}
-            fill="none"
-            stroke="#ffffff"
-            strokeWidth={tubeCoreWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
-
-          {/* 2F: Intermediate Spine Cyber Nodes (straight & elbow joints) */}
-          {arrow.occupiedCells.slice(1).map((cell) => {
-            const cx = cell.col * cellSize + center;
-            const cy = cell.row * cellSize + center;
-            return (
-              <g key={`node-${cell.row}-${cell.col}`}>
-                <circle
-                  cx={cx}
-                  cy={cy}
-                  r={tubeWidth * 0.22}
-                  fill={isBlocked ? '#f43f5e' : accentColor}
-                  style={{ filter: `drop-shadow(0 0 4px ${accentColor})` }}
-                />
-                <circle cx={cx} cy={cy} r={tubeWidth * 0.11} fill="#ffffff" />
-              </g>
-            );
-          })}
+          {/* 2C: Cyber Dark White-Hot Laser Core */}
+          {isDark && (
+            <polyline
+              points={spinePoints}
+              fill="none"
+              stroke={isBlocked ? '#fecaca' : isHinted ? '#e0f2fe' : '#ffffff'}
+              strokeWidth={laserCoreWidth}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            />
+          )}
         </g>
       )}
 
       {/* ===================================================================
-          LAYER 3: ARROWHEAD / SINGLE ARROW GLYPH (Two-pass Laser Core)
+          LAYER 3: ARROWHEAD & STEM TERMINAL
           =================================================================== */}
       <g
         transform={`translate(${arrow.head.col * cellSize}, ${arrow.head.row * cellSize})`}
       >
         <g
           transform={`rotate(${arrow.angle}, ${center}, ${center})`}
-          style={{
-            filter: isBlocked
-              ? 'drop-shadow(0 0 10px rgba(244, 63, 94, 0.95))'
-              : `drop-shadow(0 3px 6px rgba(0, 0, 0, 0.65)) drop-shadow(0 0 8px ${accentColor}90)`,
-          }}
+          style={
+            isBlocked
+              ? { filter: 'drop-shadow(0 0 10px rgba(239, 68, 68, 0.95))' }
+              : isHinted
+              ? { filter: `drop-shadow(0 0 10px ${spineColor})` }
+              : isDark
+              ? { filter: `drop-shadow(0 0 8px ${spineColor}99)` }
+              : undefined
+          }
         >
-          {/* Stem Line: For single-cell arrows, runs full length; for serpents, connects into body */}
+          {/* Shadow for Arrow stem & head (both single-cell and serpents) */}
           <line
             x1={isSerpent ? center : center - arrowLength / 2}
             y1={center}
-            x2={center + arrowLength / 2 - headSize * 0.55}
+            x2={center + arrowLength / 2}
             y2={center}
-            stroke={isBlocked ? '#f43f5e' : accentColor}
-            strokeWidth={stemStrokeWidth}
+            stroke={shadowColor}
+            strokeWidth={strokeWidth + 4}
             strokeLinecap="round"
+            style={{ filter: 'blur(2.5px)' }}
           />
-          {/* Stem White-Hot Core */}
-          <line
-            x1={isSerpent ? center : center - arrowLength / 2 + 1}
-            y1={center}
-            x2={center + arrowLength / 2 - headSize * 0.55}
-            y2={center}
-            stroke="#ffffff"
-            strokeWidth={stemLaserCoreWidth}
-            strokeLinecap="round"
-          />
-
-          {/* Aerodynamic Chevron Arrowhead: Pass 1 (Outer Neon Aura) */}
           <polyline
             points={`
               ${center + arrowLength / 2 - headSize},${center - headSize * 0.85}
@@ -277,32 +246,71 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
               ${center + arrowLength / 2 - headSize},${center + headSize * 0.85}
             `}
             fill="none"
-            stroke={isBlocked ? '#f43f5e' : accentColor}
-            strokeWidth={stemStrokeWidth}
+            stroke={shadowColor}
+            strokeWidth={strokeWidth + 4}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            style={{ filter: 'blur(2.5px)' }}
+          />
+
+          {/* Stem Line: Runs from center (for serpents) or back of cell (for single arrows) to tip */}
+          <line
+            x1={isSerpent ? center : center - arrowLength / 2}
+            y1={center}
+            x2={center + arrowLength / 2}
+            y2={center}
+            stroke={spineColor}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+          />
+
+          {/* Aerodynamic Chevron Arrowhead */}
+          <polyline
+            points={`
+              ${center + arrowLength / 2 - headSize},${center - headSize * 0.85}
+              ${center + arrowLength / 2},${center}
+              ${center + arrowLength / 2 - headSize},${center + headSize * 0.85}
+            `}
+            fill="none"
+            stroke={spineColor}
+            strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
           />
 
-          {/* Aerodynamic Chevron Arrowhead: Pass 2 (White-Hot Core) */}
-          <polyline
-            points={`
-              ${center + arrowLength / 2 - headSize * 0.95},${center - headSize * 0.82}
-              ${center + arrowLength / 2 - 1},${center}
-              ${center + arrowLength / 2 - headSize * 0.95},${center + headSize * 0.82}
-            `}
-            fill="none"
-            stroke="#ffffff"
-            strokeWidth={stemLaserCoreWidth}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          />
+          {/* Cyber Dark White-Hot Laser Core on Head & Stem */}
+          {isDark && (
+            <>
+              <line
+                x1={isSerpent ? center : center - arrowLength / 2 + 1}
+                y1={center}
+                x2={center + arrowLength / 2 - 1}
+                y2={center}
+                stroke={isBlocked ? '#fecaca' : isHinted ? '#e0f2fe' : '#ffffff'}
+                strokeWidth={laserCoreWidth}
+                strokeLinecap="round"
+              />
+              <polyline
+                points={`
+                  ${center + arrowLength / 2 - headSize * 0.95},${center - headSize * 0.80}
+                  ${center + arrowLength / 2 - 1},${center}
+                  ${center + arrowLength / 2 - headSize * 0.95},${center + headSize * 0.80}
+                `}
+                fill="none"
+                stroke={isBlocked ? '#fecaca' : isHinted ? '#e0f2fe' : '#ffffff'}
+                strokeWidth={laserCoreWidth}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </>
+          )}
         </g>
       </g>
 
       {/* ===================================================================
-          LAYER 4: SPECIAL ARCHETYPE OVERLAYS (Ice, Pivot, Bomb, Hint - Zero Boxes)
+          LAYER 4: SPECIAL ARCHETYPE OVERLAYS (Ice, Pivot, Bomb)
           =================================================================== */}
-      {/* 4A: Ice Frost Facets & Shards on Frozen Arrows */}
+      {/* 4A: Ice Frost Facets on Frozen Arrows */}
       {isIce &&
         arrow.occupiedCells.map((cell) => {
           const cx = cell.col * cellSize + center;
@@ -310,17 +318,15 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
           const isHeadCell = cell.row === arrow.head.row && cell.col === arrow.head.col;
           return (
             <g key={`ice-${cell.row}-${cell.col}`} pointerEvents="none">
-              {/* Frosted Glass Diamond Facet */}
               <polygon
-                points={`${cx},${cy - cellSize * 0.32} ${cx + cellSize * 0.32},${cy} ${cx},${cy + cellSize * 0.32} ${cx - cellSize * 0.32},${cy}`}
+                points={`${cx},${cy - cellSize * 0.30} ${cx + cellSize * 0.30},${cy} ${cx},${cy + cellSize * 0.30} ${cx - cellSize * 0.30},${cy}`}
                 fill="rgba(224, 242, 254, 0.22)"
                 stroke="rgba(255, 255, 255, 0.85)"
                 strokeWidth={1.5}
                 filter="drop-shadow(0 0 6px #38bdf8)"
               />
-              {/* Ice Fracture Lines */}
               <polyline
-                points={`${cx - cellSize * 0.18},${cy - cellSize * 0.1} ${cx},${cy} ${cx + cellSize * 0.18},${cy + cellSize * 0.1}`}
+                points={`${cx - cellSize * 0.16},${cy - cellSize * 0.1} ${cx},${cy} ${cx + cellSize * 0.16},${cy + cellSize * 0.1}`}
                 fill="none"
                 stroke="rgba(255, 255, 255, 0.9)"
                 strokeWidth={1.5}
@@ -342,13 +348,12 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
           );
         })}
 
-      {/* 4B: Pivot Rotator Compass Bearing */}
+      {/* 4B: Pivot Rotator Compass Indicator */}
       {isPivot && (
         <g
           pointerEvents="none"
           transform={`translate(${arrow.head.col * cellSize + center}, ${arrow.head.row * cellSize + center})`}
         >
-          {/* Outer rotating dashed ring */}
           <circle
             cx={0}
             cy={0}
@@ -360,13 +365,12 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
             opacity={0.85}
             filter="drop-shadow(0 0 6px #f59e0b)"
           />
-          {/* Pivot Axis Indicator */}
-          <circle cx={0} cy={-cellSize * 0.28} r={6.5} fill="#f59e0b" />
+          <circle cx={0} cy={-cellSize * 0.28} r={5.5} fill="#f59e0b" />
           <path
-            d="M -3 -1 A 4 4 0 1 1 3 1"
+            d="M -3 -1 A 3.5 3.5 0 1 1 3 1"
             fill="none"
             stroke="#ffffff"
-            strokeWidth={1.3}
+            strokeWidth={1.2}
             strokeLinecap="round"
             transform={`translate(0, ${-cellSize * 0.28})`}
           />
@@ -379,7 +383,6 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
           pointerEvents="none"
           transform={`translate(${arrow.head.col * cellSize + center}, ${arrow.head.row * cellSize + center})`}
         >
-          {/* Pulsating Crimson Hazard Ring */}
           <circle
             cx={0}
             cy={0}
@@ -390,24 +393,9 @@ export const SvgArrow: React.FC<SvgArrowProps> = ({
             strokeDasharray="3 3"
             filter="drop-shadow(0 0 8px #f43f5e)"
           />
-          <circle cx={0} cy={0} r={cellSize * 0.14} fill="#f43f5e" />
-          <circle cx={0} cy={0} r={cellSize * 0.07} fill="#fef08a" />
+          <circle cx={0} cy={0} r={cellSize * 0.13} fill="#f43f5e" />
+          <circle cx={0} cy={0} r={cellSize * 0.06} fill="#fef08a" />
         </g>
-      )}
-
-      {/* 4D: Hint Golden Blooming Ring */}
-      {isHinted && (
-        <circle
-          cx={arrow.head.col * cellSize + center}
-          cy={arrow.head.row * cellSize + center}
-          r={cellSize * 0.38}
-          fill="none"
-          stroke="#fbbf24"
-          strokeWidth={2.5}
-          opacity={0.85}
-          filter="drop-shadow(0 0 10px #fbbf24)"
-          pointerEvents="none"
-        />
       )}
     </g>
   );

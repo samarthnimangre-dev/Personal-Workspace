@@ -34,8 +34,10 @@ export const App: React.FC = () => {
     toggleSound,
     toggleHaptics,
     toggleTheme,
+    toggleGridDots,
     toggleZenMode,
   } = useGameState();
+
 
   return (
     <GameView
@@ -68,11 +70,13 @@ export const App: React.FC = () => {
       onToggleSound={toggleSound}
       onToggleHaptics={toggleHaptics}
       onToggleTheme={toggleTheme}
+      onToggleGridDots={toggleGridDots}
       onToggleZenMode={toggleZenMode}
       onOpenSettings={() => setIsSettingsOpen(true)}
       onCloseSettings={() => setIsSettingsOpen(false)}
     />
   );
 };
+
 
 export default App;

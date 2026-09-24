@@ -1,12 +1,13 @@
 // Shop & Booster Refill Modal: Allows players to spend earned coins on tactical boosters
 import React, { useState } from 'react';
-import type { BoosterType } from '../engine/types';
+import type { BoosterType, GameTheme } from '../engine/types';
 
 interface ShopModalProps {
   isOpen: boolean;
   coins: number;
   inventory: Readonly<Record<BoosterType, number>>;
-  isDark: boolean;
+  isDark?: boolean;
+  theme?: GameTheme;
   onClose: () => void;
   onBuyBooster: (type: BoosterType) => boolean;
   onClaimDailyReward: () => void;
@@ -76,7 +77,8 @@ export const ShopModal: React.FC<ShopModalProps> = ({
   isOpen,
   coins,
   inventory,
-  isDark,
+  isDark: isDarkProp = true,
+  theme,
   onClose,
   onBuyBooster,
   onClaimDailyReward,
@@ -85,6 +87,9 @@ export const ShopModal: React.FC<ShopModalProps> = ({
   const [feedback, setFeedback] = useState<{ message: string; success: boolean } | null>(null);
 
   if (!isOpen) return null;
+
+  const isDark = theme ? theme === 'dark' : Boolean(isDarkProp);
+  const isEyeComfort = theme === 'eye-comfort';
 
   const handleBuy = (type: BoosterType, cost: number, name: string) => {
     if (coins < cost) {
@@ -124,6 +129,8 @@ export const ShopModal: React.FC<ShopModalProps> = ({
         className={`w-full max-w-sm rounded-3xl p-5 border shadow-2xl animate-modal-in flex flex-col max-h-[92vh] overflow-hidden ${
           isDark
             ? 'bg-slate-900/95 border-slate-700/80 text-white'
+            : isEyeComfort
+            ? 'bg-[#faf5ed] border-[#cbbca7] text-[#4a3525]'
             : 'bg-white/95 border-slate-200 text-slate-900'
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -134,7 +141,7 @@ export const ShopModal: React.FC<ShopModalProps> = ({
             <span className="text-xl">🏪</span>
             <div>
               <h2 className="text-base font-black tracking-tight leading-none">Booster Vault</h2>
-              <span className={`text-[10px] font-semibold ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+              <span className={`text-[10px] font-semibold ${isDark ? 'text-slate-400' : isEyeComfort ? 'text-[#8c6b4e]' : 'text-slate-500'}`}>
                 Refill tactical power-ups
               </span>
             </div>
@@ -146,6 +153,8 @@ export const ShopModal: React.FC<ShopModalProps> = ({
               className={`flex items-center gap-1 px-2.5 py-1 rounded-full border text-xs font-black shadow-sm ${
                 isDark
                   ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+                  : isEyeComfort
+                  ? 'bg-[#f0e7db] border-[#cbbca7] text-[#634832]'
                   : 'bg-amber-50 border-amber-300 text-amber-800'
               }`}
             >
@@ -155,8 +164,12 @@ export const ShopModal: React.FC<ShopModalProps> = ({
 
             <button
               onClick={onClose}
-              className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-transform active:scale-95 ${
-                isDark ? 'bg-slate-800 hover:bg-slate-700 text-slate-300' : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+              className={`w-9 h-9 rounded-full flex items-center justify-center text-sm font-bold transition-transform active:scale-95 cursor-pointer ${
+                isDark
+                  ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                  : isEyeComfort
+                  ? 'bg-[#f0e7db] hover:bg-[#e8decb] text-[#4a3525]'
+                  : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
               }`}
               aria-label="Close store"
             >
@@ -189,7 +202,11 @@ export const ShopModal: React.FC<ShopModalProps> = ({
               <div
                 key={pack.type}
                 className={`p-3 rounded-2xl border transition-all flex items-center justify-between gap-3 ${
-                  isDark ? 'bg-slate-800/70 border-slate-700/60' : 'bg-slate-50 border-slate-200'
+                  isDark
+                    ? 'bg-slate-800/70 border-slate-700/60'
+                    : isEyeComfort
+                    ? 'bg-[#f5ebd7]/80 border-[#d6ccbe]'
+                    : 'bg-slate-50 border-slate-200'
                 }`}
               >
                 <div className="flex items-center gap-2.5">
@@ -207,11 +224,22 @@ export const ShopModal: React.FC<ShopModalProps> = ({
                         +{pack.count}
                       </span>
                     </div>
-                    <span className={`text-[10px] leading-tight line-clamp-1 ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
+                    <span
+                      className={`text-[10px] leading-tight line-clamp-1 ${
+                        isDark ? 'text-slate-400' : isEyeComfort ? 'text-[#785e49]' : 'text-slate-500'
+                      }`}
+                    >
                       {pack.description}
                     </span>
-                    <span className={`text-[9px] font-bold mt-0.5 ${isDark ? 'text-slate-500' : 'text-slate-400'}`}>
-                      In stock: <strong className={isDark ? 'text-slate-300' : 'text-slate-700'}>{owned}</strong>
+                    <span
+                      className={`text-[9px] font-bold mt-0.5 ${
+                        isDark ? 'text-slate-500' : isEyeComfort ? 'text-[#8c6b4e]' : 'text-slate-400'
+                      }`}
+                    >
+                      In stock:{' '}
+                      <strong className={isDark ? 'text-slate-300' : isEyeComfort ? 'text-[#4a3525]' : 'text-slate-700'}>
+                        {owned}
+                      </strong>
                     </span>
                   </div>
                 </div>

@@ -35,6 +35,9 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
   if (!isOpen) return null;
 
   const isDark = settings.theme === 'dark';
+  const isEyeComfort = settings.theme === 'eye-comfort';
+  const isMinimalWhite = settings.theme === 'minimal-white' || settings.theme === 'light';
+
 
   return (
     <div
@@ -45,6 +48,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         className={`w-full max-w-sm rounded-3xl p-5 border shadow-2xl animate-modal-in flex flex-col max-h-[90vh] overflow-hidden ${
           isDark
             ? 'bg-slate-900/95 border-slate-700/80 text-white'
+            : isEyeComfort
+            ? 'bg-[#faf5ed] border-[#cbbca7] text-[#4a3525]'
             : 'bg-white/95 border-slate-200 text-slate-900'
         }`}
         onClick={(e) => e.stopPropagation()}
@@ -60,6 +65,8 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             className={`w-11 h-11 rounded-full flex items-center justify-center text-base font-bold transition-transform active:scale-95 ${
               isDark
                 ? 'bg-slate-800 hover:bg-slate-700 text-slate-300'
+                : isEyeComfort
+                ? 'bg-[#f0e7db] hover:bg-[#e8decb] text-[#4a3525]'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-600'
             }`}
             aria-label="Close settings"
@@ -73,7 +80,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Toggles Group */}
           <div
             className={`rounded-2xl p-3 space-y-2.5 border ${
-              isDark ? 'bg-slate-950/60 border-slate-800' : 'bg-slate-50 border-slate-200'
+              isDark
+                ? 'bg-slate-950/60 border-slate-800'
+                : isEyeComfort
+                ? 'bg-[#f5ebd7]/80 border-[#d6ccbe]'
+                : 'bg-slate-50 border-slate-200'
             }`}
           >
             {/* Sound FX Toggle */}
@@ -129,46 +140,60 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
             {/* Theme Toggle */}
             <div className="flex items-center justify-between pt-1 border-t border-slate-800/40">
               <div className="flex items-center gap-2">
-                <span className="text-base">{isDark ? '🌙' : '☀️'}</span>
+                <span className="text-base">{isEyeComfort ? '🍵' : isMinimalWhite ? '☀️' : '🌙'}</span>
                 <div>
                   <div className="text-xs font-bold">Display Theme</div>
                   <div className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    {isDark ? 'Dark Obsidian' : 'Light Pearl'}
+                    {isEyeComfort
+                      ? 'Eye Comfort (Warm Ivory)'
+                      : isMinimalWhite
+                      ? 'Minimalist White'
+                      : 'Cyber Dark (Obsidian)'}
                   </div>
                 </div>
               </div>
               <button
                 onClick={onToggleTheme}
-                className={`px-3.5 py-2 min-h-[44px] min-w-[64px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 ${
+                className={`px-3.5 py-2 min-h-[44px] min-w-[110px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 cursor-pointer ${
                   isDark
                     ? 'bg-slate-800 text-cyan-400 border border-cyan-500/30'
-                    : 'bg-slate-200 text-sky-800 border border-sky-400/40'
+                    : isEyeComfort
+                    ? 'bg-[#f0e7db] text-[#4a3525] border border-[#cbbca7]'
+                    : 'bg-slate-200 text-slate-800 border border-slate-300'
                 }`}
+                title="Switch Theme"
               >
-                {isDark ? 'Dark 🌙' : 'Light ☀️'}
+                {isEyeComfort ? 'Comfort 🍵' : isMinimalWhite ? 'White ☀️' : 'Dark 🌙'}
               </button>
             </div>
+
 
             {/* Game Mode (Lives vs Zen) */}
             <div className="flex items-center justify-between pt-1 border-t border-slate-800/40">
               <div className="flex items-center gap-2">
-                <span className="text-base">{settings.zenMode ? '♾️' : '❤️'}</span>
+                <span className="text-base">{settings.zenMode ? '♾️' : isEyeComfort ? '💧' : '❤️'}</span>
                 <div>
                   <div className="text-xs font-bold">Game Mode</div>
-                  <div className={`text-[10px] ${isDark ? 'text-slate-400' : 'text-slate-500'}`}>
-                    {settings.zenMode ? 'Zen Mode (Unlimited)' : 'Classic Challenge (3 Lives)'}
+                  <div className={`text-[10px] ${isDark ? 'text-slate-400' : isEyeComfort ? 'text-[#8c6b4e]' : 'text-slate-500'}`}>
+                    {settings.zenMode
+                      ? 'Zen Mode (Unlimited)'
+                      : isEyeComfort
+                      ? 'Classic Challenge (3 Droplets)'
+                      : 'Classic Challenge (3 Lives)'}
                   </div>
                 </div>
               </div>
               <button
                 onClick={onToggleZenMode}
-                className={`px-3.5 py-2 min-h-[44px] min-w-[70px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 ${
+                className={`px-3.5 py-2 min-h-[44px] min-w-[70px] rounded-xl text-xs font-bold flex items-center justify-center transition-all active:scale-95 cursor-pointer ${
                   settings.zenMode
                     ? 'bg-emerald-500 text-slate-950 shadow-sm shadow-emerald-500/30'
+                    : isEyeComfort
+                    ? 'bg-[#38bdf8] text-slate-950 shadow-sm shadow-sky-400/30'
                     : 'bg-rose-500 text-white shadow-sm shadow-rose-500/30'
                 }`}
               >
-                {settings.zenMode ? 'Zen ♾️' : '3 Lives ❤️'}
+                {settings.zenMode ? 'Zen ♾️' : isEyeComfort ? '3 Droplets 💧' : '3 Lives ❤️'}
               </button>
             </div>
           </div>
@@ -176,7 +201,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           {/* Level Selector Grid */}
           <div>
             <div className="flex items-center justify-between mb-1.5">
-              <span className="text-xs font-bold uppercase tracking-wider text-slate-400">
+              <span
+                className={`text-xs font-bold uppercase tracking-wider ${
+                  isDark ? 'text-slate-400' : isEyeComfort ? 'text-[#8c6b4e]' : 'text-slate-500'
+                }`}
+              >
                 Select Level ({progress.completedLevels.length}/{allLevels.length} Cleared)
               </span>
             </div>
@@ -194,19 +223,25 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
                       onSelectLevel(lvl.id);
                       onClose();
                     }}
-                    className={`min-h-[44px] rounded-xl text-xs font-black flex flex-col items-center justify-center transition-all ${
+                    className={`min-h-[44px] rounded-xl text-xs font-black flex flex-col items-center justify-center transition-all cursor-pointer ${
                       isCurrent
                         ? 'bg-cyan-500 text-slate-950 ring-2 ring-cyan-300 scale-105'
                         : isCompleted
                         ? isDark
                           ? 'bg-slate-800 text-emerald-400 border border-emerald-500/40'
+                          : isEyeComfort
+                          ? 'bg-emerald-100/60 text-emerald-800 border border-emerald-300'
                           : 'bg-emerald-50 text-emerald-700 border border-emerald-300'
                         : isUnlocked
                         ? isDark
                           ? 'bg-slate-800 hover:bg-slate-700 text-slate-200'
+                          : isEyeComfort
+                          ? 'bg-[#f0e7db] hover:bg-[#e8decb] text-[#4a3525]'
                           : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                         : isDark
                         ? 'bg-slate-950/40 text-slate-600 cursor-not-allowed opacity-50'
+                        : isEyeComfort
+                        ? 'bg-[#ede3d4]/40 text-[#a6907c] cursor-not-allowed opacity-50'
                         : 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
                     }`}
                   >
@@ -226,9 +261,11 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
               onRestart();
               onClose();
             }}
-            className={`flex-1 min-h-[44px] py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 ${
+            className={`flex-1 min-h-[44px] py-2.5 rounded-xl font-bold text-xs flex items-center justify-center gap-1.5 transition-all active:scale-95 cursor-pointer ${
               isDark
                 ? 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                : isEyeComfort
+                ? 'bg-[#f0e7db] hover:bg-[#e8decb] text-[#4a3525] border border-[#cbbca7]'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-300'
             }`}
           >
@@ -236,7 +273,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
           </button>
           <button
             onClick={onClose}
-            className="flex-1 min-h-[44px] py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-950/40 flex items-center justify-center transition-all active:scale-95"
+            className="flex-1 min-h-[44px] py-2.5 rounded-xl font-black text-xs bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 shadow-md shadow-cyan-950/40 flex items-center justify-center transition-all active:scale-95 cursor-pointer"
           >
             Resume ▶
           </button>

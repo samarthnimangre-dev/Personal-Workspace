@@ -2,6 +2,7 @@
 import React from 'react';
 import type { BoardModel } from '../engine/BoardModel';
 import type { ArrowModel } from '../engine/ArrowModel';
+import type { GameTheme } from '../engine/types';
 import { SvgArrow } from './SvgArrow';
 import { ParticleOverlay } from './ParticleOverlay';
 import { getDirectionAngle } from '../engine/Direction';
@@ -9,8 +10,9 @@ import { getDirectionAngle } from '../engine/Direction';
 interface SvgBoardProps {
   board: BoardModel;
   arrows: readonly ArrowModel[];
-  theme: 'dark' | 'light';
+  theme: GameTheme;
   cellSize?: number;
+  showGridDots?: boolean;
   onArrowTap: (arrowId: string) => void;
   onCancelBooster?: () => void;
 }
@@ -20,6 +22,7 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
   arrows,
   theme,
   cellSize = 72,
+  showGridDots = true,
   onArrowTap,
   onCancelBooster,
 }) => {
@@ -30,21 +33,29 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
   const viewBoxHeight = boardHeight + padding * 2;
 
   const isDark = theme === 'dark';
+  const isEyeComfort = theme === 'eye-comfort';
 
   // Minimalist grid guidance dots at cell centers (zero square boxes/blocks)
   const gridDots = [];
-  for (let r = 0; r < board.rows; r++) {
-    for (let c = 0; c < board.cols; c++) {
-      if (!board.isInsideCoords(r, c)) continue;
-      gridDots.push({
-        key: `${r}-${c}`,
-        cx: c * cellSize + padding + cellSize / 2,
-        cy: r * cellSize + padding + cellSize / 2,
-      });
+  if (showGridDots) {
+    for (let r = 0; r < board.rows; r++) {
+      for (let c = 0; c < board.cols; c++) {
+        if (!board.isInsideCoords(r, c)) continue;
+        gridDots.push({
+          key: `${r}-${c}`,
+          cx: c * cellSize + padding + cellSize / 2,
+          cy: r * cellSize + padding + cellSize / 2,
+        });
+      }
     }
   }
 
   const deflectorList = board.deflectors ? Array.from(board.deflectors.values()) : [];
+  const dotFill = isDark
+    ? 'rgba(255, 255, 255, 0.15)'
+    : isEyeComfort
+    ? 'rgba(74, 53, 37, 0.16)'
+    : 'rgba(15, 23, 42, 0.13)';
 
   return (
     <div
@@ -56,7 +67,7 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
 
       <svg
         viewBox={`0 0 ${viewBoxWidth} ${viewBoxHeight}`}
-        className="w-full h-full max-w-full max-h-full drop-shadow-2xl overflow-visible"
+        className="w-full h-full max-w-full max-h-full overflow-visible"
         preserveAspectRatio="xMidYMid meet"
         style={{ touchAction: 'manipulation' }}
         onClick={onCancelBooster}
@@ -67,77 +78,19 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
             <feGaussianBlur stdDeviation="3.5" result="blur" />
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
-
-          {/* Board Plinth Rim Bevel with Vivid Cyber-Cyan Highlight */}
-          <linearGradient id="boardRimGlow" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="rgba(255, 255, 255, 0.28)" />
-            <stop offset="25%" stopColor="rgba(6, 182, 212, 0.70)" />
-            <stop offset="65%" stopColor="rgba(6, 182, 212, 0.30)" />
-            <stop offset="100%" stopColor="rgba(255, 255, 255, 0.08)" />
-          </linearGradient>
-
-          {/* Board gradient backdrop */}
-          <linearGradient id="boardBackdrop" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor={isDark ? '#0b1329' : '#ffffff'} />
-            <stop offset="100%" stopColor={isDark ? '#030712' : '#e2e8f0'} />
-          </linearGradient>
         </defs>
 
-        {/* Outer Cyan Rim Bloom Layer (Dark Mode) */}
-        {isDark && (
-          <rect
-            x={padding - 6}
-            y={padding - 6}
-            width={boardWidth + 12}
-            height={boardHeight + 12}
-            rx={24}
-            ry={24}
-            fill="none"
-            stroke="rgba(6, 182, 212, 0.45)"
-            strokeWidth={3}
-            filter="url(#cyanBevelBloom)"
-            opacity={0.8}
-          />
-        )}
-
-        {/* Outer Board Slab Background */}
-        <rect
-          x={padding - 6}
-          y={padding - 6}
-          width={boardWidth + 12}
-          height={boardHeight + 12}
-          rx={24}
-          ry={24}
-          fill="url(#boardBackdrop)"
-          stroke={isDark ? 'url(#boardRimGlow)' : 'rgba(0, 0, 0, 0.08)'}
-          strokeWidth={1.8}
-        />
-
-        {/* Inner Cyan Chamfer Line (Dark Mode) */}
-        {isDark && (
-          <rect
-            x={padding - 4}
-            y={padding - 4}
-            width={boardWidth + 8}
-            height={boardHeight + 8}
-            rx={22}
-            ry={22}
-            fill="none"
-            stroke="rgba(6, 182, 212, 0.20)"
-            strokeWidth={1}
-          />
-        )}
-
-        {/* Minimalist Grid Guide Dots (NO square blocks or boxes) */}
+        {/* Minimalist Grid Guide Dots (NO square blocks, boxes or plinths) */}
         {gridDots.map((dot) => (
           <circle
             key={dot.key}
             cx={dot.cx}
             cy={dot.cy}
-            r={isDark ? 2.5 : 2.2}
-            fill={isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(15, 23, 42, 0.12)'}
+            r={2.2}
+            fill={dotFill}
           />
         ))}
+
 
         {/* Deflector Redirect Runes */}
         {deflectorList.map((d) => {

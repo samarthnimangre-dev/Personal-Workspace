@@ -1,5 +1,5 @@
 // LocalStorage persistence with memory fallback for user progress and game settings
-import type { UserProgress } from '../engine/types';
+import type { UserProgress, GameTheme } from '../engine/types';
 
 const PROGRESS_STORAGE_KEY = 'arrow_escape_user_progress_v1';
 const SETTINGS_STORAGE_KEY = 'arrow_escape_user_settings_v1';
@@ -7,8 +7,9 @@ const SETTINGS_STORAGE_KEY = 'arrow_escape_user_settings_v1';
 export interface GameSettings {
   soundMuted: boolean;
   hapticsEnabled: boolean;
-  theme: 'dark' | 'light';
+  theme: GameTheme;
   zenMode: boolean;
+  showGridDots: boolean;
 }
 
 const DEFAULT_SETTINGS: GameSettings = {
@@ -16,7 +17,9 @@ const DEFAULT_SETTINGS: GameSettings = {
   hapticsEnabled: true,
   theme: 'dark',
   zenMode: false,
+  showGridDots: true,
 };
+
 
 const DEFAULT_PROGRESS: UserProgress = {
   currentLevel: 1,
@@ -62,16 +65,24 @@ export function loadSettings(): GameSettings {
     const raw = getStorageItem(SETTINGS_STORAGE_KEY);
     if (!raw) return DEFAULT_SETTINGS;
     const parsed = JSON.parse(raw) as Partial<GameSettings>;
+    const validThemes: GameTheme[] = ['dark', 'minimal-white', 'eye-comfort', 'light'];
+    const parsedTheme = parsed.theme;
+    const theme: GameTheme = validThemes.includes(parsedTheme as GameTheme)
+      ? (parsedTheme as GameTheme)
+      : DEFAULT_SETTINGS.theme;
+
     return {
       soundMuted: typeof parsed.soundMuted === 'boolean' ? parsed.soundMuted : DEFAULT_SETTINGS.soundMuted,
       hapticsEnabled: typeof parsed.hapticsEnabled === 'boolean' ? parsed.hapticsEnabled : DEFAULT_SETTINGS.hapticsEnabled,
-      theme: parsed.theme === 'light' ? 'light' : 'dark',
+      theme,
       zenMode: typeof parsed.zenMode === 'boolean' ? parsed.zenMode : DEFAULT_SETTINGS.zenMode,
+      showGridDots: typeof parsed.showGridDots === 'boolean' ? parsed.showGridDots : DEFAULT_SETTINGS.showGridDots,
     };
   } catch {
     return DEFAULT_SETTINGS;
   }
 }
+
 
 export function saveSettings(settings: GameSettings): void {
   try {

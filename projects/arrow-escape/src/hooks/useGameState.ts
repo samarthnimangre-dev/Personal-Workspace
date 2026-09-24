@@ -1,7 +1,8 @@
 // React hook managing game lifecycle, procedural level loading, lives, haptics, boosters, and settings
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { LevelData, BoosterType } from '../engine/types';
+import type { LevelData, BoosterType, GameTheme } from '../engine/types';
 import { GameEngine, type GameEngineState } from '../engine/GameEngine';
+
 import { ArrowEscapeSolver } from '../engine/ArrowEscapeSolver';
 import { ArrowModel } from '../engine/ArrowModel';
 import { OccupancyMap } from '../engine/OccupancyMap';
@@ -44,15 +45,22 @@ export function useGameState(initialLevelId: number = 1) {
 
     // Apply theme class to document body
     if (typeof document !== 'undefined') {
-      if (settings.theme === 'light') {
-        document.documentElement.classList.add('theme-light');
-        document.documentElement.classList.remove('theme-dark');
+      document.documentElement.classList.remove(
+        'theme-dark',
+        'theme-light',
+        'theme-eye-comfort',
+        'theme-minimal-white'
+      );
+      if (settings.theme === 'minimal-white' || settings.theme === 'light') {
+        document.documentElement.classList.add('theme-light', 'theme-minimal-white');
+      } else if (settings.theme === 'eye-comfort') {
+        document.documentElement.classList.add('theme-eye-comfort');
       } else {
         document.documentElement.classList.add('theme-dark');
-        document.documentElement.classList.remove('theme-light');
       }
     }
   }, [settings]);
+
 
   // Load level configuration from registry
   const currentLevel: LevelData = levelRegistry.getLevel(currentLevelId);
@@ -629,9 +637,28 @@ export function useGameState(initialLevelId: number = 1) {
   const toggleTheme = useCallback(() => {
     soundEffects.playTap();
     haptics.tap();
+    setSettings((s) => {
+      let nextTheme: GameTheme = 'minimal-white';
+      if (s.theme === 'dark') {
+        nextTheme = 'minimal-white';
+      } else if (s.theme === 'minimal-white' || s.theme === 'light') {
+        nextTheme = 'eye-comfort';
+      } else {
+        nextTheme = 'dark';
+      }
+      return {
+        ...s,
+        theme: nextTheme,
+      };
+    });
+  }, []);
+
+  const toggleGridDots = useCallback(() => {
+    soundEffects.playTap();
+    haptics.tap();
     setSettings((s) => ({
       ...s,
-      theme: s.theme === 'dark' ? 'light' : 'dark',
+      showGridDots: !s.showGridDots,
     }));
   }, []);
 
@@ -679,6 +706,8 @@ export function useGameState(initialLevelId: number = 1) {
     toggleSound,
     toggleHaptics,
     toggleTheme,
+    toggleGridDots,
     toggleZenMode,
   };
 }
+

@@ -1,6 +1,8 @@
 // Core domain types for the Arrow Escape puzzle game engine
 // Pure TypeScript - zero UI or framework dependencies
 
+export type GameTheme = 'dark' | 'minimal-white' | 'eye-comfort' | 'light';
+
 export type Direction =
   | 'up'
   | 'down'
@@ -10,6 +12,7 @@ export type Direction =
   | 'up-right'
   | 'down-left'
   | 'down-right';
+
 
 export interface Position {
   readonly row: number;

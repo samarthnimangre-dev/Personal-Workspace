@@ -56,24 +56,42 @@ describe('Complete Game Experience Integration Suite', () => {
   });
 
   describe('Settings & Campaign Persistence', () => {
-    it('saves and loads game settings with dark/light themes and zen mode', () => {
+    it('saves and loads game settings with dark, minimal-white, and eye-comfort themes, and zen mode', () => {
       const initial = loadSettings();
       expect(initial.theme).toBe('dark');
       expect(initial.zenMode).toBe(false);
+      expect(initial.showGridDots).toBe(true);
 
+      // Minimal-white theme
       saveSettings({
         soundMuted: true,
         hapticsEnabled: false,
-        theme: 'light',
+        theme: 'minimal-white',
         zenMode: true,
+        showGridDots: false,
       });
 
-      const loaded = loadSettings();
+      let loaded = loadSettings();
       expect(loaded.soundMuted).toBe(true);
       expect(loaded.hapticsEnabled).toBe(false);
-      expect(loaded.theme).toBe('light');
+      expect(loaded.theme).toBe('minimal-white');
       expect(loaded.zenMode).toBe(true);
+      expect(loaded.showGridDots).toBe(false);
+
+      // Eye-comfort theme
+      saveSettings({
+        soundMuted: false,
+        hapticsEnabled: true,
+        theme: 'eye-comfort',
+        zenMode: false,
+        showGridDots: true,
+      });
+
+      loaded = loadSettings();
+      expect(loaded.theme).toBe('eye-comfort');
+      expect(loaded.showGridDots).toBe(true);
     });
+
 
     it('records level completion and tracks personal best moves', () => {
       let progress = loadProgress();
@@ -142,5 +160,172 @@ describe('Complete Game Experience Integration Suite', () => {
         }
       }
     });
+
+    describe('Master Silhouette Levels (Amaze GO! & Arrows - Puzzle Escape Inspirations)', () => {
+      it('verifies Level 36 (The Anchor) is composed of multi-segment serpents with continuous Manhattan adjacency and is 100% solvable', () => {
+        const level = levelRegistry.getLevel(36);
+        expect(level.name).toBe('The Anchor');
+        expect(level.rows).toBe(7);
+        expect(level.cols).toBe(7);
+
+        // Every arrow is a multi-segment serpentine snake (length >= 3)
+        for (const arrow of level.arrows) {
+          expect(arrow.occupiedCells).toBeDefined();
+          expect(arrow.occupiedCells!.length).toBeGreaterThanOrEqual(3);
+
+          // Verify strict Manhattan adjacency between consecutive cells (no diagonal jumps or double-backs)
+          const cells = arrow.occupiedCells!;
+          for (let i = 0; i < cells.length - 1; i++) {
+            const dist = Math.abs(cells[i].row - cells[i + 1].row) + Math.abs(cells[i].col - cells[i + 1].col);
+            expect(dist).toBe(1);
+          }
+
+          // Verify head is at one of the endpoints
+          const head = arrow.head!;
+          const isEndpoint =
+            (cells[0].row === head.row && cells[0].col === head.col) ||
+            (cells[cells.length - 1].row === head.row && cells[cells.length - 1].col === head.col);
+          expect(isEndpoint).toBe(true);
+        }
+
+        const valid = ArrowEscapeSolver.validateLevelStructure(level);
+        expect(valid.valid).toBe(true);
+
+        const solution = ArrowEscapeSolver.solve(level);
+        expect(solution.solvable).toBe(true);
+        expect(solution.solutionMoves).toBeDefined();
+        expect(solution.solutionMoves!.length).toBe(level.arrows.length);
+      });
+
+      it('verifies Level 37 (The Trophy) is composed of multi-segment serpents with continuous Manhattan adjacency and is 100% solvable', () => {
+        const level = levelRegistry.getLevel(37);
+        expect(level.name).toBe('The Trophy');
+        expect(level.rows).toBe(7);
+        expect(level.cols).toBe(7);
+
+        // All arrows are multi-segment serpentine snakes
+        for (const arrow of level.arrows) {
+          expect(arrow.occupiedCells).toBeDefined();
+          expect(arrow.occupiedCells!.length).toBeGreaterThanOrEqual(2);
+
+          const cells = arrow.occupiedCells!;
+          for (let i = 0; i < cells.length - 1; i++) {
+            const dist = Math.abs(cells[i].row - cells[i + 1].row) + Math.abs(cells[i].col - cells[i + 1].col);
+            expect(dist).toBe(1);
+          }
+
+          const head = arrow.head!;
+          const isEndpoint =
+            (cells[0].row === head.row && cells[0].col === head.col) ||
+            (cells[cells.length - 1].row === head.row && cells[cells.length - 1].col === head.col);
+          expect(isEndpoint).toBe(true);
+        }
+
+        const valid = ArrowEscapeSolver.validateLevelStructure(level);
+        expect(valid.valid).toBe(true);
+
+        const solution = ArrowEscapeSolver.solve(level);
+        expect(solution.solvable).toBe(true);
+        expect(solution.solutionMoves).toBeDefined();
+        expect(solution.solutionMoves!.length).toBe(level.arrows.length);
+      });
+
+      it('verifies Level 38 (The Chess Knight) is composed of multi-segment serpents with continuous Manhattan adjacency and is 100% solvable', () => {
+        const level = levelRegistry.getLevel(38);
+        expect(level.name).toBe('The Chess Knight');
+        expect(level.rows).toBe(7);
+        expect(level.cols).toBe(7);
+
+        for (const arrow of level.arrows) {
+          expect(arrow.occupiedCells).toBeDefined();
+          expect(arrow.occupiedCells!.length).toBeGreaterThanOrEqual(2);
+
+          const cells = arrow.occupiedCells!;
+          for (let i = 0; i < cells.length - 1; i++) {
+            const dist = Math.abs(cells[i].row - cells[i + 1].row) + Math.abs(cells[i].col - cells[i + 1].col);
+            expect(dist).toBe(1);
+          }
+
+          const head = arrow.head!;
+          const isEndpoint =
+            (cells[0].row === head.row && cells[0].col === head.col) ||
+            (cells[cells.length - 1].row === head.row && cells[cells.length - 1].col === head.col);
+          expect(isEndpoint).toBe(true);
+        }
+
+        const valid = ArrowEscapeSolver.validateLevelStructure(level);
+        expect(valid.valid).toBe(true);
+
+        const solution = ArrowEscapeSolver.solve(level);
+        expect(solution.solvable).toBe(true);
+        expect(solution.solutionMoves).toBeDefined();
+        expect(solution.solutionMoves!.length).toBe(level.arrows.length);
+      });
+
+      it('verifies Level 39 (The Dog) is composed of multi-segment serpents with continuous Manhattan adjacency and is 100% solvable', () => {
+        const level = levelRegistry.getLevel(39);
+        expect(level.name).toBe('The Dog');
+        expect(level.rows).toBe(7);
+        expect(level.cols).toBe(7);
+
+        for (const arrow of level.arrows) {
+          expect(arrow.occupiedCells).toBeDefined();
+          expect(arrow.occupiedCells!.length).toBeGreaterThanOrEqual(2);
+
+          const cells = arrow.occupiedCells!;
+          for (let i = 0; i < cells.length - 1; i++) {
+            const dist = Math.abs(cells[i].row - cells[i + 1].row) + Math.abs(cells[i].col - cells[i + 1].col);
+            expect(dist).toBe(1);
+          }
+
+          const head = arrow.head!;
+          const isEndpoint =
+            (cells[0].row === head.row && cells[0].col === head.col) ||
+            (cells[cells.length - 1].row === head.row && cells[cells.length - 1].col === head.col);
+          expect(isEndpoint).toBe(true);
+        }
+
+        const valid = ArrowEscapeSolver.validateLevelStructure(level);
+        expect(valid.valid).toBe(true);
+
+        const solution = ArrowEscapeSolver.solve(level);
+        expect(solution.solvable).toBe(true);
+        expect(solution.solutionMoves).toBeDefined();
+        expect(solution.solutionMoves!.length).toBe(level.arrows.length);
+      });
+
+      it('verifies Level 40 (The Heart) is composed of multi-segment serpents with continuous Manhattan adjacency and is 100% solvable', () => {
+        const level = levelRegistry.getLevel(40);
+        expect(level.name).toBe('The Heart');
+        expect(level.rows).toBe(7);
+        expect(level.cols).toBe(7);
+
+        for (const arrow of level.arrows) {
+          expect(arrow.occupiedCells).toBeDefined();
+          expect(arrow.occupiedCells!.length).toBeGreaterThanOrEqual(3);
+
+          const cells = arrow.occupiedCells!;
+          for (let i = 0; i < cells.length - 1; i++) {
+            const dist = Math.abs(cells[i].row - cells[i + 1].row) + Math.abs(cells[i].col - cells[i + 1].col);
+            expect(dist).toBe(1);
+          }
+
+          const head = arrow.head!;
+          const isEndpoint =
+            (cells[0].row === head.row && cells[0].col === head.col) ||
+            (cells[cells.length - 1].row === head.row && cells[cells.length - 1].col === head.col);
+          expect(isEndpoint).toBe(true);
+        }
+
+        const valid = ArrowEscapeSolver.validateLevelStructure(level);
+        expect(valid.valid).toBe(true);
+
+        const solution = ArrowEscapeSolver.solve(level);
+        expect(solution.solvable).toBe(true);
+        expect(solution.solutionMoves).toBeDefined();
+        expect(solution.solutionMoves!.length).toBe(level.arrows.length);
+      });
+    });
   });
 });
+

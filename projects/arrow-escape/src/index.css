@@ -23,43 +23,49 @@
   --neon-emerald: #10b981;
   --neon-emerald-glow: rgba(16, 185, 129, 0.45);
 
-  /* Theme tokens - Dark Mode (Default) */
-  --bg-app: #030712;
-  --bg-gradient-start: #0a0f1d;
-  --bg-gradient-end: #020617;
-  --bg-card: rgba(15, 23, 42, 0.88);
+  /* Theme tokens - Cyber Dark Obsidian Mode (Default) */
+  --bg-app: #090d16;
+  --bg-gradient-start: #0f172a;
+  --bg-gradient-end: #090d16;
+  --bg-card: rgba(15, 23, 42, 0.90);
   --border-card: rgba(51, 65, 85, 0.65);
   --text-primary: #f8fafc;
   --text-secondary: #94a3b8;
   --text-muted: #64748b;
-  --board-slab: #070e22;
-  --board-slot: #030712;
-  --board-slot-border: rgba(255, 255, 255, 0.05);
-  --tile-bg: #0f172a;
-  --tile-body-bg: #1e293b;
-  --tile-shadow: rgba(0, 0, 0, 0.5);
+  --arrow-stroke: #06b6d4;
   --accent-cyan: #06b6d4;
   --accent-glow: rgba(6, 182, 212, 0.4);
 }
 
+.theme-minimal-white,
 .theme-light {
-  --bg-app: #f1f5f9;
+  --bg-app: #ffffff;
   --bg-gradient-start: #ffffff;
-  --bg-gradient-end: #e2e8f0;
-  --bg-card: rgba(255, 255, 255, 0.92);
-  --border-card: rgba(203, 213, 225, 0.9);
+  --bg-gradient-end: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.95);
+  --border-card: rgba(226, 232, 240, 0.9);
   --text-primary: #0f172a;
   --text-secondary: #475569;
   --text-muted: #94a3b8;
-  --board-slab: #e2e8f0;
-  --board-slot: #f8fafc;
-  --board-slot-border: rgba(0, 0, 0, 0.07);
-  --tile-bg: #ffffff;
-  --tile-body-bg: #f1f5f9;
-  --tile-shadow: rgba(15, 23, 42, 0.15);
+  --arrow-stroke: #0f172a;
   --accent-cyan: #0284c7;
   --accent-glow: rgba(2, 132, 199, 0.3);
 }
+
+.theme-eye-comfort {
+  --bg-app: #faf5ed;
+  --bg-gradient-start: #faf5ed;
+  --bg-gradient-end: #f5f0e6;
+  --bg-card: rgba(250, 245, 237, 0.95);
+  --border-card: rgba(214, 204, 190, 0.75);
+  --text-primary: #4a3525;
+  --text-secondary: #785e49;
+  --text-muted: #a6907c;
+  --arrow-stroke: #4a3525;
+  --accent-cyan: #38bdf8;
+  --accent-glow: rgba(56, 189, 248, 0.35);
+}
+
 
 * {
   box-sizing: border-box;
@@ -249,4 +255,20 @@ html, body {
 .animate-pulse-glow {
   animation: pulseGlow 2s infinite ease-in-out;
 }
+
+@keyframes hintedGlowPulse {
+  0%, 100% {
+    filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.7)) drop-shadow(0 0 12px rgba(56, 189, 248, 0.5));
+    opacity: 0.9;
+  }
+  50% {
+    filter: drop-shadow(0 0 14px rgba(56, 189, 248, 1)) drop-shadow(0 0 24px rgba(56, 189, 248, 0.85));
+    opacity: 1;
+  }
+}
+
+.arrow-hinted-pulse {
+  animation: hintedGlowPulse 1.2s infinite ease-in-out;
+}
+
 
