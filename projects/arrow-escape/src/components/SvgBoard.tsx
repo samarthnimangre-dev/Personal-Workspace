@@ -1,4 +1,4 @@
-// Scalable, theme-aware SVG Board rendering tactile grid slots and active arrows with particle FX
+// Scalable, theme-aware SVG Board rendering a clean, box-free minimalist canvas with subtle guide dots and active arrows
 import React from 'react';
 import type { BoardModel } from '../engine/BoardModel';
 import type { ArrowModel } from '../engine/ArrowModel';
@@ -31,16 +31,15 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
 
   const isDark = theme === 'dark';
 
-  // Pre-generate grid background cell slots (filtered by mask shape)
-  const gridSlots = [];
+  // Minimalist grid guidance dots at cell centers (zero square boxes/blocks)
+  const gridDots = [];
   for (let r = 0; r < board.rows; r++) {
     for (let c = 0; c < board.cols; c++) {
       if (!board.isInsideCoords(r, c)) continue;
-      gridSlots.push({
+      gridDots.push({
         key: `${r}-${c}`,
-        x: c * cellSize + padding + 4,
-        y: r * cellSize + padding + 4,
-        size: cellSize - 8,
+        cx: c * cellSize + padding + cellSize / 2,
+        cy: r * cellSize + padding + cellSize / 2,
       });
     }
   }
@@ -69,12 +68,6 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
             <feComposite in="SourceGraphic" in2="blur" operator="over" />
           </filter>
 
-          {/* Specular gloss highlight gradient */}
-          <linearGradient id="specularGloss" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" stopOpacity={isDark ? 0.22 : 0.45} />
-            <stop offset="100%" stopColor="#ffffff" stopOpacity="0.0" />
-          </linearGradient>
-
           {/* Board Plinth Rim Bevel with Vivid Cyber-Cyan Highlight */}
           <linearGradient id="boardRimGlow" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor="rgba(255, 255, 255, 0.28)" />
@@ -87,62 +80,6 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
           <linearGradient id="boardBackdrop" x1="0" y1="0" x2="1" y2="1">
             <stop offset="0%" stopColor={isDark ? '#0b1329' : '#ffffff'} />
             <stop offset="100%" stopColor={isDark ? '#030712' : '#e2e8f0'} />
-          </linearGradient>
-
-          {/* 3-Stop Inset Background Tile Gradient (Dark Obsidian Wells) */}
-          <linearGradient id="bgTileMetallicDark" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#020617" />
-            <stop offset="50%" stopColor="#070c1b" />
-            <stop offset="100%" stopColor="#0b1329" />
-          </linearGradient>
-
-          {/* 3-Stop Inset Background Tile Gradient (Light Mode) */}
-          <linearGradient id="bgTileMetallicLight" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#e2e8f0" />
-            <stop offset="50%" stopColor="#f1f5f9" />
-            <stop offset="100%" stopColor="#ffffff" />
-          </linearGradient>
-
-          {/* 3-Stop Metallic Obsidian Tile Surface (Dark Mode) */}
-          <linearGradient id="tileMetallicDark" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#111827" />
-            <stop offset="60%" stopColor="#0b0f19" />
-            <stop offset="100%" stopColor="#030712" />
-          </linearGradient>
-
-          {/* Clean Ceramic Tile Surface (Light Mode) */}
-          <linearGradient id="tileMetallicLight" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#ffffff" />
-            <stop offset="60%" stopColor="#f8fafc" />
-            <stop offset="100%" stopColor="#edf2f7" />
-          </linearGradient>
-
-          {/* Ice Frost Tile Gradient (Dark Mode) */}
-          <linearGradient id="tileIceDark" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#075985" />
-            <stop offset="50%" stopColor="#0369a1" />
-            <stop offset="100%" stopColor="#082f49" />
-          </linearGradient>
-
-          {/* Ice Frost Tile Gradient (Light Mode) */}
-          <linearGradient id="tileIceLight" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#f0f9ff" />
-            <stop offset="50%" stopColor="#e0f2fe" />
-            <stop offset="100%" stopColor="#bae6fd" />
-          </linearGradient>
-
-          {/* Bomb Hazard Tile Gradient */}
-          <linearGradient id="tileBombDark" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#4c0519" />
-            <stop offset="50%" stopColor="#881337" />
-            <stop offset="100%" stopColor="#1f0208" />
-          </linearGradient>
-
-          {/* Pivot Rotator Tile Gradient */}
-          <linearGradient id="tilePivotDark" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#78350f" />
-            <stop offset="50%" stopColor="#451a03" />
-            <stop offset="100%" stopColor="#1c0a02" />
           </linearGradient>
         </defs>
 
@@ -191,19 +128,14 @@ export const SvgBoard: React.FC<SvgBoardProps> = ({
           />
         )}
 
-        {/* Inset Grid Slots (3-Stop Metallic Obsidian Background Tiles) */}
-        {gridSlots.map((slot) => (
-          <rect
-            key={slot.key}
-            x={slot.x}
-            y={slot.y}
-            width={slot.size}
-            height={slot.size}
-            rx={14}
-            ry={14}
-            fill={isDark ? 'url(#bgTileMetallicDark)' : 'url(#bgTileMetallicLight)'}
-            stroke={isDark ? 'rgba(255, 255, 255, 0.05)' : 'rgba(0, 0, 0, 0.06)'}
-            strokeWidth={1}
+        {/* Minimalist Grid Guide Dots (NO square blocks or boxes) */}
+        {gridDots.map((dot) => (
+          <circle
+            key={dot.key}
+            cx={dot.cx}
+            cy={dot.cy}
+            r={isDark ? 2.5 : 2.2}
+            fill={isDark ? 'rgba(255, 255, 255, 0.12)' : 'rgba(15, 23, 42, 0.12)'}
           />
         ))}
 
