@@ -17,6 +17,7 @@ import {
   Inquiry,
 } from "@/lib/data-service";
 import { notifyAdminOnTelegram } from "@/lib/telegram/client";
+import { getAvailableSlots } from "@/lib/cal/client";
 import { CONTACT_CONFIG } from "@/data/socials";
 import { profileData } from "@/data/profile";
 import {
@@ -52,6 +53,17 @@ interface GeminiExtractionResponse {
 async function buildSystemPrompt(userContext?: UserContext): Promise<string> {
   const services = await getServices();
   const knowledge = await getAssistantKnowledge();
+  const liveSlots = await getAvailableSlots(2).catch(() => []);
+
+  const liveSlotsText =
+    liveSlots.length > 0
+      ? `\n• Live Available Slots from Samarth's Connected Google Calendar:\n` +
+        liveSlots
+          .slice(0, 6)
+          .map((s) => `  - ${s.date} at ${s.istTime}`)
+          .join("\n") +
+        `\n  Direct link: ${CONTACT_CONFIG.CAL_URL}\n`
+      : "";
 
   const servicesText = services
     .map(
@@ -86,7 +98,7 @@ ${servicesText}
   - WhatsApp Intake: +91 8550816706
   - Primary Email: ${CONTACT_CONFIG.EMAIL_ADDRESS}
   - 15-Minute Architecture Call (Cal.com): ${CONTACT_CONFIG.CAL_URL}
-
+${liveSlotsText}
 • Grounded Portfolio Knowledge:
 ${faqsText}
 
@@ -101,7 +113,10 @@ ${userNameHint}
    - Their best email address or preferred handle for Samarth to follow up with an architectural blueprint
 4. Do NOT be pushy. Keep messages concise (usually 2-4 short paragraphs maximum, suitable for Telegram chat). Use emojis tastefullly.
 5. When the user has provided enough information (at minimum: a clear project brief and a contact email/handle/telegram ID), set "readyToQualify": true in your JSON output.
-6. Cal.com Scheduling Invariant: If the user asks to schedule a call, meet, or book a consultation, ALWAYS provide the exact verified booking link: ${CONTACT_CONFIG.CAL_URL}. NEVER invent, hallucinate, or alter the username/duration (e.g. NEVER output cal.com/samarth/30min or any other path). Use ONLY ${CONTACT_CONFIG.CAL_URL}.
+6. Cal.com Real-Time Scheduling: When the user asks to schedule a call, meet, or pick a time today/tomorrow:
+   - Quote the real available slots provided above in IST.
+   - Instruct them to confirm the slot or lock it in directly at ${CONTACT_CONFIG.CAL_URL}.
+   - CRITICAL ZERO-HALLUCINATION INVARIANT: NEVER invent or output any other Cal.com URL, username, or duration (e.g. NEVER output cal.com/samarth/30min or any non-existent link). The ONLY authorized booking URL is ${CONTACT_CONFIG.CAL_URL}.
 
 ### OUTPUT FORMAT
 You MUST reply with a strictly valid JSON object matching this schema:
@@ -308,16 +323,22 @@ export async function executeGeminiTurn(
     });
   }
 
+  // Enforce zero-hallucination URL guard: sanitize any cal.com links
+  const safeReplyText = parsed.replyText.replace(
+    /https?:\/\/cal\.com\/[a-zA-Z0-9_\-\/]+/gi,
+    CONTACT_CONFIG.CAL_URL
+  );
+
   // Append model reply to history
   session.history.push({
     role: "model",
-    text: parsed.replyText,
+    text: safeReplyText,
   });
 
   const latencyMs = Date.now() - startTime;
 
   return {
-    replyText: parsed.replyText,
+    replyText: safeReplyText,
     phase: session.phase,
     leadDraft: session.leadDraft,
     leadQualified,
