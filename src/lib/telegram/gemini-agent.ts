@@ -14,6 +14,7 @@ import {
   logAuditAction,
   getServices,
   getAssistantKnowledge,
+  getProjects,
   Inquiry,
 } from "@/lib/data-service";
 import { notifyAdminOnTelegram } from "@/lib/telegram/client";
@@ -51,9 +52,12 @@ interface GeminiExtractionResponse {
  * Build dynamically grounded system instructions containing all real portfolio context.
  */
 async function buildSystemPrompt(userContext?: UserContext): Promise<string> {
-  const services = await getServices();
-  const knowledge = await getAssistantKnowledge();
-  const liveSlots = await getAvailableSlots(2).catch(() => []);
+  const [services, knowledge, projects, liveSlots] = await Promise.all([
+    getServices(),
+    getAssistantKnowledge(),
+    getProjects(),
+    getAvailableSlots(2).catch(() => []),
+  ]);
 
   const liveSlotsText =
     liveSlots.length > 0
@@ -62,13 +66,21 @@ async function buildSystemPrompt(userContext?: UserContext): Promise<string> {
           .slice(0, 6)
           .map((s) => `  - ${s.date} at ${s.istTime}`)
           .join("\n") +
-        `\n  Direct link: ${CONTACT_CONFIG.CAL_URL}\n`
+        `\n  Direct booking link: ${CONTACT_CONFIG.CAL_URL}\n`
       : "";
 
   const servicesText = services
     .map(
       (s) =>
         `• ${s.title}: ${s.pricing?.inr || "₹1,000+"} (${s.pricing?.usd || "$15+"}) | Turnaround: ${s.pricing?.turnaround || "24-48h"}\n  Deliverables: ${s.deliverables.slice(0, 3).join(", ")}`
+    )
+    .join("\n\n");
+
+  const projectsText = projects
+    .slice(0, 5)
+    .map(
+      (p) =>
+        `• ${p.title} (${p.category}): ${p.shortDescription}\n  Technologies: ${p.technologies.join(", ")}`
     )
     .join("\n\n");
 
@@ -82,6 +94,13 @@ async function buildSystemPrompt(userContext?: UserContext): Promise<string> {
 
   return `You are the official AI Qualifier bot for Samarth Nimangre (brand: SAM CODES), running 24/7 on Telegram (@samarth_master_bot).
 
+### STRICT CLOSED-DOMAIN GROUNDING INVARIANT (ZERO EXTERNAL KNOWLEDGE)
+• You are strictly restricted to the verified facts, services, case studies, pricing, contact links, and calendar slots provided explicitly in this prompt.
+• Under NO circumstances should you invent facts, hallucinate URLs, make up pricing, or answer using outside general knowledge about software/services not mentioned here.
+• If the user asks a question that cannot be answered directly from the verified facts provided below, politely explain:
+  "I can only answer verified questions regarding Samarth's engineering portfolio, capabilities, and pricing. For specialized inquiries, please contact Samarth directly on Telegram (@Samarth1306) or schedule an architecture call: ${CONTACT_CONFIG.CAL_URL}"
+• Never hallucinate calendar slots, phone numbers, email addresses, or external links.
+
 ### ABOUT SAMARTH & SAM CODES
 • Developer: ${profileData.fullName} (${profileData.title}), based in ${profileData.location}.
 • Philosophy: Strict ZERO-FABRICATION policy. Only quote real engineering capabilities, real verified deliverables, and realistic timelines. Never invent capabilities or give false guarantees.
@@ -91,6 +110,9 @@ async function buildSystemPrompt(userContext?: UserContext): Promise<string> {
   - Terms: Micro-fixes (100% upon working demo test). Larger builds (50% deposit / 50% on launch).
 • Core Offerings & Pricing Catalog:
 ${servicesText}
+
+• Verified Production Projects & Case Studies:
+${projectsText}
 
 • Verified Contact Pathways:
   - Telegram Bot: ${CONTACT_CONFIG.TELEGRAM_BOT_HANDLE}
@@ -179,7 +201,7 @@ export async function executeGeminiTurn(
     apiKey,
     systemPrompt,
     messages,
-    temperature: 0.35,
+    temperature: 0.15,
     maxOutputTokens: 2048,
     responseJson: true,
     timeoutMs: 14000,
