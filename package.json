@@ -9,6 +9,7 @@
     "lint": "tsc --noEmit",
     "typecheck": "tsc --noEmit",
     "db:backup": "node --experimental-strip-types scripts/backup-db.ts",
+    "webhook:telegram": "node --experimental-strip-types scripts/manage-telegram-webhook.ts",
     "whatsapp": "npx tsx --env-file=.env scripts/start-whatsapp-bridge.ts",
     "whatsapp:sync": "npx tsx --env-file=.env scripts/sync-whatsapp-auth.ts"
   },

@@ -36,9 +36,9 @@ export const CONTACT_CONFIG = {
   GITHUB_URL: "https://github.com/Sam-CodesAI",
   GITHUB_HANDLE: "Sam-CodesAI",
 
-  // Direct Architecture & Scoping Chat
-  CAL_URL: "https://t.me/Samarth1306",
-  CAL_LABEL: "Direct Scoping Chat (Telegram)",
+  // Direct Architecture & Scoping Calendar (Cal.com)
+  CAL_URL: "https://cal.com/sam-codesai/15min",
+  CAL_LABEL: "Book 15-Min Architecture Call (Cal.com)",
 
   // Primary contact email address
   EMAIL_ADDRESS: "samarthknimangre@gmail.com",

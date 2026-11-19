@@ -449,7 +449,8 @@ export async function executeAgentTurn(
           `• Target: ${session.leadDraft.serviceRequested}\n` +
           `• Timeline: ${session.leadDraft.timeline}\n` +
           `• Direct Contact: ${session.leadDraft.handleOrEmail || `@${session.username}`}\n\n` +
-          `Samarth personally inspects every specification and will follow up with you within 24 hours with an architectural blueprint and scope breakdown.`;
+          `Samarth personally inspects every specification and will follow up with you within 24 hours with an architectural blueprint and scope breakdown.\n\n` +
+          `📅 Want to pick a time to discuss right away? Schedule a 15-minute architecture call directly here: ${CONTACT_CONFIG.CAL_URL}`;
       } else {
         session.phase = "QUALIFICATION";
         replyText =
@@ -526,7 +527,9 @@ export async function executeAgentTurn(
         `• System: ${session.leadDraft.serviceRequested}\n` +
         `• Timeline: ${session.leadDraft.timeline}\n` +
         `• Reference ID: #${inquiryCreated.id.slice(-6)}\n\n` +
-        `Samarth personally reviews all requirements and will follow up with you within 24 hours with an architectural blueprint. If you have any additional links, repos, or documents, feel free to send them here anytime!`;
+        `Samarth personally reviews all requirements and will follow up with you within 24 hours with an architectural blueprint.\n\n` +
+        `📅 Lock in a 15-minute architecture slot directly on his live calendar: ${CONTACT_CONFIG.CAL_URL}\n\n` +
+        `If you have any additional links, repos, or documents, feel free to send them here anytime!`;
       break;
     }
 

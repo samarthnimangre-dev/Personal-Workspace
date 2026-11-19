@@ -105,8 +105,16 @@ export const assistantKnowledgeBase: KnowledgeQnA[] = [
       `1. WhatsApp: Message our 24/7 business intake line at +91 8550816706.\n` +
       `2. Telegram: Chat with our AI Qualifier (${CONTACT_CONFIG.TELEGRAM_BOT_HANDLE}) or DM Samarth directly (${CONTACT_CONFIG.TELEGRAM_PERSONAL_HANDLE}).\n` +
       `3. Email: Send your project notes to ${CONTACT_CONFIG.EMAIL_ADDRESS}.\n` +
-      `4. Direct Architecture Chat: DM Samarth directly on Telegram at ${CONTACT_CONFIG.TELEGRAM_PERSONAL_HANDLE} (${CONTACT_CONFIG.CAL_URL}).\n\n` +
+      `4. Schedule a 15-Min Call: Book directly on Samarth's live calendar at ${CONTACT_CONFIG.CAL_URL}.\n\n` +
       `Share a brief summary of what you need built, and Samarth will provide an architectural blueprint and fixed quote within 2–4 hours.`,
+  },
+  {
+    id: "book-discovery-call",
+    question: "Can I book a discovery or architecture call with Samarth?",
+    keywords: ["book", "call", "schedule", "calendar", "cal.com", "meeting", "discovery call", "consultation", "15min", "slot"],
+    category: "CONTACT",
+    answer:
+      `Yes! You can book a 15-minute architecture & discovery consultation directly on Samarth's live calendar at ${CONTACT_CONFIG.CAL_URL}. Pick any available slot between Monday and Friday (9:00 AM – 5:00 PM IST) and a meeting invite with Cal Video / Google Meet will be automatically generated.`,
   },
   {
     id: "who-is-sam",
