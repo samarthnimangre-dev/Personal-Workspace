@@ -49,6 +49,14 @@ export default function Footer() {
           <a href="#services" className="hover:text-white transition-colors">
             Services
           </a>
+          <a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:text-sky-300 text-sky-400/90 transition-colors"
+          >
+            Resume
+          </a>
           <a href="#contact" className="hover:text-white transition-colors">
             Contact
           </a>

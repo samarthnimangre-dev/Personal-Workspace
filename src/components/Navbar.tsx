@@ -10,6 +10,7 @@ const NAV_LINKS = [
   { label: "Process", href: "#process" },
   { label: "About", href: "#about" },
   { label: "Services", href: "#services" },
+  { label: "Resume", href: "/resume.pdf", external: true },
   { label: "Contact", href: "#contact" },
 ];
 
@@ -72,6 +73,8 @@ export default function Navbar() {
             <a
               key={link.href}
               href={link.href}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noopener noreferrer" : undefined}
               onMouseEnter={() => soundFx.playHover()}
               className="text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white transition-colors relative py-1 focus:outline-none focus-visible:text-sky-400"
             >
@@ -140,6 +143,8 @@ export default function Navbar() {
               <a
                 key={link.href}
                 href={link.href}
+                target={link.external ? "_blank" : undefined}
+                rel={link.external ? "noopener noreferrer" : undefined}
                 onClick={handleLinkClick}
                 className="text-sm font-mono tracking-wider text-slate-300 hover:text-sky-400 py-3 border-b border-white/[0.04] transition-colors min-h-[44px] flex items-center"
               >

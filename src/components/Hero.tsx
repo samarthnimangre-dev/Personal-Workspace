@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { ArrowDown, ArrowUpRight, Terminal, Cpu, Zap } from "lucide-react";
+import { ArrowDown, ArrowUpRight, Terminal, Cpu, Zap, FileText } from "lucide-react";
 import { profileData, ProfileData } from "@/data/profile";
 import { soundFx } from "@/utils/sound";
 import { motion } from "motion/react";
@@ -84,6 +84,21 @@ export default function Hero({ profile = profileData }: { profile?: ProfileData 
             className="w-full sm:w-auto px-8 py-4 rounded-full bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.1] text-slate-200 hover:text-white font-medium text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer min-h-[48px]"
           >
             <span>Work with me</span>
+          </motion.a>
+        </MagneticButton>
+
+        <MagneticButton pullFactor={0.2}>
+          <motion.a
+            href="/resume.pdf"
+            target="_blank"
+            rel="noopener noreferrer"
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            onClick={() => soundFx.playChime(480, 0.06)}
+            className="w-full sm:w-auto px-6 py-4 rounded-full bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/30 text-sky-300 hover:text-white font-medium text-sm transition-all flex items-center justify-center gap-2 backdrop-blur-md cursor-pointer min-h-[48px]"
+          >
+            <FileText size={16} className="text-sky-400" />
+            <span>Resume</span>
           </motion.a>
         </MagneticButton>
       </motion.div>
