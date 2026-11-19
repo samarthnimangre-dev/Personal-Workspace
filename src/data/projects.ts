@@ -103,6 +103,66 @@ export const projectsData: Project[] = [
     githubUrl: "https://github.com/Sam-CodesAI/SutraDB",
   },
   {
+    title: "VaniEdge: Sub-Second Edge AI Voice Telephony & Failover Platform",
+    slug: "vaniedge-voice-platform",
+    shortDescription:
+      "Production edge voice telephony engine bridging carrier PSTN & WebRTC to AI LLMs via Cloudflare Worker WebSockets with 8kHz μ-law transcoding and 4-tier circuit breakers.",
+    fullDescription:
+      "A sub-second edge voice telephony platform engineered for enterprise phone automation. Features bidirectional 8kHz μ-law PCM audio streaming over Cloudflare Workers, sub-second TTFT watchdogs, zero-latency barge-in interruption buffer flushing, and a 4-tier failover circuit breaker (Tier 1: Multi-model Gemini fallback -> Tier 2: <10ms Voicemail Circuit Breaker -> Tier 3: Emergency Dispatch -> Tier 4: Autonomous SMS Rescue). Backed by a full customer dashboard with scrypt session cookies, tenant IDOR isolation, and 70/70 passing automated tests.",
+    category: "AI Application",
+    technologies: ["Cloudflare Workers", "Next.js 16", "TypeScript", "Twilio TwiML", "WebRTC", "WebSockets"],
+    tools: ["8kHz μ-law PCM", "Sub-second Watchdogs", "Circuit Breakers", "Scrypt Auth", "Turbopack"],
+    image: "/og-image.png",
+    status: "Shipped",
+    featured: true,
+    date: "2026-11",
+    problem:
+      "Traditional voice AI bots suffer from unacceptable 2-4 second turn latencies, robotic latency freezes, dropped calls without fallback, and audio buffering glitches during customer interruptions. When telephony LLMs or carriers stall, customers are abruptly hung up on without recourse.",
+    approach:
+      "Architected a dual-runtime topology: Cloudflare Workers terminate edge WebSockets for bidirectional 8kHz μ-law audio streaming with sub-second dead-air watchdogs, while Next.js 16 handles carrier TwiML webhooks, multi-tenant scrypt sessions, and emergency dispatching. Built a 4-tier failover state machine that catches upstream stalls and gracefully cascades to voicemail, warm emergency transfer, or autonomous SMS rescue.",
+    architecture: [
+      "Edge WebSocket Audio Transcoder running on Cloudflare Workers with μ-law 8kHz PCM conversion",
+      "Sub-Second TTFT & Dead-Air Watchdogs with zero-latency barge-in buffer clearance",
+      "Tier 1-4 Resilient Failover State Machine with idempotent execution guarantees",
+      "Twilio TwiML Webhook Ingestion with cryptographic HMAC-SHA1 signature verification",
+      "WebRTC In-Browser Voice Tester & DTMF Simulation Harness with rate limiting",
+      "Multi-Tenant Customer Dashboard with scrypt cookie sessions and IDOR access control",
+      "Instant Telegram Bot Admin Dispatch (@Samarth1306) on emergency tickets and voicemails",
+    ],
+    result:
+      "Sub-800ms end-to-end voice latency with zero dropped calls during carrier stalls. Achieved 100% test pass rate across 70 automated test suites and sub-10ms circuit breaker failover activation.",
+    lessons:
+      "Barge-in interruption must flush audio buffers immediately at the edge socket layer rather than waiting for LLM completion tokens. Simulation endpoints must be strictly isolated from carrier webhooks to allow seamless browser demos while keeping PSTN lines cryptographically guarded.",
+    metrics: [
+      {
+        label: "Circuit Breaker Trip",
+        value: "< 10ms",
+        type: "performance",
+        evidenceNotes: "Measured time to trip Tier 2 failover upon upstream stall",
+      },
+      {
+        label: "Test Suite Pass Rate",
+        value: "70 / 70",
+        type: "tests",
+        evidenceNotes: "Comprehensive unit, integration, and security test suite passing",
+      },
+      {
+        label: "Audio Transcoding",
+        value: "8kHz μ-law",
+        type: "performance",
+        evidenceNotes: "Zero-latency edge PCM transcoding for carrier telephony compatibility",
+      },
+      {
+        label: "Failover Coverage",
+        value: "4 Tiers",
+        type: "measurements",
+        evidenceNotes: "Multi-model LLM -> Voicemail -> Warm Transfer -> SMS Rescue",
+      },
+    ],
+    githubUrl: "https://github.com/Sam-CodesAI/VaniEdge-Voice-Platform",
+    liveUrl: "https://vaniedge.vercel.app",
+  },
+  {
     title: "Teleflow Agent: Autonomous Telegram AI Lead Qualifier & Edge CRM Router",
     slug: "telegram-ai-lead-agent",
     shortDescription:

@@ -61,10 +61,11 @@ export const assistantKnowledgeBase: KnowledgeQnA[] = [
     category: "PORTFOLIO",
     answer:
       "Under Sam's strict zero-fabrication policy, all showcased work is 100% verified and clickable:\n" +
+      "• SutraDB (PyPI v2.2.1): https://pypi.org/project/sutradb/ (Zero-dependency hybrid vector database in Python with SIMD BLAS & BM25)\n" +
+      "• VaniEdge Voice Platform: https://vaniedge.vercel.app (Sub-second edge AI voice telephony with Cloudflare Workers & 4-tier failovers)\n" +
       "• Production Portfolio: https://sam-codes.vercel.app\n" +
-      "• Live E-Commerce Checkout Repair Demo: https://sam-codes.vercel.app/demos/dokumentko\n" +
       "• Autonomous Telegram AI Qualifier: @samarth_master_bot (~280ms latency, multi-turn reasoning)\n" +
-      "• WhatsApp 24/7 Intake Bridge: +91 8550816706 (Baileys WebSocket Multi-Device)",
+      "• Live E-Commerce Checkout Repair Demo: https://sam-codes.vercel.app/demos/dokumentko",
   },
   {
     id: "whatsapp-telegram-bot-building",

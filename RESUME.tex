@@ -1,0 +1,153 @@
+%-------------------------
+% Samarth Nimangre - Resume (LaTeX Template)
+% AI Systems & Backend Infrastructure Engineer
+% Compatible with pdflatex / Overleaf
+%-------------------------
+
+\documentclass[letterpaper,10pt]{article}
+
+\usepackage{latexsym}
+\usepackage[empty]{fullpage}
+\usepackage{titlesec}
+\usepackage{marvosym}
+\usepackage[usenames,dvipsnames]{color}
+\usepackage{verbatim}
+\usepackage{enumitem}
+\usepackage[hidelinks]{hyperref}
+\usepackage{fancyhdr}
+\usepackage[english]{babel}
+\usepackage{tabularx}
+
+\pagestyle{fancy}
+\fancyhf{} % clear all header and footer fields
+\fancyfoot{}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{0pt}
+
+% Adjust margins
+\addtolength{\oddsidemargin}{-0.5in}
+\addtolength{\evensidemargin}{-0.5in}
+\addtolength{\textwidth}{1.0in}
+\addtolength{\topmargin}{-.5in}
+\addtolength{\textheight}{1.0in}
+
+\urlstyle{same}
+
+\raggedbottom
+\raggedright
+\setlength{\tabcolsep}{0in}
+
+% Sections formatting
+\titleformat{\section}{
+  \vspace{-5pt}\scshape\raggedright\large
+}{}{0em}{}[\color{black}\titlerule \vspace{-4pt}]
+
+%-------------------------
+% Custom commands
+\newcommand{\resumeItem}[2]{
+  \item\small{
+    \textbf{#1}{: #2 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeItemPlain}[1]{
+  \item\small{
+    {#1 \vspace{-2pt}}
+  }
+}
+
+\newcommand{\resumeSubheading}[4]{
+  \vspace{-1pt}\item
+    \begin{tabular*}{0.97\textwidth}[t]{l@{\extracolsep{\fill}}r}
+      \textbf{#1} & #2 \\
+      \textit{\small#3} & \textit{\small #4} \\
+    \end{tabular*}\vspace{-5pt}
+}
+
+\newcommand{\resumeSubHeadingListStart}{\begin{itemize}[leftmargin=*,label={}]}
+\newcommand{\resumeSubHeadingListEnd}{\end{itemize}}
+\newcommand{\resumeItemListStart}{\begin{itemize}[leftmargin=12pt]}
+\newcommand{\resumeItemListEnd}{\end{itemize}\vspace{-4pt}}
+
+%-------------------------------------------
+%%%%%%  CV STARTS HERE  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+%----------HEADING-----------------
+\begin{center}
+    \textbf{\Huge \scshape Samarth Nimangre} \\ \vspace{2pt}
+    \textbf{\small AI Systems \& Backend Infrastructure Engineer} \\ \vspace{2pt}
+    \small Karnataka, India $|$ +91 6361209256 $|$ \href{mailto:samarthknimangre@gmail.com}{\underline{samarthknimangre@gmail.com}} $|$ \href{https://sam-codes.vercel.app}{\underline{sam-codes.vercel.app}} \\ \vspace{2pt}
+    \small \href{https://github.com/Sam-CodesAI}{\underline{github.com/Sam-CodesAI}} $|$ \href{https://linkedin.com/in/sam-codesai}{\underline{linkedin.com/in/sam-codesai}} $|$ \href{https://pypi.org/project/sutradb/}{\underline{PyPI: sutradb}} $|$ \href{https://t.me/Samarth1306}{\underline{Telegram: @Samarth1306}}
+\end{center}
+
+%-----------SUMMARY-----------------
+\section{Executive Summary}
+\small{High-autonomy Systems \& AI Engineer with expertise in low-level database internals, real-time edge streaming pipelines, and resilient distributed agentic architectures. Author of \textbf{SutraDB} (PyPI v2.2.1), a zero-dependency SIMD-accelerated hybrid vector database ($<$0.4ms P50 latency, 52k docs/s). Creator of \textbf{VaniEdge}, a sub-second edge voice telephony platform using Cloudflare Worker WebSockets, 8kHz $\mu$-law audio transcoding, and 4-tier failover circuit breakers. Proficient in Python (NumPy BLAS, Asyncio, SIMD), TypeScript (Next.js 16, React 19), and PostgreSQL (RLS).}
+
+%-----------TECHNICAL SKILLS-----------------
+\section{Technical Skills}
+\begin{itemize}[leftmargin=0.15in, label={}]
+    \small{\item{
+     \textbf{Systems \& AI Core}{: SIMD Vector Distance, BM25 Lexical Indexing, Reciprocal Rank Fusion (RRF), mmap Zero-Copy, CRC32 WAL, Audio DSP (8kHz $\mu$-law PCM), LLM Cascading \& Tool Calling, Grounded RAG.} \\
+     \textbf{Infrastructure \& Cloud}{: Cloudflare Workers, Twilio TwiML / WebSockets, WebRTC, Supabase PostgreSQL (RLS, Migrations, Indexing), Docker, Redis/KV, Linux/Bash, Vercel Edge.} \\
+     \textbf{Languages \& Frameworks}{: Python 3.12+ (NumPy BLAS, Asyncio), TypeScript, Next.js 16 (Turbopack, Server Actions), React 19, Tailwind CSS v4, Node.js 22, SQL.} \\
+     \textbf{Reliability \& Testing}{: Test-Driven Development (TDD), Circuit Breakers, Exponential Backoff with Jitter, Cryptographic HMAC-SHA1/SHA256, Webhook Fast-Ack.}
+    }}
+\end{itemize}
+
+%-----------FLAGSHIP PROJECTS-----------------
+\section{Production Systems \& Flagship Projects}
+\resumeSubHeadingListStart
+
+    \resumeSubheading
+      {SutraDB (सूत्र DB) --- Hybrid Vector Search \& BM25 Lexical Engine}{\href{https://pypi.org/project/sutradb/}{\underline{PyPI: sutradb v2.2.1}}}
+      {Zero-Dependency Embedded Vector Database (Python, NumPy BLAS, SIMD)}{\href{https://github.com/Sam-CodesAI/SutraDB}{\underline{GitHub: Sam-CodesAI/SutraDB}}}
+      \resumeItemListStart
+        \resumeItemPlain{Engineered a clean-room, zero-dependency hybrid vector database in Python \& NumPy BLAS combining SIMD-accelerated linear algebra, Robertson-Spärck Jones BM25 ranking, and dynamic in-flight compound metadata bitmasks.}
+        \resumeItemPlain{Pre-normalized unit vectors at insertion to reduce Cosine Similarity to pure hardware BLAS GEMV dot products, achieving \textbf{sub-0.4ms P50 latency} across 5,000 128-dim vectors.}
+        \resumeItemPlain{Designed 64-byte aligned \textbf{.sutra} binary container with zero-copy memory-mapped (\texttt{mmap}) reads and append-only CRC32 Write-Ahead Log (WAL), surviving cold restarts with zero corruption.}
+        \resumeItemPlain{Sustained \textbf{52,000+ docs/sec} ingestion throughput with $\sim$22MB RAM footprint; published package to PyPI and verified via 100\% passing 20/20 pytest test suite.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {VaniEdge Voice Platform --- Sub-Second Edge AI Telephony \& Failover}{\href{https://vaniedge.vercel.app}{\underline{vaniedge.vercel.app}}}
+      {Edge Audio Streaming \& Distributed Telephony Engine (Cloudflare Workers, Next.js 16)}{\href{https://github.com/Sam-CodesAI/VaniEdge-Voice-Platform}{\underline{GitHub: VaniEdge-Voice-Platform}}}
+      \resumeItemListStart
+        \resumeItemPlain{Architected sub-second edge voice telephony engine bridging Twilio PSTN carriers and browser WebRTC to AI LLMs via Cloudflare Worker WebSockets.}
+        \resumeItemPlain{Engineered bidirectional 8kHz $\mu$-law PCM transcoding, sub-second TTFT/dead-air watchdogs, and zero-latency audio buffer flushing for seamless conversational barge-in.}
+        \resumeItemPlain{Designed 4-tier failover circuit breaker (Gemini matrix fallback $\to$ \textbf{$<$10ms Voicemail Circuit Breaker} $\to$ Warm Transfer $\to$ Autonomous SMS Rescue) eliminating dropped calls.}
+        \resumeItemPlain{Deployed customer dashboard with scrypt session cookies, tenant IDOR isolation, and instant Telegram admin alerts; verified via \textbf{70/70 passing automated tests}.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {TeleFlow Agent --- Autonomous Conversational Lead Qualification \& Router}{\href{https://github.com/Sam-CodesAI/teleflow-agent}{\underline{teleflow-agent}}}
+      {Multi-Turn Telephony \& Messaging Workflow (TypeScript, Next.js 16, Supabase)}{\href{https://github.com/Sam-CodesAI/teleflow-agent}{\underline{GitHub: teleflow-agent}}}
+      \resumeItemListStart
+        \resumeItemPlain{Built an autonomous multi-turn qualification agent on Next.js 16 edge webhooks achieving \textbf{sub-300ms turn latency} with zero external runtime dependencies.}
+        \resumeItemPlain{Integrated deterministic dual-database knowledge grounding (strict zero-knowledge truth) to eliminate LLM hallucinations on pricing and service scope.}
+        \resumeItemPlain{Automated dynamic Cal.com booking sync, real-time Telegram Bot admin alerts (@Samarth1306), and atomic Supabase PostgreSQL audit trail ingestion.}
+      \resumeItemListEnd
+
+    \resumeSubheading
+      {SAM CODES --- Personal Platform \& Administrative Command Center}{\href{https://sam-codes.vercel.app}{\underline{sam-codes.vercel.app}}}
+      {Full-Stack Platform (Next.js 16, React 19, Tailwind CSS v4, PostgreSQL)}{\href{https://sam-codes.vercel.app}{\underline{sam-codes.vercel.app}}}
+      \resumeItemListStart
+        \resumeItemPlain{Full-stack Next.js 16 administrative hub managing 14 Supabase PostgreSQL tables with zero-trust Row-Level Security (RLS) policies.}
+        \resumeItemPlain{Implemented edge Web Crypto HMAC-SHA256 session verification, sliding-window rate limiters, and automated SHA-256 database backup engine.}
+      \resumeItemListEnd
+
+\resumeSubHeadingListEnd
+
+%-----------EDUCATION-----------------
+\section{Education \& Logistics}
+\resumeSubHeadingListStart
+    \resumeSubheading
+      {Pre-University / High School (Science, Mathematics \& Computer Science)}{Karnataka, India}
+      {Autonomous Software Engineering \& Computer Systems Research}{Graduating 2026}
+\resumeSubHeadingListEnd
+\vspace{-2pt}
+\small{\textbf{Work Logistics:} Open for high-impact AI Systems, Backend Infrastructure, or Founding Engineer roles \& contract builds. Highly autonomous asynchronous execution during US/EU/APAC overlapping hours.}
+
+\end{document}

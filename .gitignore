@@ -19,7 +19,12 @@ venv/
 .venv/
 env/
 
-# Node / Build artifacts
+# Binaries / Tools
+phoneinfoga
+GhostTrack/
+projects/byteform/
+
+
 node_modules/
 .next/
 out/
