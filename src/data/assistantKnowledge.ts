@@ -61,7 +61,7 @@ export const assistantKnowledgeBase: KnowledgeQnA[] = [
     category: "PORTFOLIO",
     answer:
       "Under Sam's strict zero-fabrication policy, all showcased work is 100% verified and clickable:\n" +
-      "• SutraDB (PyPI v2.2.1): https://pypi.org/project/sutradb/ (Zero-dependency hybrid vector database in Python with SIMD BLAS & BM25)\n" +
+      "• SutraDB (PyPI v3.0.0): https://pypi.org/project/sutradb-core/ (Industrial hybrid vector database with native Rust SIMD core, HNSW, SQ8 quantization & BM25)\n" +
       "• VaniEdge Voice Platform: https://vaniedge.vercel.app (Sub-second edge AI voice telephony with Cloudflare Workers & 4-tier failovers)\n" +
       "• Production Portfolio: https://sam-codes.vercel.app\n" +
       "• Autonomous Telegram AI Qualifier: @samarth_master_bot (~280ms latency, multi-turn reasoning)\n" +

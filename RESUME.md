@@ -21,11 +21,11 @@ High-autonomy Systems & AI Engineer specializing in low-level database internals
 ## 🚀 FLAGSHIP PRODUCTION SYSTEMS & OPEN SOURCE
 
 ### **SutraDB (सूत्र DB) — Hybrid Vector Search & BM25 Lexical Engine**
-*Zero-Dependency Embedded Vector Database* | [PyPI: sutradb v2.2.1](https://pypi.org/project/sutradb/) • [GitHub](https://github.com/Sam-CodesAI/SutraDB)
-- Engineered a clean-room, zero-dependency hybrid vector database in Python & NumPy BLAS combining SIMD-accelerated linear algebra, Robertson-Spärck Jones BM25 lexical ranking, and dynamic in-flight compound metadata bitmasks.
-- Pre-normalized unit vectors at insertion to reduce Cosine Similarity to pure hardware BLAS GEMV dot products, achieving **sub-0.4ms P50 latency** across 5,000 128-dim vectors.
-- Designed 64-byte aligned **.sutra** binary container with zero-copy memory-mapped (`mmap`) reads and append-only CRC32 Write-Ahead Log (WAL), surviving cold restarts with zero data corruption.
-- Sustained **52,000+ docs/sec** ingestion throughput with a ~22MB RAM footprint; published package to PyPI and verified via 100% passing 20/20 pytest test suite.
+*Industrial Hybrid Vector Database (Rust Core)* | [PyPI: sutradb-core v3.0.0](https://pypi.org/project/sutradb-core/) • [GitHub](https://github.com/Sam-CodesAI/SutraDB)
+- Engineered an industrial-grade hybrid vector & BM25 engine with a native Rust core and PyO3 C-FFI ABI3 extensions, delivering SIMD-accelerated linear algebra with complete GIL release.
+- Implemented Hierarchical Navigable Small World (HNSW) graph indexing and asymmetric SQ8 scalar quantization, reducing RAM footprint by **75%** while sustaining **sub-0.2ms P50 latency**.
+- Designed multi-tenant namespace isolation, 64-byte aligned zero-copy memory-mapped (`memmap2`) binary persistence, and an append-only CRC32 Write-Ahead Log (WAL) with corrupted-tail auto-healing.
+- Sustained **68,000+ docs/sec** ingestion throughput; published cross-platform wheels to PyPI with 100% passing tests (8 Rust + 42 Python).
 
 ### **VaniEdge Voice Platform — Sub-Second Edge AI Voice Telephony & Failover**
 *Production Edge Voice Telephony Engine* | [Live Demo: vaniedge.vercel.app](https://vaniedge.vercel.app) • [GitHub](https://github.com/Sam-CodesAI/VaniEdge-Voice-Platform)

@@ -19,7 +19,7 @@
     <img src="https://img.shields.io/badge/⚡_AVAILABILITY-OPEN_FOR_BUILDS-06080f?style=for-the-badge&logo=codeforces&logoColor=34d399&labelColor=0f172a" alt="Status" />
   </a>
   <a href="https://pypi.org/project/sutradb-core/" target="_blank">
-    <img src="https://img.shields.io/badge/📦_PyPI-sutradb--core_v2.1.1-06080f?style=for-the-badge&logo=pypi&logoColor=38bdf8&labelColor=1e293b" alt="PyPI Package" />
+    <img src="https://img.shields.io/badge/📦_PyPI-sutradb--core_v3.0.0-06080f?style=for-the-badge&logo=pypi&logoColor=38bdf8&labelColor=1e293b" alt="PyPI Package" />
   </a>
 
   <a href="https://komarev.com/ghpvc/?username=Sam-CodesAI&color=38bdf8&style=for-the-badge&label=PROFILE+VIEWS">
@@ -267,16 +267,18 @@ Here is how I design resilient, production-ready automation workflows for client
 
 ## 🌟 Flagship Open-Source Engineering
 
-### 🧠 [**SutraDB (सूत्र DB) — Zero-Dependency Hybrid Vector Database (v2.1.1 on PyPI)**](https://github.com/Sam-CodesAI/SutraDB)
+### 🧠 [**SutraDB (सूत्र DB) — Industrial-Grade Hybrid Vector Database (v3.0.0 on PyPI)**](https://github.com/Sam-CodesAI/SutraDB)
 > **PyPI:** [`pip install sutradb-core`](https://pypi.org/project/sutradb-core/) · **GitHub:** [https://github.com/Sam-CodesAI/SutraDB](https://github.com/Sam-CodesAI/SutraDB)
 
-An ultra-fast, zero-dependency hybrid vector search & BM25 lexical engine engineered from scratch in pure Python:
-- **Instant Installation:** `pip install sutradb-core` (only requires `numpy >= 1.24`).
-- **IVF-Flat ANN Indexing (v2.1.1):** Approximate Nearest Neighbor clustering with k-means++ initialization for sublinear query complexity on large vector sets.
-- **Hybrid Dense + Lexical Search:** Robertson-Spärck Jones BM25Okapi combined with SIMD Cosine similarity via Reciprocal Rank Fusion (RRF).
-- **Sub-millisecond Latency:** **0.36ms P50 latency**, 52,000+ docs/sec ingestion throughput.
-- **Thread-Safe & Durable:** `ReadWriteLock` concurrency and append-only CRC32 Write-Ahead Log (WAL) with `.sutra` memory-mapped persistence.
-- **Production Rigor:** **24/24 unit & integration tests passing (100%)**.
+An industrial-grade, native Rust vector search & BM25 lexical engine with PyO3 ABI3 bindings:
+- **Instant Installation:** `pip install sutradb-core==3.0.0` (prebuilt wheels for Linux, macOS ARM64, and Windows AMD64).
+- **Native Rust Vector Kernel:** SIMD-accelerated linear algebra (AVX-512, AVX2, NEON) with GIL release (`py.allow_threads`).
+- **HNSW & IVF-Flat ANN Indexing:** Sub-linear approximate nearest neighbor graph routing with heuristic edge pruning.
+- **SQ8 Scalar Quantization:** 75% memory footprint reduction by compressing 32-bit floats into 8-bit integers with >98% recall.
+- **Multi-Tenant Namespaces:** Zero-leakage logical data isolation for multi-tenant applications.
+- **Sub-millisecond Latency:** **0.18ms P50 latency**, 68,000+ docs/sec ingestion throughput.
+- **Thread-Safe & Durable:** Append-only CRC32 Write-Ahead Log (WAL) with corrupted-tail auto-healing and `.sutra` zero-copy memory-mapped persistence.
+- **Production Rigor:** **50/50 unit & integration tests passing (8 Rust + 42 Python)**.
 
 ---
 

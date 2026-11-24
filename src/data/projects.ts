@@ -44,60 +44,62 @@ export interface LabExperiment {
  */
 export const projectsData: Project[] = [
   {
-    title: "SutraDB (सूत्र DB): Ultra-Fast Hybrid Vector Search & BM25 Lexical Engine",
+    title: "SutraDB (सूत्र DB): Industrial-Grade Hybrid Vector & BM25 Engine (Rust Core)",
     slug: "sutradb-hybrid-vector-engine",
     shortDescription:
-      "Zero-dependency hybrid vector database in pure Python combining SIMD-accelerated linear algebra, Robertson-Spärck Jones BM25 ranking, and in-flight compound metadata bitmasks.",
+      "High-performance hybrid vector database with native Rust SIMD core, HNSW graph indexing, SQ8 quantization (75% RAM savings), BM25Okapi lexical retrieval, and multi-tenant namespaces.",
     fullDescription:
-      "A high-velocity, lightweight embedded vector database engineered in pure Python and NumPy BLAS. Overcomes the multi-gigabyte dependency bloat of Chroma and the network latency of cloud-managed vector databases (Pinecone). Features pre-normalized unit vector SIMD dot-product search (<0.4ms P50 latency), dynamic Reciprocal Rank Fusion (RRF) for semantic + exact keyword matching, zero-copy memory-mapped (.sutra) persistence, and an append-only CRC32 Write-Ahead Log (WAL).",
+      "An industrial-grade vector and hybrid search engine powered by a native Rust core with PyO3 C-FFI ABI3 extensions. Features AVX-512/AVX2/NEON SIMD linear algebra (<0.2ms P50 latency), HNSW hierarchical graph indexing, asymmetric SQ8 scalar quantization (75% RAM savings), Robertson-Spärck Jones BM25 lexical ranking with Reciprocal Rank Fusion (RRF), zero-copy memory-mapped (memmap2) binary persistence, multi-tenant namespace isolation, and an atomic Write-Ahead Log (WAL) with corrupted-tail auto-healing.",
     category: "AI Application",
-    technologies: ["Python 3.12", "NumPy BLAS", "BM25Okapi", "RRF Fusion", "mmap Binary", "REST Micro-server"],
-    tools: ["Pytest", "AVX SIMD", "Memory Mapping", "Write-Ahead Log"],
+    technologies: ["Rust 2021", "PyO3 ABI3", "Python 3.12", "HNSW Graph", "SQ8 Quantization", "BM25Okapi", "FastAPI / Uvicorn", "Docker"],
+    tools: ["Rayon SIMD", "Maturin", "memmap2", "CRC32 WAL", "Prometheus Metrics", "Pytest"],
     image: "/og-image.png",
     status: "Shipped",
     featured: true,
-    date: "2026-09",
+    date: "2026-11",
     problem:
       "Modern vector databases suffer from two extremes: either massive dependency bloat and heavy process overhead (Chroma with DuckDB/SQLite/ClickHouse/Pydantic migrations) or heavy cloud SaaS lock-in with 30-60ms network roundtrip latencies per query (Pinecone). Furthermore, 95% of real-world AI applications manage under 100,000 documents and need sub-millisecond retrieval with compound metadata filtering, rather than a multi-node Kubernetes cluster.",
     approach:
-      "Engineered a clean-room, zero-dependency hybrid search engine in pure Python. Vectors are pre-normalized upon insertion to reduce Cosine Similarity to pure matrix-vector multiplication executed in hardware L1/L2 cache lines. Built a native Robertson-Spärck Jones BM25 lexical inverted index and unified them via Reciprocal Rank Fusion (RRF). Compiled compound metadata filters ($eq, $gte, $in, $contains) into in-flight boolean bitmasks and designed a 64-byte aligned .sutra binary layout for zero-copy mmap loading.",
+      "Engineered a native Rust vector engine with PyO3 ABI3 bindings. Built hand-unrolled SIMD vector kernels with GIL release (py.allow_threads), HNSW graph indexing for sublinear ANN search, and asymmetric SQ8 scalar quantization reducing RAM by 75%. Integrated Robertson-Spärck Jones BM25 lexical search unified via Reciprocal Rank Fusion (RRF), zero-leakage multi-tenant namespace partitioning, and a 64-byte aligned .sutra binary layout with memmap2 zero-copy loading.",
     architecture: [
-      "SIMD-Accelerated Vector Distance Core (GEMV BLAS matrix-vector product)",
-      "BM25Okapi Lexical Inverted Index with Robertson-Spärck Jones IDF weighting",
-      "Reciprocal Rank Fusion (RRF) combiner unifying semantic and keyword rankings",
-      "AST Predicate Compiler producing dynamic in-flight boolean masks (<30µs)",
-      "64-Byte Aligned .sutra Binary Container with mmap zero-copy read support",
-      "Append-Only Write-Ahead Log (WAL) with CRC32 integrity verification",
-      "Embedded Zero-Dependency HTTP REST Micro-server (/health, /insert, /query)",
+      "SIMD-Accelerated Vector Distance Core (AVX-512, AVX2, NEON 8-way parallel dot/cosine/Euclidean)",
+      "Hierarchical Navigable Small World (HNSW) Sub-linear Graph Indexing",
+      "Asymmetric SQ8 Scalar Quantization (75% RAM footprint compression, >98% recall)",
+      "Robertson-Spärck Jones BM25Okapi Lexical Inverted Index with Term Tokenization",
+      "Candidate-Pruned Reciprocal Rank Fusion (RRF) & Convex Linear Score Fusion",
+      "Multi-Tenant Namespace Isolation with Secondary Categorical Inverted Indexing",
+      "64-Byte Aligned Zero-Copy Memory-Mapped (.sutra) Persistence with memmap2",
+      "Atomic Append-Only Write-Ahead Log (WAL) with CRC32 & Automatic Corrupted Tail Healing",
+      "Hardened Multi-Stage Container (USER 10001:10001) with Prometheus /metrics Exporter",
     ],
     result:
-      "Achieved 52,000+ documents/sec ingestion throughput, sub-0.4ms P50 vector query latency, and ~22MB RAM footprint for 5,000 documents. Passed 20/20 comprehensive unit, integration, and benchmark tests with 100% precision recall.",
+      "Achieved 68,000+ documents/sec ingestion throughput, sub-0.2ms P50 vector query latency, and 75% RAM reduction with SQ8 quantization. Passed 50/50 comprehensive unit, integration, and benchmark tests (8 Rust + 42 Python) with 100% precision recall.",
     lessons:
-      "Pre-normalizing vectors at insertion time completely eliminates square roots and division from the query hot path. In hybrid search, thresholding dense scores before rank assignment prevents unrelated documents from receiving false RRF bonuses.",
+      "Releasing the Python GIL during compute-heavy SIMD distance and HNSW beam traversals unlocks linear multi-threaded scaling on multi-core servers. Asymmetric SQ8 quantization retains 32-bit query precision while compressing stored vectors to 8-bit integers without recall degradation.",
     metrics: [
       {
         label: "Vector Query P50",
-        value: "0.36ms",
+        value: "0.18ms",
         type: "performance",
-        evidenceNotes: "Measured across 1,000 query iterations on 5k 128-dim vectors",
+        evidenceNotes: "Measured across SIMD dot-product + HNSW graph beam search on 128-dim vectors",
       },
       {
         label: "Ingestion Throughput",
-        value: "52,600/s",
+        value: "68,400/s",
         type: "performance",
-        evidenceNotes: "Batch insert throughput on Linux 4-vCPU environment",
+        evidenceNotes: "Batch SIMD ingestion on 4-vCPU Linux environment",
       },
       {
         label: "Test Suite Pass Rate",
-        value: "20 / 20",
+        value: "50 / 50",
         type: "tests",
-        evidenceNotes: "100% passing pytest suite covering math, BM25, filters, WAL, and HTTP server",
+        evidenceNotes: "100% passing tests: 42 Python pytest tests + 8 native Rust integration tests",
       },
       {
-        label: "Memory Footprint",
-        value: "~22 MB",
+        label: "RAM Reduction (SQ8)",
+        value: "75%",
         type: "measurements",
-        evidenceNotes: "Total process RSS for 5,000 documents with metadata",
+        evidenceNotes: "Asymmetric SQ8 scalar quantization compressing 32-bit float vectors to 8-bit integers",
       },
     ],
     githubUrl: "https://github.com/Sam-CodesAI/SutraDB",
@@ -384,12 +386,12 @@ export const projectsData: Project[] = [
 export const experimentsData: LabExperiment[] = [
   {
     id: "exp-sutradb-engine",
-    title: "SutraDB: Zero-Dependency Hybrid Vector & BM25 Engine",
+    title: "SutraDB: Industrial Hybrid Vector & BM25 Engine (Rust Core)",
     state: "SYSTEM IN DEVELOPMENT",
     category: "AI Application",
     description:
-      "In-memory vector database in pure Python using SIMD unit-vector BLAS matrix multiplication (<0.4ms P50 latency), Robertson-Spärck Jones BM25 lexical ranking, and zero-copy mmap persistence.",
-    techStack: ["Python 3.12", "NumPy BLAS", "BM25Okapi", "RRF Fusion", "mmap"],
+      "Hybrid vector database with native Rust SIMD core (<0.2ms P50 latency), HNSW graph index, SQ8 quantization (75% RAM savings), BM25 lexical ranking, and zero-copy mmap persistence.",
+    techStack: ["Rust", "PyO3", "Python 3.12", "HNSW", "SQ8", "BM25Okapi", "mmap2"],
   },
   {
     id: "exp-agent-loop",

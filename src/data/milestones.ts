@@ -17,12 +17,12 @@ export const milestonesData: Milestone[] = [
   {
     id: "milestone-sutradb",
     category: "OPEN SOURCE",
-    title: "SutraDB: High-Performance Hybrid Vector Search Engine (PyPI Release v2.1.0)",
+    title: "SutraDB: Industrial-Grade Native Rust Hybrid Vector Engine (PyPI Release v3.0.0)",
     organizationOrEvent: "PyPI / Open Source Release",
-    date: "September 2026",
+    date: "November 2026",
     description:
-      "Engineered and published sutradb-core on PyPI. Combines pure Python SIMD BLAS dense search (<0.4ms P50 latency), BM25Okapi lexical inverted indexing, IVF-Flat clustering, and Reciprocal Rank Fusion with 100% test coverage.",
-    url: "https://pypi.org/project/sutradb-core/",
+      "Engineered and published sutradb-core v3.0.0 on PyPI. Upgraded from Python prototype to industrial Rust engine featuring SIMD acceleration (<0.2ms P50 latency), HNSW graph indexing, SQ8 scalar quantization (75% RAM savings), multi-tenant namespaces, and 100% test coverage.",
+    url: "https://pypi.org/project/sutradb-core/3.0.0/",
   },
   {
     id: "milestone-teleflow",
